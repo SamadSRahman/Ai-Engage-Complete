@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc> https://example.com/ </loc>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+        <lastmod>  2024-05-08T11:42:22.246Z  </lastmod>
+        <description> Homepage </description>
+    </url>
+
+    <url>
+        <loc> https://example.com/SignUp </loc>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+        <lastmod> 2024-05-08T11:42:22.246Z  </lastmod>
+        <description> Sign Up Page </description>
+    </url>
+
+        <url>
+        <loc> https://example.com/SignIn </loc>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+        <lastmod> 2024-05-08T11:42:22.246Z  </lastmod>
+        <description> Sign In Page </description>
+    </url>
+
+</urlset>
+</xml>

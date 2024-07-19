@@ -1,0 +1,319 @@
+
+      .pricingcntwrapper{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          gap:3rem;
+      }
+
+      .pricing-heading{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap:1.5rem;
+      }
+
+      #pricingtitle {
+        color: #061C2D;
+        text-align: center;
+        font-size: var(--size-3xl);
+        font-style: normal;
+        font-weight: 800;
+        line-height: 2rem;
+    }
+
+      #pricingdesc{
+        max-width: 80vw;
+        color: #1B1818;
+        text-align: center;
+        font-size: var(--size-base);
+        font-style: normal;
+        font-weight: 300;
+    }
+
+
+    .planswrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background-color: #F5F5F5;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+    }
+
+    .tab {
+      padding: 0.75rem;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 0.3rem;
+      color: #676767;
+      text-align: center;
+      font-size: var(--size-sm);
+      font-style: normal;
+      font-weight: 300;
+      line-height: normal;
+    }
+
+    .tab.active {
+      background-color: #fff; 
+      color: #E87211; 
+      font-weight: 700;
+    }
+
+
+    .pricing-plans {
+          width: 100%;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+          gap: 2rem; 
+          justify-content: center; 
+          align-items: center;    
+    }
+
+    .pricing-card {
+        margin-top: 1rem;
+        padding: 2rem 1rem;
+        display: grid;
+        grid-template-rows: subgrid;
+        gap: 1.5rem;
+        grid-row: span 5;
+        border-radius: 1rem;
+        background: #FFF;
+        box-shadow: 16.48px 16.48px 54.933px 0px #F9E5FF;
+
+    }
+
+    .pricing-card:hover {
+        transform: scale(1.05); 
+        border: 1px solid #7b35d4; 
+    }
+
+     #subcrpname{
+      text-align: center;
+      color: #9B51E0;
+      text-align: center;
+      font-size: var(--size-2xl);
+      font-style: normal;
+      font-weight: 800;
+    }
+
+      #subcrpprice{
+        text-align: center;
+        color: #061C2D;
+        font-size: var(--size-3xl);
+        font-style: normal;
+        font-weight: 300;
+        line-height: normal;
+      }
+
+      #subpricestrong{
+        font-weight: 800;
+      }
+      
+      #subcrpdescp{
+          text-align: center;
+          color: #676767;
+          text-align: center;
+          font-size: var(--size-xl);
+          font-style: normal;
+          font-weight: 300;
+      }
+
+       .featureswrapper{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+       }
+
+        .features {
+          list-style-type: none; /* Remove default list item marker */
+          padding: 0; /* Remove default padding */
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+
+        .feature-list {
+          color: #353535;
+          font-size: var(--size-lg);
+          font-style: normal;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+       
+        }
+
+        .feature-list::before {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #12D30E;
+          width: 1.25rem;
+          height: 1.25rem;
+          padding: 0.85rem;
+          border-radius: 100%;
+          content: "\2713";
+          margin-right: 0.62rem; 
+          color:#fff ;
+        }
+
+        .subcrpbtnwrapper{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .subscribebtn {
+          width: 12rem;
+          border-radius: 0.9rem;
+          background: #E87211;
+          color: #FFF;
+          text-align: center;
+          padding: 1rem 2rem;
+          font-size: var(--size-base);
+          font-style: normal;
+          font-weight: 600;
+          line-height: normal;
+        }
+
+
+/* xs */
+/* @media (min-width: 475px) {} */
+
+/* sm */
+/* @media (min-width: 640px) {} */
+
+/* md */
+@media (min-width: 768px) {
+
+          #pricingdesc {
+            max-width: 80vw;
+            font-size: var(--size-xl);
+        }
+
+        .pricingcntwrapper{
+           gap:1.5rem;
+        }
+
+        .pricing-plans {
+              margin-top: 0rem;
+              grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+              gap: 0.625rem; 
+       }
+
+        .pricing-card {
+          padding: 2rem 0.85rem;
+          display: grid;
+          grid-template-rows: subgrid;
+          gap: 0.85rem;
+          grid-row: span auto;
+          border-radius: 1rem;
+          box-shadow: 8.48px 8.48px 24.933px 0px #F9E5FF;
+        }
+
+
+      #subcrpname{
+        font-size: var(--size-xl);
+      }
+  
+        #subcrpprice{
+          font-size: var(--size-xl);
+        }
+        
+        #subcrpdescp{
+            font-size: var(--size-base);
+        }
+
+        .feature-list {
+          font-size: var(--size-sm);
+        }
+
+        .feature-list::before {
+          width: 1rem;
+          height: 1rem;
+          padding: 0.65rem;
+        }
+
+        .subscribebtn {
+          width: 10rem;
+          border-radius: 1rem;
+          padding: 0.85rem 2rem;
+        }
+
+}
+
+
+/* lg */
+@media (min-width: 1024px) {
+
+        .pricing-heading{
+            gap: 2rem;
+        }
+
+        #pricingtitle{
+            font-size: var(--size-4xl);
+        }
+
+        #pricingdesc{
+          max-width: 80vw;
+          font-size: var(--size-3xl);
+        }
+
+        .planswrapper {
+          border-radius: 1rem;
+          padding: 0.75rem;
+        }
+    
+        .pricingcntwrapper{
+             gap:3rem;
+         }
+
+        .tab {
+          padding: 1.15rem 2rem;
+          border-radius: 1.07rem;
+          font-size: var(--size-2xl);
+        }
+
+        #subcrpname{
+          font-size: var(--size-2xl);
+        }
+    
+          #subcrpprice{
+            font-size: var(--size-3xl);
+          }
+    
+          #subcrpdescp{
+              font-size: var(--size-xl);
+          }
+    
+
+        .feature-list {
+          font-size: var(--size-lg);
+        }
+
+          .feature-list::before {
+            width: 1.25rem;
+            height: 1.25rem;
+            padding: 0.85rem;
+            margin-right: 0.62rem; 
+          }
+
+
+        .subscribebtn {
+          width: 12rem;
+          border-radius: 0.9rem;
+          padding: 1rem 2rem;
+          font-size: var(--size-base);
+        }
+
+}
+
+/* xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2xl */
+/* @media (min-width: 1536px) {} */

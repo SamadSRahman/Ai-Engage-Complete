@@ -1,0 +1,156 @@
+
+
+    .herosection{
+        padding-top: 2.25rem;
+        padding-bottom: 4rem;
+        display:flex;
+        align-items: center;
+        justify-content:center;
+
+    }
+
+    .contentpart{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content:center;
+            flex-direction: column;
+            gap: 0.7rem;
+    }
+
+    .contentpart h1{
+                color: #071D34;
+                font-size: var(--size-4xl);
+                font-weight: 800;
+                line-height:normal;
+    }
+
+        #aipart{
+            color: #E87211;
+        }
+
+        .heropart{
+            display: flex;
+            gap:6px;
+            align-items: center;
+        }
+
+            .heropart img{
+                    width: 2rem;
+                    height: 2rem;
+            }
+
+        .contentpart h2{
+                color: #071D34;
+                text-align: center;
+                font-size: var(--size-2xl);
+                font-weight: 700;
+                line-height: normal;
+        }
+
+
+        .contentpart h3{
+                padding-top: 1rem;
+                padding-bottom: 0.8rem;
+                color: #1B1818;
+                text-align: center;
+                font-size: var(--size-base);
+                font-weight: 300;
+                line-height: normal;
+        }
+
+
+        #freetrailbtn{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                padding: 14px 21px;
+                border-radius: 21px;
+                background: #12D30E;
+                color: #FFF;
+                text-align: center;
+                font-size: var(--size-lg);
+                font-weight: 600;
+                line-height: normal;
+        }
+
+
+
+        /* xs */
+        /* @media (min-width: 475px) {} */
+
+        /* sm */
+        /* @media (min-width: 640px) {} */
+
+        /* md */
+          @media (min-width: 768px) {
+
+                    .heropart img{
+                            width: 3.5rem;
+                            height: 3.5rem;
+                      }
+
+                    .contentpart h1{
+                        font-size: var(--size-6xl);
+                    }
+
+                   .contentpart h2{
+                        font-size: var(--size-4xl);
+                   }
+
+                    .contentpart h3{
+                            padding-top: 1.5rem;
+                            padding-bottom: 1rem;
+                            font-size: var(--size-2xl);
+                            max-width: 46ch;
+                    }
+
+                    #freetrailbtn{
+                                padding: 16px 34px;
+                                font-size: var(--size-xl);
+                              
+                    }
+
+          }
+
+        /* lg */
+           @media (min-width: 1024px) {
+
+                .heropart{
+                    gap:0.9rem;
+                }
+
+                 .heropart img{
+                       width: 4rem;
+                       height: 4rem;
+                }
+
+                .contentpart h1{
+                    font-size: var(--size-7xl);
+                }
+
+                .contentpart h2{
+                    font-size: var(--size-5xl);
+               }
+    
+                .contentpart h3{
+                        padding-top: 1.5rem;
+                        padding-bottom: 1rem;
+                        font-size: var(--size-3xl);
+                        max-width: 45ch;
+                }
+
+                 #freetrailbtn{
+                            padding: 18px 32px;
+                            font-size: var(--size-2xl);
+                            border-radius: 1.9rem;
+                }
+
+          }
+
+        /* xl */
+        /* @media (min-width: 1280px) {} */
+
+        /* 2xl */
+        /* @media (min-width: 1536px) {} */

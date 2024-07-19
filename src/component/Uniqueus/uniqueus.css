@@ -1,0 +1,135 @@
+
+
+    .uniqueuswrapper h2 {
+        color: #061C2D;
+        text-align: center;
+        font-size: var(--size-3xl);
+        font-style: normal;
+        font-weight: 800;
+    }
+
+    .cardswrapper{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+        gap: 1.5rem;
+        margin-top: 3rem;
+  
+    }
+
+    .cards{
+        text-align: center;
+        padding: 2rem 1.2rem;
+        border-radius: 1rem;
+        background: #FFF;
+        box-shadow: 12px 12px 80px 0px #F9E5FF;
+        display: grid;
+        grid-template-rows: subgrid;
+        gap: 1.5rem;
+        grid-row: span 1;
+
+    }
+
+        .cards:hover {
+            border: 2px solid #9B51E0;
+        }
+
+        .headsec{
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+      .headsec img {
+            width: 4.5rem;
+            height: 4.5rem;
+        }
+        
+        .cardsinfo {
+            text-align: center;
+            font-style: normal;
+        }
+
+    .cardsinfo h3{
+            padding-top: 1.4rem;
+            padding-bottom: 1rem;
+            color: #061C2D;
+            font-size: var(--size-2xl);
+            font-weight: 800;
+            line-height: normal;
+    }
+
+    .cardsinfo p{
+            color: #061C2D;
+            font-size: var(--size-lg);
+            font-weight: 300;
+            line-height: normal;
+    }
+
+
+    /* xs */
+/* @media (min-width: 475px) {} */
+
+
+/* sm */
+/* @media (min-width: 640px) {} */
+
+/* md */
+@media (min-width: 768px) {
+
+    .cardswrapper{
+        grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+        gap: 0.8rem;
+        align-items: center;
+        justify-content: center;
+    }
+
+     .cards{
+        padding: 2rem 0.85rem;
+        border-radius: 0.85rem;
+        gap: 0.85rem;
+        grid-row: span auto;
+     }
+
+     .cardsinfo h3{
+        padding-top: 0rem;
+        padding-bottom: 1rem;
+        font-size: var(--size-xl);
+     }
+
+     .cardsinfo p{
+         width: 100%;
+         font-size: var(--size-base);
+     }
+
+}
+
+/* lg */
+@media (min-width: 1024px) {
+
+     .cardswrapper{
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+    }
+
+     .uniqueuswrapper h2 {
+        font-size: var(--size-4xl);
+    }
+
+     .cards{
+        padding: 2.5rem 1.2rem;
+     }
+
+     .cardsinfo h3{
+        font-size: var(--size-2xl);
+    }
+
+     .cardsinfo p{
+            font-size: var(--size-xl);
+     }
+
+}
+
+/* xl */
+/* @media (min-width: 1280px) {} */
+
+/* 2xl */
+/* @media (min-width: 1536px) {} */
