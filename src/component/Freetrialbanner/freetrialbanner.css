@@ -11,7 +11,7 @@
             justify-content: center;
             gap: 2rem;
             text-align: center;
-            padding: 2.5rem  1.5rem;
+            padding: 1.5rem  1.5rem;
             border-radius: 1rem;
             background: #9B51E0;
 
@@ -49,7 +49,7 @@
             justify-content: center;
             align-items: center;
             gap: 8px;
-            border-radius: 18px;
+            border-radius: 10px;
             background: #FFF;
             color: #12D30E;
             text-align: center;
@@ -84,7 +84,7 @@
 @media (min-width: 768px) {
 
         .freetrialcnt {
-            padding-top: 4rem;
+            padding-top: 0rem;
         }
 
     .freetrialwrapper{

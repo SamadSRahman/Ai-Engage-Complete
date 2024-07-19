@@ -66,7 +66,7 @@
                 align-items: center;
                 gap: 10px;
                 padding: 14px 21px;
-                border-radius: 21px;
+                border-radius: 10px;
                 background: #12D30E;
                 color: #FFF;
                 text-align: center;
@@ -144,7 +144,7 @@
                  #freetrailbtn{
                             padding: 18px 32px;
                             font-size: var(--size-2xl);
-                            border-radius: 1.9rem;
+                            border-radius: 10px;
                 }
 
           }

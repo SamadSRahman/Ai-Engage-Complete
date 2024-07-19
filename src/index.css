@@ -45,11 +45,14 @@ svg {
 
 button {
   display: inline-block;
-  padding: 0;
+  padding: 10px;
   border: none;
-  background: none;
+
+  border-radius: 8px;
   cursor: pointer;
   color: inherit;
+  background-color: #E87211;
+  color: white;
 }
 
 
