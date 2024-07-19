@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 const CheckoutFail = () => {
     const navigate = useNavigate(); 
     const handleClick = () => {
-        navigate("/home");
+        navigate("/");
     };
   return (
     <div style={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center', fontFamily:'Inter',marginTop:'8rem'}}>
