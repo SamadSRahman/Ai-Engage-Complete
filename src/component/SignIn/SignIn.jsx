@@ -154,8 +154,7 @@ const SignIn = ({ setIsAuthenticated }) => {
       )}
       {isResetPasswordVisible && (
         <ResetPassword
-          // onClose={() => setIsForgetPasswordVisible(false)}
-          onSuccess={() => navigate("")}
+          onSuccess={() => navigate("/SignIn")}
         />
       )}
       {isVerifyOtpVisible && (
