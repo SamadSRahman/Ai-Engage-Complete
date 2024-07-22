@@ -79,7 +79,7 @@ function App() {
             <Route path="/logoutRequest" element={<Logout />} />
 
             <Route path="/SignUp" element={<SignUp />} />
-            <Route path="/SignIn" element={<SignIn setIsAuthenticated={ setIsAuthenticated }/>} />
+            <Route path="/SignIn/:popup?/:token?" element={<SignIn setIsAuthenticated={ setIsAuthenticated }/>} />
             {/* <Route path="/checkout" element={<CheckoutForm/>} /> */}
             <Route path="/checkoutSuccess" element={<CheckoutSuccess/>} />
             <Route path="/checkoutFail" element={<CheckoutFail/>} />

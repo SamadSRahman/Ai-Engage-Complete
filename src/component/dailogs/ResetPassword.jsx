@@ -5,8 +5,10 @@ import codeIcon from "../../images/password.svg";
 import visibilityOffIcon from '../../images/visibility_off (1).svg'
 import visibilityOnIcon from '../../images/visibility (1).svg'
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export default function ResetPassword({ onClose, onSuccess }) {
+  const {token} = useParams()
   const [pass, setPass] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -17,7 +19,7 @@ export default function ResetPassword({ onClose, onSuccess }) {
   useEffect(() => {
     function handleClickOutside(event) {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
-        onClose();
+        // onClose();
       }
     }
 
@@ -57,12 +59,12 @@ export default function ResetPassword({ onClose, onSuccess }) {
     }
 
     try {
-      const response = await axios.post("https://stream.xircular.io/api/v1/customer/resetpassword", { password: pass });
+      const response = await axios.post(`https://stream.xircular.io/api/v1/customer/resetpassword/${token}`, { password: pass });
       console.log(response.data);
       localStorage.setItem("password", pass);
       alert(response.data.message);
       onSuccess();
-      onClose();
+      // onClose();
     } catch (error) {
       console.log(error);
     }

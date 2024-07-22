@@ -12,7 +12,7 @@ export default function VerifyOtp({onClose}) {
   useEffect(() => {
     function handleClickOutside(event) {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
-        onClose();
+        // onClose();
       }
     }
 

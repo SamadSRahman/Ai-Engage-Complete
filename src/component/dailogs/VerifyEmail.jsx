@@ -30,7 +30,7 @@ const navigate = useNavigate()
         containerRef.current &&
         !containerRef.current.contains(event.target)
       ) {
-        onClose();
+        // onClose();
       }
     }
 
@@ -82,7 +82,7 @@ const navigate = useNavigate()
       console.log(response.data);
       if(response.data.success){
         alert("Email verification successful. Please log in to continue")
-        onClose();
+        // onClose();
         navigate("/SignIn");
       }
     } catch (error) {

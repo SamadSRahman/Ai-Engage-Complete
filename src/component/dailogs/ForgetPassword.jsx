@@ -11,7 +11,7 @@ export default function ForgetPassword({onClose, onSuccess}) {
   useEffect(() => {
     function handleClickOutside(event) {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
-        onClose();
+        // onClose();
       }
     }
 
@@ -29,7 +29,7 @@ export default function ForgetPassword({onClose, onSuccess}) {
     localStorage.setItem("customerId", response.data.customerId)
     alert(response.data.message)
     onSuccess()
-    onClose()
+    // onClose()
    }
    catch(error){
     console.log(error);
