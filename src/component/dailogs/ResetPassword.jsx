@@ -5,7 +5,7 @@ import codeIcon from "../../images/password.svg";
 import visibilityOffIcon from '../../images/visibility_off (1).svg'
 import visibilityOnIcon from '../../images/visibility (1).svg'
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function ResetPassword({ onClose, onSuccess }) {
   const {token} = useParams()
@@ -15,6 +15,8 @@ export default function ResetPassword({ onClose, onSuccess }) {
   const containerRef = useRef(null);
   const [isPassVisible, setIsPassVisible] = useState(false)
   const [isConfirmPassVisible, setIsConfirmPassVisible] = useState(false)
+  const [newLink, setNewLink] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -66,7 +68,12 @@ export default function ResetPassword({ onClose, onSuccess }) {
       onSuccess();
       // onClose();
     } catch (error) {
+      
       console.log(error);
+      if(error.response.status===400){
+        alert("Link expired, please request a new link")
+        setNewLink(true)
+      }
     }
   };
 
@@ -97,6 +104,10 @@ export default function ResetPassword({ onClose, onSuccess }) {
              <img onClick={()=>setIsConfirmPassVisible(!isConfirmPassVisible)}  src={isConfirmPassVisible? visibilityOnIcon: visibilityOffIcon} alt="" />
         </div>
         {passwordError && <span className={styles.errorText}>{passwordError}</span>}
+     {newLink && (   <div className="signUpSection">
+              
+              <span onClick={navigate("/SignIn/forgetPassword")} className="linkSpan">Request new link</span>
+            </div>)}
         <button disabled={!pass||!confirmPass} className={styles.sendBtn} onClick={handleSendCode}>
           Reset Password
         </button>

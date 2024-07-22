@@ -6,6 +6,7 @@ import axios from "axios";
 
 export default function ForgetPassword({ onClose, onSuccess }) {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const containerRef = useRef(null);
   const [isLinkSent, setIsLinkSent] = useState(false)
 
@@ -40,6 +41,9 @@ export default function ForgetPassword({ onClose, onSuccess }) {
       // onClose()
     } catch (error) {
       console.log(error);
+      if(error.response.status===404){
+        setError(error.response.data.message)
+      }
     }
   }
   return (
@@ -59,12 +63,14 @@ export default function ForgetPassword({ onClose, onSuccess }) {
         <div id={styles.inputWrapper} className="inputWrapper">
           <img src={mail} alt="" />
           <input
+          name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             placeholder="Email"
           />
         </div>
+        {error && <span className={styles.errorText}>{error}</span>}
         <button
           disabled={email ? false : true}
           className={styles.sendBtn}
