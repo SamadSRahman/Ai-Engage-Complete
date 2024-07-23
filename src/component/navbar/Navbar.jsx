@@ -59,14 +59,14 @@ const Navbar = () => {
    
       {/* Render the "Sign in" button if accessToken does not exist */}
        { !accessToken &&
-           ( <button className='' onClick={() => navigate("/SignUp")}>
-                Signup
+           ( <button className='' onClick={() => navigate("/SignIn")}>
+                Sign in
              </button> )
          }
 
 
       {/* Render the userName if it exists */}
-      {userName && (   
+      {accessToken && (   
         <div className='userName' >
          {/*   <p>  Hi,{Name}   </p> */}
            {/* <button
