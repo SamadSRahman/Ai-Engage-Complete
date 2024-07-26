@@ -9,6 +9,20 @@ export default function ForgetPassword({ onClose, onSuccess }) {
   const [error, setError] = useState("");
   const containerRef = useRef(null);
   const [isLinkSent, setIsLinkSent] = useState(false)
+  const [timer, setTimer] = useState(0)
+  const [isResendVisible,setIsResendVisible] = useState(false)
+  const [isLoading,setIsLoading] = useState(false)
+  
+  useEffect(()=>{
+    setTimeout(() => {
+     if(timer>0){
+      setTimer(timer-1)
+     }
+     if(timer===0){
+      setIsLinkSent(false)
+     }
+    }, 1000);
+  }, [timer])
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -27,6 +41,8 @@ export default function ForgetPassword({ onClose, onSuccess }) {
   }, [onClose]);
 
   async function handleSendCode() {
+    setError("")
+    setIsLoading(true)
     try {
       const response = await axios.post(
         "https://stream.xircular.io/api/v1/customer/forgotpassword",
@@ -36,16 +52,24 @@ export default function ForgetPassword({ onClose, onSuccess }) {
       localStorage.setItem("email", email);
       localStorage.setItem("customerId", response.data.customerId);
       alert(response.data.message);
+      setIsLoading(false)
       setIsLinkSent(true)
       // onSuccess();
       // onClose()
+      setTimer(30)
     } catch (error) {
       console.log(error);
-      if(error.response.status===404){
+      if(error.response.status===404 ||error.response.status===400){
         setError(error.response.data.message)
       }
+      setIsLoading(false)
     }
   }
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+  };
   return (
     <div className={styles.wrapper}>
       <div className={styles.container} ref={containerRef}>
@@ -53,7 +77,13 @@ export default function ForgetPassword({ onClose, onSuccess }) {
         <label className={styles.primaryText}>Forgot Password</label>
      {isLinkSent? (
       <label>
-        We have a sent a reset password link to your email.
+        We have a sent a reset password link to your email.<br/>
+          <div className="signUpSection">
+            <span>Resend code in</span>
+            <span onClick={""} className="linkSpan">
+              {formatTime(timer)}
+            </span>
+          </div>
       </label>
      ):(<div>
       <label className={styles.secondaryText}>
@@ -72,10 +102,22 @@ export default function ForgetPassword({ onClose, onSuccess }) {
         </div>
         {error && <span className={styles.errorText}>{error}</span>}
         <button
-          disabled={email ? false : true}
+          disabled={isLoading?isLoading:email? false : true}
           className={styles.sendBtn}
           onClick={handleSendCode}
         >  Send code</button>
+        {/* {!isResendVisible ? (
+          <div className="signUpSection">
+            <span>Resend code in</span>
+            <span onClick={""} className="linkSpan">
+              {formatTime(timer)}
+            </span>
+          </div>
+        ) : (
+         
+        )} */}
+
+
      </div>)  }
         
       

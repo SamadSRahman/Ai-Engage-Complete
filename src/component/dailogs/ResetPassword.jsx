@@ -52,8 +52,19 @@ export default function ResetPassword({ onClose, onSuccess }) {
     }
     return "";
   };
-
+useEffect(()=>{
+if(pass&& confirmPass){
+  const error = validatePassword(pass, confirmPass);
+  if (error) {
+    setPasswordError(error);
+  }
+  else{
+    setPasswordError("")
+  }
+}
+},[pass, confirmPass])
   const handleSendCode = async () => {
+    setPasswordError("")
     const error = validatePassword(pass, confirmPass);
     if (error) {
       setPasswordError(error);
@@ -106,7 +117,10 @@ export default function ResetPassword({ onClose, onSuccess }) {
         {passwordError && <span className={styles.errorText}>{passwordError}</span>}
      {newLink && (   <div className="signUpSection">
               
-              <span onClick={navigate("/SignIn/forgetPassword")} className="linkSpan">Request new link</span>
+              <span onClick={()=>{navigate("/SignIn/forgetPassword")
+
+                onClose()
+              }} className="linkSpan">Request new link</span>
             </div>)}
         <button disabled={!pass||!confirmPass} className={styles.sendBtn} onClick={handleSendCode}>
           Reset Password

@@ -58,6 +58,24 @@ const SignUp = () => {
     setEmailerr("");
     setPasswordErr("");
 
+    if(!phone && !email && !password){
+      setEmailerr("This field is required")
+      setPhoneErr("This field is required")
+      setPasswordErr("This field is required")
+      return
+    }
+if(!phone){
+  setPhoneErr("Field cannot be empty")
+  return
+}
+if(!email){
+  setEmailerr("Field cannot be empty")
+  return
+}
+if(!password){
+  setPasswordErr("Field cannot be empty")
+  return
+}
     if (!isValidPhoneNumber(phone)) {
       setPhoneErr("Invalid phone number");
       return;
@@ -72,7 +90,7 @@ const SignUp = () => {
       setPasswordErr(
         "Password should be strong with one number, one letter, one special character and between 8 to 15 characters"
       );
-      return;
+      return; 
     }
 
     const item = { phone, email, password };
@@ -87,45 +105,61 @@ const SignUp = () => {
       .then((res) => {
         console.log("signupai res", res);
         console.log("successmsg", res.data.message);
-        alert("Please verify your email to continue")
-        verifyEmail()
-        setIsVerifyEmailVisible(true)
+        alert("Please verify your email to continue");
+        verifyEmail();
+        setIsVerifyEmailVisible(true);
         // navigate("/SignIn");
       })
       .catch((err) => {
         console.log("errors", err);
         if (err.response && err.response.data) {
-          if (err.response.data?.message) {
+          if (err.response.data?.message?.includes("phone")) {
+            setPhoneErr(err.response.data.message);
+          } 
+          else if (err.response.data?.message?.includes("Email")) {
             setEmailerr(err.response.data.message);
           }
-          else if (err.response.data?.errors){
-            setEmailerr(err.response.data?.errors[0]?.msg)
-        }
-          else {
+          else if (err.response.data?.message?.includes("Password")) {
+            setPasswordErr(err.response.data.message);
+          }
+           else if (
+            err.response?.data?.errors[0]?.path === "phone" ||
+            err.response.data?.errors[0]?.msg.includes("number")
+          ) {
+            setPhoneErr(err.response.data?.errors[0]?.msg);
+          } else if (
+            err.response.data?.errors[0]?.path === "email" ||
+            err.response.data?.errors[0]?.msg.includes("email")
+          ) {
+            setEmailerr(err.response.data?.errors[0]?.msg);
+          } else {
             // setError(" ");
             setPhoneErr(" ");
             setEmailerr(" ");
             setPasswordErr("");
           }
         }
-     
       });
   };
-  function verifyEmail(){
-    localStorage.setItem('email', email)
+  function verifyEmail() {
+    localStorage.setItem("email", email);
     const headerObject = {
       "Content-Type": "application/json",
       Accept: "*/*",
     };
-    axios.post("https://stream.xircular.io/api/v1/customer/sendOtp", {email:email},{headers: headerObject})
-    .then((response)=>{
-      console.log(response.data)
-      setIsVerifyEmailVisible(true)
-      
-    })
-    .catch((error)=>{
-      console.log(error)
-    })
+    axios
+      .post(
+        "https://stream.xircular.io/api/v1/customer/sendOtp",
+        { email: email },
+        { headers: headerObject }
+      )
+      .then((response) => {
+        console.log(response.data);
+        setIsVerifyEmailVisible(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   const handleLogin = () => {
@@ -157,13 +191,14 @@ const SignUp = () => {
       </div>
       <div className="rightSection">
         <div className="loginBox">
-        <img className="loginBoxLogo" src={logo} alt="" />
+          <img className="loginBoxLogo" src={logo} alt="" />
           <div className="heading">
             <label className="welcomeText">Hi, Welcome</label>
             <img src={wave} alt="" />
           </div>
           <label className="boxHeaderText">Sign up</label>
-          <div className="inputSection">
+       <form onSubmit={handleSubmit}>
+       <div className="inputSection">
             <div>
               <PhoneInput
                 value={phone}
@@ -175,7 +210,7 @@ const SignUp = () => {
                 <p
                   style={{
                     color: "red",
-                    fontSize: "12px",
+                    fontSize: "15px",
                     fontFamily: "Inter",
                     marginBottom: "0px",
                   }}
@@ -204,7 +239,7 @@ const SignUp = () => {
               />
               <img
                 onClick={() => setShowPassword(!showPassword)}
-                src={showPassword ? visibilityOn : visibilityOff}
+                src={showPassword ? visibilityOff : visibilityOn}
                 alt=""
               />
             </div>
@@ -224,6 +259,7 @@ const SignUp = () => {
               </div>
             </div>
           </div>
+       </form>
         </div>
       </div>
     </div>

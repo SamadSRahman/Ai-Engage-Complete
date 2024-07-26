@@ -155,6 +155,7 @@ const SignIn = ({ setIsAuthenticated }) => {
       {isResetPasswordVisible && (
         <ResetPassword
           onSuccess={() => navigate("/SignIn")}
+          onClose={()=>setIsResetPasswordVisible(false)}
         />
       )}
       {isVerifyOtpVisible && (
@@ -215,7 +216,7 @@ const SignIn = ({ setIsAuthenticated }) => {
               />
               <img
                 onClick={() => setShowPassword(!showPassword)}
-                src={showPassword ? visibilityOn : visibilityOff}
+                src={showPassword ? visibilityOff : visibilityOn}
                 alt=""
               />
             </div>

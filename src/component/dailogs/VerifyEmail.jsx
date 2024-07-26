@@ -11,7 +11,8 @@ export default function VerifyEmail({ onClose }) {
   const containerRef = useRef(null);
   const email = localStorage.getItem("email");
   const [isResendVisible, setIsResendVisible] = useState(false);
-  const [timer, setTimer] = useState(30)
+  const [error,setError]= useState("") 
+   const [timer, setTimer] = useState(30)
 const navigate = useNavigate()
 
   useEffect(()=>{
@@ -73,7 +74,8 @@ const navigate = useNavigate()
       console.log(error);
     }
   }
-  async function handleVerifyCode() {
+  async function handleVerifyCode(e) {
+    e.preventDefault()
     try {
       const response = await axios.post(
         "https://stream.xircular.io/api/v1/customer/emailVerification",
@@ -87,6 +89,9 @@ const navigate = useNavigate()
       }
     } catch (error) {
       console.log(error);
+      if(error.response.data.message){
+        setError(error.response.data.message)
+      }
     }
   }
   return (
@@ -104,15 +109,20 @@ const navigate = useNavigate()
           {" "}
           We’ve sent an OTP to your email
         </label>
+        <form onSubmit={handleVerifyCode}>
         <div id={styles.inputWrapper} className="inputWrapper">
           {/* <img src={mail} alt="" /> */}
           <input
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
-            type="number"
+            type="text"
             placeholder="OTP"
+            maxLength={6}
           />
         </div>
+        {error && (<span
+        className={styles.errorText}
+        >{error}</span>)}
         {!isResendVisible ? (
           <div className="signUpSection">
             <span>Resend OTP in</span>
@@ -135,6 +145,7 @@ const navigate = useNavigate()
         >
           Verify
         </button>
+        </form>
       </div>
     </div>
   );
