@@ -6,9 +6,12 @@
         display:flex;
         align-items: center;
         justify-content:center;
+        box-sizing: border-box;
 
     }
-
+.herosection h1, .herosection h2, .herosection h3{
+    margin: 0;
+}
     .contentpart{
             width: 100%;
             display: flex;

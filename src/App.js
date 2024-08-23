@@ -10,7 +10,12 @@ import CheckoutSuccess from './component/CheckoutSuccess';
 import CheckoutFail from './component/CheckoutFail';
 import NotFound from './component/NotFound';
 import Home from './Home';
+import ListingPage from './dashboard/pages/listingPage/ListingPage'
+import Analytics from './dashboard/pages/analytics/Analytics'
+
 import Logout from './component/Logout';
+import CreateCampaign from './dashboard/App';
+import EditCampaign from './dashboard/editingSection/Builder';
 
 
 function App() {
@@ -84,6 +89,16 @@ function App() {
             <Route path="/checkoutSuccess" element={<CheckoutSuccess/>} />
             <Route path="/checkoutFail" element={<CheckoutFail/>} />
             <Route path="*" element={<NotFound/>} />
+
+
+
+
+
+            {/* Dashboard Routes */}
+        <Route path="/listings" element={<ListingPage/>} />
+        <Route path="/createNew" element={<CreateCampaign/>} />
+        <Route path="/edit/:id" element={<EditCampaign/>} />
+        <Route path="/analytics/:id" element={<Analytics/>} />
           </Routes>
           {/* // </Elements> */}
            {/* )} */}

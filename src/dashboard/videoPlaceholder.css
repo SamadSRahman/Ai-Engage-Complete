@@ -1,0 +1,32 @@
+.videoPHContainer{
+    /* border: 1px solid; */
+    height: 260px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: "Figtree", sans-serif;
+    gap: 10px;
+}
+.imgContainer{
+    /* border-radius: 0.75rem; */
+    /* border: 0.5px solid rgba(0, 0, 0, 0.60); */
+    /* background: #F0F0F0; */
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.imgContainer img{
+    width: 42%;
+    border-radius: 5px;
+    padding: 8px;
+    background: #F0F0F0;
+}
+.videoPHContainer span{
+    margin-top: -1rem;
+    color: #7A7A7A;
+
+}

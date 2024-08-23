@@ -1,0 +1,136 @@
+.wrapper{
+    background-color: #F7F7F7;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container{
+    /* border: 1px solid; */
+    font-family: "Figtree", sans-serif;
+    position: relative;
+    top: 2rem;
+    width: 95%;
+
+}
+
+.header{
+    border-bottom: 1px solid darkgray;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.151);
+
+
+}
+.backBtn{
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 5%;
+  padding: 10px;  
+  font-size: small;
+  cursor: pointer;
+}
+.backBtn img{
+    width: 30%;
+}
+.title{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 10px;  
+    font-weight: 600;
+    border-left: 1px solid darkgray;
+}
+.title img{
+    width: 20%;
+}
+.questionCard{
+display: flex;
+flex-direction: column;
+padding: 20px;
+background-color: white;
+border-radius: 8px;
+box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.151);
+}
+.questionIndex{
+   color:#808080;
+   font-size: 14px;
+   margin-bottom: 10px;
+    
+}
+.questionsDiv{
+    /* border: 1px solid; */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+    padding-bottom: 20px;
+}
+.placeHolderContainer{
+    /* border: 1px solid ; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: white;
+    padding: 10px;
+    box-sizing: border-box;
+    flex-direction: column;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.151);
+
+}
+.placeHolderContainer img{
+    width: 30%;
+}
+.placeHolderContainer span{
+    font-weight: 600;
+    font-size: 18px;
+    padding-bottom: 30px;
+}
+.spinnerContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+.summarySection{
+    /* border: 1px solid; */
+    /* padding: 10px; */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+}
+.summaryBody{
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    /* width: 100%; */
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.151);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 7rem;
+    width: fill;
+
+}
+.summaryBtn{
+    background-color: #4D67EB;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+.spinnerSection{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}

@@ -1,0 +1,41 @@
+
+.mcqSection{
+  border: 1px solid;
+  width: 430px;
+  height : 200px;
+  background-color: skyblue;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.mcqSection h3{
+  margin-top: 2px;
+}
+.mcqSection input{
+  cursor: pointer;
+}
+
+#progressBar {
+ 
+  /* -webkit-appearance: none; */
+
+}
+
+#progressBar::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 5px;
+  
+}
+
+#progressBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background: red; 
+  margin-top: -5px;
+  cursor: pointer;
+}

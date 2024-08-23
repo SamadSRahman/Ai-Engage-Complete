@@ -1,0 +1,69 @@
+.wrapper{
+    width: 99vw;
+    box-sizing: border-box;
+    height: 99vh;
+    position: absolute;
+    z-index: 20;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    font-family: "Figtree", sans-serif;
+
+}
+.container{
+background-color: white;
+min-width: 30%;
+max-width: 40%;
+min-height: 10rem;
+box-shadow: 1px 1px 4px rgb(0, 0, 0, 0.3);
+border-radius: 10px;
+padding: 10px 0px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+
+}
+.header{
+display: flex;
+align-items: center;
+justify-content: space-between;
+border-bottom: 1px solid rgb(0, 0, 0, 0.15);
+padding:0px 10px 10px 10px
+}
+.header img{
+    width: 18px;
+    cursor: pointer;
+}.header span{
+    font-size: 20px;
+    font-weight: 600;
+}
+.body{
+    text-align: center;
+    padding: 10px;
+}
+.btnSection{
+    display: flex;
+    justify-content: end;
+    gap: 20px;
+    border-top: 1px solid rgb(0, 0, 0, 0.15);
+    padding: 10px 10px 0px 10px;
+}
+.primaryBtn, .secondaryBtn{
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    letter-spacing: 0.5px;
+    min-width: 4rem;
+}
+.primaryBtn{
+     background-color: rgba(77,103,235,1);
+    color: white;
+
+}
+.secondaryBtn{
+    color: rgba(77,103,235,1);
+}

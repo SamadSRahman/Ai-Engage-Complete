@@ -1,0 +1,42 @@
+.wrapper{
+    border:1px solid gray;
+    border-radius: 8px;
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    position: fixed;
+    top: 10rem;
+    background-color: white;
+    left: 28rem;
+}
+.header{
+    border-bottom: 1px solid;
+    width: 90%;
+}
+.typeSection{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+.body{
+    /* border: 1px solid ; */
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    align-items: center;
+    gap: 10px;
+}
+.addAnswersSection{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+.btnDiv{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: end;    
+}

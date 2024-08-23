@@ -32,6 +32,7 @@
     margin-right: auto;
     padding-left: 1.125rem;
     padding-right: 1.125rem;
+    box-sizing: border-box;
   }
   
   .section {
@@ -59,6 +60,7 @@
   @media (min-width: 640px) {
     .container {
       max-width: 640px;
+      box-sizing: border-box;
     }
 
 
@@ -68,6 +70,7 @@
   @media (min-width: 768px) {
     .container {
       max-width: 768px;
+      box-sizing: border-box;
     }
   }
   
@@ -75,6 +78,7 @@
   @media (min-width: 1024px) {
     .container {
       max-width: 1024px;
+      box-sizing: border-box;
     }
   
     .section {
@@ -86,6 +90,7 @@
   @media (min-width: 1280px) {
     .container {
       max-width: 1280px;
+      box-sizing: border-box;
     }
   }
   
@@ -93,6 +98,7 @@
   @media (min-width: 1536px) {
     .container {
       max-width: 1536px;
+      box-sizing: border-box;
     }
   }
   

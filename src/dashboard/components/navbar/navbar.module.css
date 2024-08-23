@@ -1,0 +1,144 @@
+.navbarContainer{
+    /* border: 1px solid; */
+    background-color: white;
+    height: 3.2rem;
+    z-index: 2  ;
+    display: flex;
+    padding: 8px;
+    /* margin-top: -7px; */
+    box-sizing: border-box;
+    font-family: "Figtree", sans-serif;
+
+}
+.leftSide{
+    width: 50%;
+    /* border: 1px solid red; */
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 5px;
+    padding-left: 6px;
+}
+.leftSide img{
+    width: 8.5rem;
+    cursor: pointer;
+}
+.leftSide span{
+    font-family: "Manrope", sans-serif ;
+    font-weight: 800;
+}
+.rightSide{
+    display: flex;
+justify-content: right;
+/* border: 1px solid green; */
+width: 50%;
+gap: 10px;
+padding-right: 6px;
+
+}
+.editableSpanContainer{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 0.6px solid rgba(0, 0, 0, 0.24);
+    background: #FAFAFA;
+    border-radius: 0.5rem ;
+    min-width: 30%;
+    width: fit-content;
+    max-width: 60%;
+    overflow: scroll;
+}
+.editableSpanContainer::-webkit-scrollbar{
+    display: none;
+}
+.editableSpanContainer img{
+    width: 15px;
+    cursor: pointer;
+}
+
+.divider{
+    /* font-size: large; */
+    font-weight: bold;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-bottom: 1.6px;
+}
+.editableSpan{
+    font-family: "Figtree", sans-serif;
+    font-size: small;
+padding: 5px;
+outline: none;
+cursor: text;
+min-width: 30px;
+
+}
+.shareWrapper{
+    /* border: 1px solid; */
+    z-index: 10;
+}
+.sharePopup{
+    /* border: 1px solid blue; */
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    position: absolute;
+    right: 10px;
+    top: 3rem;
+    border-radius: 7px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.208);
+    
+}
+.sharePopup span{
+    padding: 10px;
+    font-size: small;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #4D67EB;
+    cursor: pointer;
+}
+.shareBtnContainer{
+    border-radius: 0.4rem;
+background: #E8EBFC;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 10px;
+gap: 2px;
+cursor: pointer;
+
+
+}
+.shareBtnContainer img{
+    width:14px;
+   
+}
+.shareBtnContainer span{
+    font-family: "Figtree", sans-serif;
+    color: #4D67EB;
+    font-weight: 500;
+    font-size: small;
+
+}
+.saveBtn{
+    background-color: #4D67EB;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: small;
+    cursor: pointer;
+    font-weight: 600;
+}
+.titleInput{
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 14px;
+    
+}

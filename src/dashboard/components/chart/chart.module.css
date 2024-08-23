@@ -1,0 +1,39 @@
+.chartContainer{
+    /* border: 1px solid; */
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+.labelSection{
+    display: flex;
+    flex-direction: column;
+}
+.labelSection span{
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    margin: 2px;
+}
+.barDiv{
+    background-color:  #4188DE;
+    margin: 2px;
+    border: 1px solid;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: right ;
+    box-sizing: border-box;
+    /* padding: 5px; */
+    color: white;
+}
+.barDiv span{
+    margin-right: 5px;
+}
+.chartWrapper{
+    display: flex;
+}
+.chartHeading{
+    color: #808080;
+    font-size: small;
+    margin-bottom: 5px;
+}

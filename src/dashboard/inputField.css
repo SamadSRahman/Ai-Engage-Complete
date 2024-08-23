@@ -1,0 +1,186 @@
+.crossIcon {
+  background-color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: none;
+  box-sizing: border-box;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  border: 1px solid black;
+  color: red;
+}
+.thumbnailImg {
+  border-radius: 4px;
+  cursor: pointer;
+  width: 115px;
+  height: 73px;
+  border: 1px solid;
+}
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: min-content;
+
+}
+
+.loader {
+  border: 4px solid #fff;
+  border-top: 4px solid rgb(0, 148, 255);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+.thumbnailImgWrapper:hover{
+.crossIcon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+}
+.thumbnailImgWrapper{
+    position: relative;
+    border-radius: 5px;
+    height: min-content;
+    max-width: 120px;
+}
+.thumbnailImgWrapper img{
+  box-sizing: border-box;
+  /* object-fit: contain; */
+
+}
+.spinnerWrapper{
+  
+  width: 115px;
+  height: 73px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.thumbnails{
+  display: flex;
+    gap: 10px;
+    /* padding-left: 10px;
+    padding-right: 10px; */
+    flex-wrap: wrap;
+    overflow: scroll;
+    max-height: 18rem;
+    min-height: 16rem;
+    line-height: normal;
+}
+.selectBtn{
+  width: 48%;
+    padding: 5px;
+    border-radius: 3px;
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: "Figtree", sans-serif;
+}
+.uploadPercentage{
+  position: relative;
+    left: 7px;
+    bottom: 54px;
+    font-family: "Figtree", sans-serif;
+    text-shadow: 1px 1px 5px black;
+    color: white;
+}
+.timestamp{
+  font-family: "Figtree", sans-serif;
+  /* border: 1px solid; */
+  padding: 3px;
+  border-radius: 5px;
+  background: #333333;
+  color: white;
+  font-size: small;
+  position: relative;
+  bottom: 1.9rem;
+  left: 6px;
+}
+.inputPlaceholder{
+  font-family: "Figtree", sans-serif;
+}
+.placeholderImg{
+  border: 1px dashed;
+  border-radius: 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Figtree", sans-serif;
+  height: 102%;
+
+}
+.dropAreaHeader{
+  font-size: large;
+  font-weight: 600;
+  color: #434343;
+  margin-top: -8px;
+}
+.dropAreaText{
+  color: #8F8F8F;
+  margin-top: 10px;
+
+}
+.drop-area{
+  height:18rem;
+  background-color: white;
+  padding-bottom: 15px;
+  width: 100%;
+  /* margin-left: 10px; */
+  padding-top: 15px;
+  border-radius: 10px;
+}
+.inputHeader{
+  width: 103%;
+  /* border: 1px solid; */
+  box-sizing: border-box;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "Figtree", sans-serif;
+  justify-self: center;
+  padding: 15px;
+  padding-left: 0px;
+}
+.uploadBtnDiv{
+  background-color:  #4D67EB;  ;
+  padding:8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 5px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+.uploadBtnDiv:hover{
+  background-color: #304feb;
+}
+.uploadBtnDiv img{
+  width: 20px;
+}
+.inputHeading{
+  font-weight: 550;
+  font-size: larger;
+}
+.name{
+  display: block;
+  font-family: "Figtree", sans-serif;
+  width: 98%;
+  margin-top: -18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0px 4px;
+  font-size: small;
+}

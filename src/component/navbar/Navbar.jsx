@@ -20,7 +20,7 @@ const Navbar = () => {
         // Fetch user subscription information only if accessToken is available
         if (accessToken) {
           axios.get('https://stream.xircular.io/api/v1/subscription/getCustomerSubscription', {
-            headers: { Authorization: `Bearer ${accessToken}` }
+            withCredentials:true
           })
           .then(response => {
             const user = response.data[0]; // Adjust based on the actual response structure
@@ -44,9 +44,31 @@ const Navbar = () => {
   // Otherwise, set the name to an empty string
   const Name = userName ? extractNameFromEmail(userName) : '';
 
-      const handlelogout = () =>{
-               localStorage.clear();
-               window.location.reload();
+  function clearAllCookies() {
+    const cookies = document.cookie.split(";");
+  
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+  }
+
+  
+      const handlelogout = async() =>{
+              try{
+                const response = await axios.post("https://stream.xircular.io/api/v1/customer/logout",{},{
+                  withCredentials:true
+                })
+                console.log(response)
+                clearAllCookies();
+                localStorage.clear();
+                window.location.reload();
+              }
+              catch(error){
+                console.log(error)
+              }
       }
 
 

@@ -1,0 +1,204 @@
+.container{
+    background-color: white;
+    position: absolute;
+    width: 33.35rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 18px 0px rgba(0, 0, 0, 0.06);
+    z-index: 1000;
+    color: #333;
+    font-family: Figtree;
+    font-size: 0.94rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing:0.26px;
+
+}
+.header{
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    align-items: center;
+    border-bottom: 0.1px solid rgba(0, 0, 0, 0.10) !important;
+    padding: 10px 8px; 
+}
+
+.leftSide{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:10px;
+    gap:7px;
+}
+.leftSide img{
+    width: 15px;
+}
+
+.leftSide span {
+    color: #0C0B0B;
+    font-family: Figtree;
+    font-size: 1.1rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: 0.26px;
+}
+
+.closeIcon{
+    padding: 10px;
+    width: 15px;
+}
+.body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 20px;
+}
+
+.typeSection{
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px;
+}
+
+.container select{
+    padding: 6px 22px;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 0.5px solid rgba(0, 0, 0, 0.30);
+}
+
+ option{
+    color: #333;
+    font-family: Figtree;
+    font-size: 0.9rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing:0.26px;
+    padding: 10px 15px !important;
+}
+
+.questionSection{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.questionSection textarea{
+    padding: 5px;
+}
+
+.ansSection{
+        margin-top: 15px;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items:flex-start;
+        gap: 8px;
+}
+
+.ansSectionHeader{
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+}
+
+
+.addBtn{
+    border: 1px solid ;
+    color: rgba(77,103,235,1);
+    background-color: #E8EBFC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    font-size: small;
+    border-radius: 6px;
+    cursor: pointer;
+
+}
+.addBtn img{
+    width: 15px;
+}
+
+.ansInputSection{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 8px;
+}
+.ansInputSection img{
+    width: 15px;
+}
+
+.ansInputSection input {
+        width: 76%;
+        padding:12px 22px;
+        border-radius: 6px;
+        background: #F5F5F5;
+        border:none;
+}
+
+.ansSelectSection{
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ansSelectSection select {
+    width: 45%;
+    padding: 6px;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 0.5px solid rgba(0, 0, 0, 0.30);
+}
+
+.ansMainSection{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+}
+
+
+.footer{
+    border-top :  0.1px solid rgba(0, 0, 0, 0.10) !important;
+    display: flex;
+    justify-content: end;
+    gap: 20px;
+    padding:10px;
+    margin-top: 8px;
+}
+.cancelBtn{
+    padding: 6px 14px;
+    border: 1px solid;
+    border-radius: 6px;
+    color: rgba(77,103,235,1);
+    background-color: #fff;
+    cursor: pointer;
+    font-size: small;
+
+}
+.saveBtn{
+    padding: 6px 14px;
+    border: 1px solid;
+    border-radius: 6px;
+    margin-right: 10px;
+    background-color: rgba(77,103,235,1);
+    color: white;
+    cursor: pointer;
+    font-size: small;
+}

@@ -7,6 +7,9 @@
           gap:3rem;
           margin-bottom: 2rem;
       }
+      .pricingcntwrapper h2, .pricingcntwrapper p{
+        margin: 0;
+      }
 
       .pricing-heading{
         display: flex;

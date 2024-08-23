@@ -20,19 +20,21 @@
         .freetrailiconwrapper {
             margin: 0 auto;
         }
-
+      
         .freetrialcontent{
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 1.45rem;
+         
         }
 
         .freetrialcontent h2{
             color: #EDF6FF;
             font-size: var(--size-3xl);
             font-style: normal;
+            margin: 0;
             font-weight: 700;
         }
 
@@ -41,6 +43,7 @@
             font-size: var(--size-xl);
             font-style: normal;
             font-weight: 300;
+            margin: 0;
         }
 
         #freetrialbtn{

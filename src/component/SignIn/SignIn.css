@@ -94,7 +94,7 @@
 }
 .signInContainer {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
 }
 .leftSection {
   width: 40%;
@@ -119,7 +119,7 @@
 .mapSection {
   position: relative;
   top: 14rem;
-  /* border: 1px solid red; */
+  font-weight: bold;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -137,9 +137,21 @@
 .mapSectionCard img {
   width: 20px;
 }
+.leftArrow{
+  position: absolute;
+    left: -1.4rem;
+    width: 2.1rem !important;
+    top: 40px;
+}
+.rightArrow{
+  position: absolute;
+    right: -1.4rem;
+    width: 2.1rem !important;
+    top: 7.5rem;
+}
 .heading {
   display: flex;
-  gap: 5px;
+  gap: 5px; 
   align-items: center;
 }
 .heading img {
@@ -193,9 +205,10 @@ gap: 5px;
     cursor: pointer;
 }
 .bottomSection{
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  align-items: center;
     /* max-width: 50%; */
 }
 .bottomSection button{
@@ -203,26 +216,88 @@ gap: 5px;
     color: white;
     padding: 10px;
     border-radius: 7px;
+    width: 80%;
 }
-.signUpSection{
+.signUpSection, .termsSection{
     display: flex;
     gap: 5px;
     margin-top: 10px;
     font-size: small;
     justify-content: center;
     color: #818181;
+    max-width: 17rem;
 
+}
+.termsSection{
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-top: 25px;
+}
+.termsSection input{
+  margin-top: 4px;
+  cursor: pointer;
 }
 .linkSpan{
     color: #E87211;
     cursor: pointer;
+    font-weight: bold;
+
 }
-.errorText{
+/* .errorText{
     color: red;
     font-size: 15px;
     padding-left: 5px;
     font-family: "Inter";
+    display: block;
+    max-width: 17rem;
    
+} */
+.typewriter-error {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  color: crimson;
+  border-right: 3px solid rgba(255, 255, 255, 0.75); /* Simulates the cursor */
+  animation: typing 4s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: rgba(255, 255, 255, 0.75); }
+}
+.snackbar-error {
+  position: fixed;
+  top: 20px; /* Start at the top */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from { top: -50px; opacity: 0; } /* Start above the view */
+  to { top: 20px; opacity: 1; } /* End at the desired position */
+}
+.errorText{
+  display: none;
+  color: #f44336;
+  font-size: 12px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .loginBoxLogo{
   display: none;
@@ -266,7 +341,7 @@ margin: auto;
  
 }
 .forgotPasswordLabel{
-  margin-top: -1.5rem;
+  margin-top: -1rem;
 }
 }
 
@@ -329,7 +404,7 @@ margin: auto;
  margin: auto;
 }
 .loginBox{
-  margin-top: 4rem;
+  margin-top: 0rem;
   width: 60%;
 }
 .heading{
@@ -350,7 +425,7 @@ margin: auto;
  
 }
 .forgotPasswordLabel{
-  margin-top: -1.5rem;
+  margin-top: -1rem;
 }
 }
 @media screen and (max-width: 600px) {
@@ -362,17 +437,21 @@ margin: auto;
         padding: 10px;
         /* background: linear-gradient(to bottom, #f5ebff 30%, #1d0a2e 30%); */
         background-color: #f5ebff;
+        min-height: 100vh;
+        max-height: fit-content !important;
     }
 
     .boxHeaderText{
 
-       font-size: 22px;
-       /* color: #f5ebff; */
-       margin-bottom: 1rem;
+      font-size: 22px;
+      /* color: #f5ebff; */
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+
        
     }
     .loginBox {
-      /* margin-top: 4rem; */
+      margin-top: 4rem;
       width: 100%;
   }
     .inputSection{
@@ -394,7 +473,7 @@ margin: auto;
       justify-content: center;
     }
     .signInContainer{
-      min-height: max-content;
+      height: max-content;
     }
 }
 /* @media screen and (max-width: 780px){

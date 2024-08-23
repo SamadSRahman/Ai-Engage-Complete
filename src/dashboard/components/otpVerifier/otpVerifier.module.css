@@ -1,0 +1,14 @@
+.inputContainer{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-family: "Figtree", sans-serif;
+}
+.inputContainer input{
+    width: 2rem;
+    height: 2rem;
+    font-family: "Figtree", sans-serif;
+    border-radius: 3px;
+    border: 1px solid gray;
+    text-align: center;
+}

@@ -14,9 +14,9 @@ const FreeTrialBanner = () => {
   useEffect(() => {
     // Fetch user subscription information only if accessToken is available
     if (accessToken) {
-      axios.get('https://stream.xircular.io/api/v1/subscription/getCustomerSubscription', {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      })
+      axios.get('https://stream.xircular.io/api/v1/subscription/getCustomerSubscription', 
+       {withCredentials:true}
+      )
       .then(response => {
         const user = response.data[0]; // Adjust based on the actual response structure
           console.log(user);
@@ -30,25 +30,22 @@ const FreeTrialBanner = () => {
   }, [accessToken]);
 
   const createfreetrail = async () => {
-    if (accessToken) {
-      try {
-        const createfreetrailurl =
-          "https://stream.xircular.io/api/v1/customer/startTrial";
-        const response = await axios.get(createfreetrailurl, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+    // if (!accessToken) {
+    //   try {
+    //     const createfreetrailurl =
+    //       "https://stream.xircular.io/api/v1/customer/startTrial";
+    //     const response = await axios.get(createfreetrailurl, {
+    //    withCredentials:true
+    //     });
 
-        console.log("Free Trial Response", response);
-        // setData(response.data.data);
-        window.location.href = `https://new-video-editor.vercel.app/listings?accessToken=${accessToken}`;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    } else {
-      navigate("/SignUp");
-    }
+    //     console.log("Free Trial Response", response);
+    //     navigate("/listing")
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //   }
+    // } else {
+    //   navigate("/SignUp");
+    // }
   };
 
  if(isTrialActive || isSubscribed){
@@ -99,7 +96,7 @@ const FreeTrialBanner = () => {
             <path d="M29.216 4.06869C29.2142 2.97956 28.4662 2.17935 27.3742 2.1812L17.6837 2.19052C17.6259 2.19054 17.5704 2.21366 17.5295 2.25481C17.4887 2.29596 17.4657 2.35177 17.4657 2.40997L17.4684 5.75126C17.4684 5.80945 17.4914 5.86525 17.5323 5.90639C17.5731 5.94754 17.6286 5.97067 17.6864 5.9707L27.3789 5.96139C28.4649 5.95954 29.2178 5.16142 29.216 4.06869Z" fill="#FCC9B6"/>
             <path d="M28.5598 4.06695C28.5579 2.97781 27.8099 2.17761 26.7179 2.17946L17.6835 2.18878C17.6257 2.18879 17.5702 2.21192 17.5293 2.25307C17.4885 2.29422 17.4655 2.35003 17.4655 2.40822L17.4682 5.08915C17.4682 5.14734 17.4912 5.20314 17.5321 5.24429C17.5729 5.28543 17.6284 5.30856 17.6862 5.30859L26.7226 5.29928C27.8086 5.29743 28.5615 5.15967 28.5598 4.06695Z" fill="#FEDECF"/>
             </svg> */}
-            Start Your Free Trial Today
+            Start Your Free Trial 
           </button>
         </div>
       </div>

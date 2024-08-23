@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./forgetPassword.module.css";
 import mail from "../../images/mail.svg";
+import close from "../../images/cancel.svg";
 import pass from "../../images/password.svg";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function ForgetPassword({ onClose, onSuccess }) {
   const [email, setEmail] = useState("");
@@ -12,6 +14,7 @@ export default function ForgetPassword({ onClose, onSuccess }) {
   const [timer, setTimer] = useState(0)
   const [isResendVisible,setIsResendVisible] = useState(false)
   const [isLoading,setIsLoading] = useState(false)
+  const navigate = useNavigate()
   
   useEffect(()=>{
     setTimeout(() => {
@@ -73,8 +76,11 @@ export default function ForgetPassword({ onClose, onSuccess }) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container} ref={containerRef}>
+      <div className={styles.topSection}>
+          <img src={close} alt="" onClick={()=>navigate("/SignIn")} />
+        </div>
         <img src={pass} alt="" className={styles.logo} />
-        <label className={styles.primaryText}>Forgot Password</label>
+        <label className={styles.primaryText}>Forgot Password?</label>
      {isLinkSent? (
       <label>
         We have a sent a reset password link to your email.<br/>
@@ -105,7 +111,7 @@ export default function ForgetPassword({ onClose, onSuccess }) {
           disabled={isLoading?isLoading:email? false : true}
           className={styles.sendBtn}
           onClick={handleSendCode}
-        >  Send code</button>
+        >  Send link</button>
         {/* {!isResendVisible ? (
           <div className="signUpSection">
             <span>Resend code in</span>

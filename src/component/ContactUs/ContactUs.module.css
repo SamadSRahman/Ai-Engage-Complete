@@ -1,0 +1,130 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Sora", sans-serif;
+    padding: 30px;
+}
+.navbar{
+    width: 95%;
+}
+.backBtn{
+    display: flex;
+    background-color: #FAF6FD;
+    color: #1C1B1F;
+    align-items: center;
+    justify-content: space-around;
+    gap: 5px;
+}
+.backBtn img{
+    width: 10px;
+}
+.header h2{
+    font-size: 34px;
+    font-weight: bolder;
+    
+}
+.body{
+    width: 95%;
+    padding-top: 5rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+.mapSection{
+    position: relative;
+    min-width: 21.8rem;
+    display: flex;
+    justify-content: end;
+}
+.mapImg{
+width: 22rem;
+/* height: 13rem; */
+}
+.pin{
+    position: absolute;
+    top: 5rem;
+    left: 10.5rem;
+    width: 35px;
+}
+.pinLabel{
+    position: absolute;
+    top: 5rem;
+    left: 12.6rem;
+    width: 70px;
+}
+.mapBtn{
+    position: absolute;
+    bottom: 0.6rem;
+    left: 13.9rem;
+    border-radius: 10px;
+    background-color: #9B51E0;
+    cursor: pointer;
+}
+.infoSection{
+    width: 65%;
+    display: flex;
+    flex-wrap: wrap;
+    height: fit-content;
+    gap: 5px;
+}
+.primarySection,.secondarySection{
+    width: 100%;
+    background-color: #FAF6FD;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 10px;
+    height: fit-content;
+
+}
+.secondarySection{
+    width: 49.6%;
+}
+.title{
+    color: #676767;
+    font-size: 14px;
+}
+.content{
+    color: #1B1818;
+    font-size: 16px;
+
+}
+.imgWrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.imgWrapper div{
+    background-color: #F1E6F9;
+    padding: 7px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.imgWrapper img{
+    /* border: 1px solid; */
+    width: 13px;
+    height: 13px;
+    box-sizing: content-box;
+
+    
+}
+@media screen and (max-width: 480px) {
+    .body {
+      display: flex;
+      flex-direction: column;
+      padding-top: 2rem;
+    }
+    .header{
+        margin-top: 20px;
+    }
+    .infoSection{
+        width: 100%;
+        
+    }
+    .secondarySection{
+        width: 100%;
+        min-width: fit-content;
+    }
+
+  }

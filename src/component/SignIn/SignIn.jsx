@@ -7,6 +7,8 @@ import video from "../../images/Group.svg";
 import logic from "../../images/Group (1).svg";
 import insight from "../../images/Vector (1).svg";
 import mail from "../../images/mail.svg";
+import leftArrow from "../../images/Arrow 1.svg";
+import rightArrow from "../../images/Arrow 2.svg";
 import pass from "../../images/lock.svg";
 import visibilityOff from "../../images/visibility_off (1).svg";
 import visibilityOn from "../../images/visibility (1).svg";
@@ -16,7 +18,10 @@ import VerifyOtp from "../dailogs/VerifyOTP";
 import ResetPassword from "../dailogs/ResetPassword";
 import VerifyEmail from "../dailogs/VerifyEmail";
 
+
 const SignIn = ({ setIsAuthenticated }) => {
+  
+  axios.defaults.withCredentials = true;
   const { popup } = useParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +32,9 @@ const SignIn = ({ setIsAuthenticated }) => {
   const [isResetPasswordVisible, setIsResetPasswordVisible] = useState(false);
   const [isVerifyOtpVisible, setIsVerifyOtpVisible] = useState(false);
   const [isVerifyEmailVisible, setIsVerifyEmailVisible] = useState(false);
+  const [error, setError] = useState("")
   const navigate = useNavigate();
+
 
   useEffect(() => {
     if (popup === "verifyEmail") {
@@ -46,69 +53,108 @@ const SignIn = ({ setIsAuthenticated }) => {
     }
   }, [popup]);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-
+  
+    // Validate email
     if (!email.trim()) {
-      setEmailerr("*Email cannot be empty"); // Frontend error for empty username
+      setEmailerr("*Email cannot be empty");
+      setError("Email cannot be empty");
       return;
     } else {
-      setEmailerr(""); // Clear the frontend error when the username is not empty
+      setEmailerr("");
     }
-
+  
+    // Validate password
     if (!password.trim()) {
-      setPasswordErr("*Password cannot be empty"); // Frontend error for empty username
+      setPasswordErr("*Password cannot be empty");
+      setError("Password cannot be empty");
       return;
     } else {
-      setPasswordErr(""); // Clear the frontend error when the username is not empty
+      setPasswordErr("");
     }
-
+  
     const details = {
       email: email,
       password: password,
     };
-
-    const headerObject = {
-      "Content-Type": "application/json",
-      Accept: "*/*",
-    };
-
-    axios
-      .post("https://stream.xircular.io/api/v1/customer/signin", details, {
-        headers: headerObject,
-      })
-      .then((res) => {
-        console.log("data", res.data);
-        // Store the access token
-        const userId = res.data.id;
-        const userName = res.data.email;
-        const accessToken = res.data.token;
-        console.log("accesstoken", accessToken);
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("userId", userId);
-        localStorage.setItem("userName", userName);
-
-        // window.alert("success");
-
-        setIsAuthenticated(true);
-
-        navigate("/"); // Use navigate
-      })
-      .catch((err) => {
-        console.log("siginerror", err.response.data.message);
+  
+    try {
+      // Make the POST request
+      const res = await axios.post(
+        "https://stream.xircular.io/api/v1/customer/signin",
+        details,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials:true
+        }
+      );
+  
+      // Process response
+      console.log("data", res.data);
+      const userId = res.data.id;
+      const userName = res.data.email;
+      const accessToken = res.data.token;
+      console.log("accesstoken", accessToken);
+      
+      // Store data in localStorage
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("userName", userName);
+  
+      // Set authentication state and navigate
+      setIsAuthenticated(true);
+      navigate("/");
+  
+    } catch (err) {
+      console.error("siginerror", err);
+  
+      if (err.response) {
+        console.log("Error response", err.response);
+        console.log("Error data", err.response.data);
+        console.log("Error status", err.response.status);
+        console.log("Error headers", err.response.headers);
+        setError(err.response.data.message);
+        // Handle specific error messages from the API
         if (err.response.data.message === "Customer not found.") {
           setEmailerr(err.response.data.message);
+        
         } else if (err.response.data.message === "Invalid password.") {
           setPasswordErr(err.response.data.message);
         } else if (err.response.data.message === "Email not verified") {
           verifyEmail();
         } else {
-          // Handle other types of errors or set a generic error message
           setEmailerr("");
           setPasswordErr("");
+          setError("");
         }
-      });
+        
+      } else if (err.request) {
+        console.log("Error request", err.request);
+      } else {
+        console.log("Error message", err.message);
+      }
+    }
   }
+  //   try {
+  //     const response = await fetch("https://stream.xircular.io/api/v1/customer/signin", {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(details),
+  //       credentials: 'include'
+  //     });
+  //     const data = await response.json();
+  //     console.log("Response data:", data);
+  //     // ... handle the response
+  //   } catch (error) {
+  //     console.error("Fetch error:", error);
+  //   }
+  // }
+  
   function verifyEmail() {
     localStorage.setItem("email", email);
     const headerObject = {
@@ -129,6 +175,7 @@ const SignIn = ({ setIsAuthenticated }) => {
         console.log(error);
       });
   }
+  useEffect(()=>{setError("")},[email, password])
 
   const handlleSignup = () => {
     navigate("/SignUp");
@@ -146,6 +193,7 @@ const SignIn = ({ setIsAuthenticated }) => {
   }
   return (
     <div className="signInContainer">
+     {error && <div className="snackbar-error">{error}</div>}
       {isForgetPasswordVisible && (
         <ForgetPassword
           // onClose={onPopupClose}
@@ -173,16 +221,19 @@ const SignIn = ({ setIsAuthenticated }) => {
 
         <div className="mapSection">
           <div className="mapSectionCard">
-            <img src={video} alt="" />
-            <label htmlFor="">Interactive Video</label>
+            <img src={video} alt="Interactive Video" />
+            <label>Interactive Video</label>
+            <img className="leftArrow" src={leftArrow} alt="" />
           </div>
           <div className="mapSectionCard">
-            <img src={logic} alt="" />
-            <label htmlFor="">Branching Logic</label>
+            <img src={logic} alt="Branching Logic" />
+            <label>Branching Logic</label>
+            <img className="rightArrow" src={rightArrow} alt="" />
           </div>
           <div className="mapSectionCard">
-            <img src={insight} alt="" />
-            <label htmlFor="">AI-Powered Insights</label>
+            <img src={insight} alt="AI-Powered Insights" />
+            <label>AI-Powered Insights</label>
+            <div className="arrow left-arrow"></div>
           </div>
         </div>
       </div>
@@ -205,7 +256,7 @@ const SignIn = ({ setIsAuthenticated }) => {
                 placeholder="Email"
               />
             </div>
-            <span className="errorText">{emailerr}</span>
+         {emailerr &&   <span className="errorText">{emailerr}</span>}
             <div className="inputWrapper">
               <img src={pass} alt="" />
               <input
@@ -225,13 +276,13 @@ const SignIn = ({ setIsAuthenticated }) => {
               onClick={() => navigate("forgetPassword")}
               className="forgotPasswordLabel"
             >
-              Forgot Password
+              Forgot Password?
             </label>
 
             <div className="bottomSection">
               <button onClick={handleSubmit}>Log in</button>
               <div className="signUpSection">
-                <span>Don’t have an account please</span>
+                <span>Don’t have an account?</span>
                 <span onClick={handlleSignup} className="linkSpan">
                   Sign up
                 </span>

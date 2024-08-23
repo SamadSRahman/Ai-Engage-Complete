@@ -1,0 +1,146 @@
+.popupWrapper{
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #4d67eb;
+    cursor: pointer;
+    color: white;
+}
+.popupContainer{
+    /* border: 1px solid darkgray ; */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.299);
+    position: absolute;
+    background-color: white;
+    z-index: 2;
+    /* padding: 30px; */
+    right: 20px;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    top: 3.5rem;
+}
+.upperSection{
+    /* border: 1px solid; */
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    color: #1C1B1F;
+
+
+}
+.upperLeftSection{
+    border: 1px sold red !important;
+}
+.upperRightSection{
+    border: 1px sold blue;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 13px;
+    
+}
+.divider{
+    width: 100%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.299);
+    margin-top: -10px;
+}
+.planSection{
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+.planTag{
+    background-color: black;
+    padding: 8px 10px;
+    border-radius: 10px;
+    color: white;
+    width: fit-content;
+    /* margin: 0px 10px; */
+}
+.planSection u{
+    color: #4D67EB;
+    cursor: pointer;
+}
+.planSection span{
+    /* margin-top: 10px; */
+    line-height:20px;
+}
+
+
+
+
+
+
+.heading{
+    font-weight: bold;
+    font-size: larger;
+    margin-bottom: 20px;
+}
+.btnDiv{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;  
+    gap: 10px;  
+    padding: 10px;
+    box-sizing: border-box;
+}
+.settingsBtn{
+    background-color: white !important;
+    color: black !important;
+    border: 1px solid darkgray !important;
+    width: 40% !important;
+ 
+}
+.settingsBtn:hover{
+    background-color: rgb(219, 219, 219) !important;
+}
+.settingsSection form{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.settingsSection input{
+    margin-bottom: 10px;
+    padding: 6px;
+    border: 1px solid darkgray;
+    border-radius: 7px;
+    outline: none;
+}
+.dateContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.detailsHeader span{
+    font-size: 15px;
+    color: rgba(0, 0, 0, 0.712);
+}
+.logoutBtn{
+    background-color: #4D67EB;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: "figtree", sans-serif;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    padding: 10px 15px;
+    min-width: 100%;
+}
+.customizeBtn{
+    background-color:#fff;
+    color:  #4D67EB;
+    border: none;
+    border-radius: 10px;
+    font-family: "figtree", sans-serif;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    padding: 10px 15px;
+    border: 1px solid #4D67EB;
+}

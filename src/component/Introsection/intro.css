@@ -12,7 +12,9 @@
               flex-direction: column;
               gap:1.6rem;
         }
-
+.introwrapper h2, .introwrapper p{
+  margin: 0px;
+}
         .introvideowrapper{
                 display: block;
                 margin: 0 auto;  

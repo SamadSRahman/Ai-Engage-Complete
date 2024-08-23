@@ -8,6 +8,7 @@
         justify-content: space-between;
         margin-top: 0.8rem;
         margin-bottom: 2.25rem;
+        box-sizing: border-box;
     }
 
     .logowrapper img {
