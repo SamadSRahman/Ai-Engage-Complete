@@ -12,6 +12,7 @@ import {
   selectedVideoAtom,
   currentIndexAtom,
   isThumbnailGeneratingAtom,
+  vidAtom,
 } from "./Recoil/store";
 import polygon from "./images/Polygon.png";
 
@@ -41,13 +42,14 @@ const VideoTimeline = (props) => {
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
   const [pinLeft, setPinLeft] = useState("0")
   const setIsThumbanilGenerating = useSetRecoilState(isThumbnailGeneratingAtom)
+  const setVid = useSetRecoilState(vidAtom)
 
   useEffect(() => {
     let newSelectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
     setSelectedVideo(newSelectedVideo);
   }, [props.isEditorVisible]);
 
-  const handleDelete = () => {
+  const handleDelete = () => {  
     const newSelectedVideo = { ...selectedVideo };
     const newArray = newSelectedVideo.questions.filter((ele) => ele.id !== id);
     newSelectedVideo.questions = newArray;
@@ -57,6 +59,7 @@ const VideoTimeline = (props) => {
     const index = vidData.findIndex((ele) => ele.id === newSelectedVideo.id);
     vidData[index] = newSelectedVideo;
     localStorage.setItem("vidData", JSON.stringify(vidData));
+    setVid(vidData)
     setShowPopup(false);
     setIsSuccessAlertVisible(true)
     setIsDeleteAlertVisible(false)
@@ -127,7 +130,7 @@ const VideoTimeline = (props) => {
     setPinLeft(pinPosition ? `${(pinPosition / timelineLength) * 99}%` : "0%");
   },[pinPosition])
   const [thumbnailsGenerated, setThumbnailsGenerated] = useState(false);
-  const thumbnailsRef = useRef([]);
+
   const generateThumbnails = (src) => {
     if (!src || thumbnailsGenerated) return;
     setIsThumbanilGenerating(true)
@@ -193,7 +196,7 @@ const VideoTimeline = (props) => {
               (value, index, self) =>
                 index === self.findIndex((t) => t.time === value.time)
             );
-            thumbnailsRef.current = uniqueThumbnails; 
+  
             return uniqueThumbnails;
           });
   
@@ -205,10 +208,11 @@ const VideoTimeline = (props) => {
   
       const generateThumbnail = (nextTime) => {
         if (nextTime >= video.duration) {
-          setIsThumbanilGenerating(false);
+          console.log("Video thumbnails", videoThumbnails)
+          setIsThumbanilGenerating(false)
           const newArray = JSON.parse(localStorage.getItem("vidData"));
           let newObj = { ...newArray[currentIndex] };
-          newObj.thumbnails = thumbnailsRef.current; // Use the ref here
+          newObj.thumbnails = videoThumbnails;
           setSelectedVideo(newObj);
           localStorage.setItem("selectedVideo", JSON.stringify(newObj));
           newArray[currentIndex] = { ...newObj };
@@ -237,11 +241,11 @@ const VideoTimeline = (props) => {
   
 
   useEffect(() => {
-    if (videoThumbnails.length > 0) {
+    if(videoThumbnails.length>0){
       let newObj = JSON.parse(localStorage.getItem("selectedVideo"));
-      newObj.thumbnails = videoThumbnails;
-      setSelectedVideo(newObj);
-      localStorage.setItem("selectedVideo", JSON.stringify(newObj));
+    newObj.thumbnails = videoThumbnails;
+    setSelectedVideo(newObj);
+    localStorage.setItem("selectedVideo", JSON.stringify(newObj));
     }
   }, [videoThumbnails]);
   useEffect(() => {
@@ -250,12 +254,10 @@ const VideoTimeline = (props) => {
     setPinPosition(0.0);
   }, [videoSrc]);
   useEffect(() => {
-    let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
+    let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"))
     if (selectedVideo?.thumbnails?.length > 0) {
       setVideoThumbnails(selectedVideo.thumbnails);
-    } else if (!thumbnailsGenerated) {
-      generateThumbnails(videoSrc, timelineLength);
-    }
+    } else generateThumbnails(videoSrc, timelineLength);
   }, [videoSrc, timelineLength, thumbnailsGenerated]);
   // Generate the thumbnail elements for the secondary timeline
   const thumbnailElements = videoThumbnails.map((thumbnail, index) => (
@@ -323,7 +325,7 @@ const VideoTimeline = (props) => {
             alt=""
             style={{
               marginTop: "30px",
-              marginRight: "64px",
+              marginRight: "35px",
               height: "30px",
 
               cursor: "pointer",
@@ -407,17 +409,16 @@ const VideoTimeline = (props) => {
                 cursor: "grab",
                 border: "1px dashed #4D67EB",
                 transition: "left 0.3s linear",
-                
               }}
             >
               <img
                 src={polygon}
                 alt=""
                 style={{
-                  maxWidth: "20px",
+                  width: "20px",
                   position: "relative",
                   left: "-10.1px",
-                  bottom: "1px",
+                  bottom: "6px",
                 }}
               />
             </div>

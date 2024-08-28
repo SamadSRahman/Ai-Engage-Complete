@@ -1,11 +1,13 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect, lazy, Suspense, useRef } from "react";
 import "./Pricing.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 let cookies = document.cookie;
 console.log(cookies);
 const PayButton = lazy(() => import("../payment/PayButton"));
+
+
 
 const renderLoader = () => <p>Loading</p>;
 
@@ -16,7 +18,22 @@ export default function Pricing() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const accessToken = localStorage.getItem("accessToken");
-  console.log("pricing tab accessToken:", accessToken);
+  const pricingRef = useRef()
+
+  const {field} = useParams()
+
+  // useEffect(() => {
+  //   if (field === "plans") {
+  //     window.scroll(0, 11000)
+  //     if(pricingRef.current){
+  //       console.log("useEffect triggered");
+        
+  //       // pricingRef.current.scrollIntoView({ behavior: 'smooth' });
+  //     }
+  //   }
+  // }, [field, pricingRef]);
+
+
   const navigate = useNavigate();
   /* Api call for fetching subscription plans */
   useEffect(() => {
@@ -101,7 +118,7 @@ export default function Pricing() {
   };
 
   return (
-    <div className="pricingcnt container section">
+    <div ref={pricingRef} className="pricingcnt container section">
       <div className="pricingcntwrapper">
         <div className="pricing-heading">
           <h2 id="pricingtitle"> Pricing </h2>
