@@ -112,26 +112,27 @@ export default function ListingPage() {
       console.log(error.response);
       if (error.response.status === 401) {
         alert("Session expired. Please log in again");
-        window.location.href = "https://aiengage.xircular.io/logoutRequest";
+        localStorage.removeItem("accessToken")
+        navigate("/SignIn")
       }
       setLoading(false);
       throw error;
     }
   }
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const accessToken =
-      params.get("accessToken") || localStorage.getItem("accessToken");
-    const sessionId =
-      params.get("sessionId") || localStorage.getItem("sessionId");
-    if (!accessToken) {
-      window.location.href = "https://aiengage.xircular.io/";
-    } else {
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("sessionId", sessionId);
-      getData(accessToken);
-    }
-  }, [currentPage]);
+  // useEffect(() => {
+  //   const params = new URLSearchParams(window.location.search);
+  //   const accessToken =
+  //     params.get("accessToken") || localStorage.getItem("accessToken");
+  //   const sessionId =
+  //     params.get("sessionId") || localStorage.getItem("sessionId");
+  //   if (!accessToken) {
+  //     window.location.href = "https://aiengage.xircular.io/";
+  //   } else {
+  //     localStorage.setItem("accessToken", accessToken);
+  //     localStorage.setItem("sessionId", sessionId);
+  //     getData(accessToken);
+  //   }
+  // }, [currentPage]);
 
   const navigate = useNavigate();
 

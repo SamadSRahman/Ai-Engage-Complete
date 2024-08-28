@@ -13,8 +13,7 @@ export default function AdminPopup() {
   const handleLogout = () => {
     localStorage.clear("accessToken");
     setIsPopupVisible(false);
-    window.location.href =
-      "https://aiengage.xircular.io/logoutRequest";
+    navigate("/SignIn")
   };
   const [isSettingSectionVisible, setIsSettingsSectionVisible] =
     useState(false);
