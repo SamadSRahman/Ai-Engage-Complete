@@ -36,11 +36,15 @@ import {
 } from "./Utils/services";
 import TimelineSection from "./components/timelineSection/TimelineSection";
 import Alert from "./components/alert/Alert";
+import { useNavigate } from "react-router-dom";
+import useNavigationWarning from "./hooks/useNavigationWarning";
+import SkeletonPage from "./components/skeletons/SkeletonPage";
+import './App.css'
 
 builder.init("403c31c8b557419fb4ad25e34c2b4df5");
 
-export default function CreateCampaign() {
-  const fileName = useRecoilValue(fileNameAtom);
+export default function App() {
+  const [fileName, setFileName] = useRecoilState(fileNameAtom);
   const isEditorVisible = useRecoilValue(isEditorVisibleAtom);
   const selectedQuestion = useRecoilValue(selectedQuestionAtom);
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
@@ -63,68 +67,73 @@ const [isUploading, setIsUploading] = useState(false)
   const questions = [];
   const videoList = useRecoilValue(videoListAtom)
   const questionIndex = useRecoilValue(questionIndexAtom);
+  const navigate = useNavigate()
+  const {confirmNavigation} = useNavigationWarning()
+  const [isLoading, setIsLoading] = useState(false)
 
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      const vidData = JSON.parse(localStorage.getItem("videoArray")) || [];
-      if (vidData.length > 0) {
-        event.preventDefault();
-        event.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
-      }
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event) => {
+  //     const vidData = JSON.parse(localStorage.getItem("videoArray")) || [];
+  //     if (vidData.length > 0) {
+  //       event.preventDefault();
+  //       event.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+  //     }
+  //   };
   
-    const handlePopState = (event) => {
-      const vidData = JSON.parse(localStorage.getItem("videoArray")) || [];
+  //   const handlePopState = (event) => {
+  //     const vidData = JSON.parse(localStorage.getItem("videoArray")) || [];
   
-      if (vidData.length > 0) {
-        const confirmNavigation = window.confirm('You have unsaved changes. Are you sure you want to leave?');
+  //     if (vidData.length > 0) {
+  //       const confirmNavigation = window.confirm('You have unsaved changes. Are you sure you want to leave?');
         
-        if (confirmNavigation) {
-          clearLocalStorage();
-          // Allow the navigation to proceed
-          return;
-        } else {
-          // If the user clicks "Cancel", prevent navigation
-          event.preventDefault();
-          window.history.pushState(null, '', window.location.pathname);
-        }
-      }
-    };
+  //       if (confirmNavigation) {
+  //         clearLocalStorage();
+  //         // Allow the navigation to proceed
+  //         navigate(-1)
+  //         return;
+  //       } else {
+  //         // If the user clicks "Cancel", prevent navigation
+  //         event.preventDefault();
+  //         window.history.pushState(null, '', window.location.pathname);
+  //       }
+  //     }
+  //   };
   
-    const clearLocalStorage = () => {
-      const accessToken = localStorage.getItem("accessToken");
-      const adminDetails = localStorage.getItem("adminDetails");
+  //   const clearLocalStorage = () => {
+  //     const accessToken = localStorage.getItem("accessToken");
+  //     const adminDetails = localStorage.getItem("adminDetails");
   
-      localStorage.clear();
-      console.log("Clear event triggered");
+  //     localStorage.clear();
+  //     console.log("Clear event triggered");
   
-      if (accessToken !== null) {
-        localStorage.setItem("accessToken", accessToken);
-      }
-      if (adminDetails !== null) {
-        localStorage.setItem("adminDetails", adminDetails);
-      }
-    };
+  //     if (accessToken !== null) {
+  //       localStorage.setItem("accessToken", accessToken);
+  //     }
+  //     if (adminDetails !== null) {
+  //       localStorage.setItem("adminDetails", adminDetails);
+  //     }
+  //   };
   
-    // Push a state when the component mounts
-    window.history.pushState(null, '', window.location.pathname);
+  //   // Push a state when the component mounts
+  //   window.history.pushState(null, '', window.location.pathname);
   
-    // Add event listeners
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    window.addEventListener("popstate", handlePopState);
+  //   // Add event listeners
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("popstate", handlePopState);
   
-    return () => {
-      // Remove event listeners
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
+  //   return () => {
+  //     // Remove event listeners
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //     window.removeEventListener("popstate", handlePopState);
+  //   };
+  // }, []);
 
   useEffect(()=>{
     document.title="Create new campaign"
     let accessToken = localStorage.getItem("accessToken")
+    setFileName("")
     if(!accessToken){
-      // window.location.href = "https://aiengage-samadsrahmans-projects.vercel.app/"
+     navigate("/")
     }
   },[])
 
@@ -156,13 +165,16 @@ const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     async function fetchContent() {
+      setIsLoading(true)
       const content = await builder
         .get("page", {
           url: "/editor",
         })
         .promise();
+       
       setContent(content);
       setNotFound(!content);
+      setIsLoading(false)
       if (content?.data.title) {
         // document.title = content.data.title;
       }
@@ -173,12 +185,15 @@ const [isUploading, setIsUploading] = useState(false)
   if (notFound && !isPreviewingInBuilder) {
     return <div>404</div>;
   }
+  if(isLoading){
+    return <SkeletonPage />;
+  }
 
 const onClose = ()=>{
   setQuestionPopupVisible(false)
 }
   return (
-    <div style={{height:'100vh', backgroundColor:'rgba(245, 245, 245, 1)'}}>
+    <div className="CreateContainer">
   {isAlertVisible &&   <Alert
     text={"You have unsaved data, are you sure you want to leave this page?"}
     primaryBtnText={"Yes"}
@@ -187,6 +202,7 @@ const onClose = ()=>{
     onClose={()=>setIsAlertVisible(false)}
     onSuccess={()=>{clearStorage(); setIsAlertVisible(false)}}
     />}
+    <Navbar isrightsidemenu={true}/>
       <BuilderComponent
         model="page"
         content={content}

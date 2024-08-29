@@ -1,6 +1,6 @@
-.ListingPageWrapper{
-  height: 100vh;
-  background-color:rgba(245, 245, 245, 1)
+.mainContainer{
+  background-color: rgba(225, 225,  225, 1);
+  min-height: 100vh;
 }
 
 .navbar {
@@ -8,12 +8,12 @@
     align-items: center;
     justify-content: space-between;
     padding: 0px 15px;
-    margin: 10px 15px 0px 15px !important;
+    margin: 10px 15px 0px 15px;
     font-family: "figtree", sans-serif;
-    background-color: #fff;
+    background-color: white;
     border-radius: 10px  10px 0px 0px;
     border-bottom: 0.1px solid rgba(0, 0, 0, 0.10) !important;
-    box-shadow: 0px 4px 18px 0px rgba(0, 0, 0, 0.06);
+    /* box-shadow: 0px 4px 18px 0px rgba(0, 0, 0, 0.06); */
 }
 
 .inputWrapper input {
@@ -42,7 +42,7 @@
   letter-spacing: 0.03em;
   cursor: pointer;
   padding: 10px 15px;
-  font-size: 13px;
+  font-size: 14px;
 }
 .spinnerWrapper{
   border: 1px solid;
@@ -55,7 +55,7 @@
   display: flex;
   align-items: top;
   justify-content: center;
-  min-height: 80vh;
+  min-height: 79.5vh;
   background-color: white;
   box-shadow: 0px 4px 18px 0px rgba(0, 0, 0, 0.06);
   padding: 10px 20px;
@@ -144,6 +144,12 @@
   font-weight: 600;
   line-height: normal;
   letter-spacing: 0.24px;
+}
+.searchDraw span{
+  text-overflow: ellipsis;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .searchDraw:hover {

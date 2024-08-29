@@ -6,7 +6,7 @@ export const videoSrcAtom = atom({
 })
 export const fileNameAtom = atom({
     key:'fileNameAtom',
-    default:"Untitled"
+    default:""
 })
 export const videoAtom = atom({
     key:'videoAtom',
@@ -135,4 +135,14 @@ export const videoListAtom = atom({
 export const isPlayingAtom = atom({
     key:"isPlayingAtom",
     default:false
+})
+
+export const isSaveBtnVisibleForEditAtom = atom({
+    key:"isSaveBtnVisibleForEditAtom",
+    default:false
+})
+
+export const reloadCounterForEditAtom = atom({
+    key:"reloadCounterForEditAtom",
+    default:0
 })

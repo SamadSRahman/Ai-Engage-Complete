@@ -147,6 +147,11 @@ const VideoJsEdit = (props) => {
         setDisplayedQuestions([]);
         setCurrentTime(0);
         removeExistingCues();
+        setPinPosition(0);
+        if (videoRef.current) {
+          const videoPlayer = videoRef.current;
+          videoPlayer.currentTime = 0;
+        }
       });
 
       videoPlayer.addEventListener("seeked", () => {

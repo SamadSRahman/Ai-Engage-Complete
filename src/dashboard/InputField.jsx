@@ -264,9 +264,6 @@ const InputField = (props) => {
   }, [videoFiles]);
 
   const handleThumbnailClick = (index) => {
-   setTimeout(()=>{
-    console.log("handleThumbnailClick triggered");
-    
     if (isVideoLoading || isThumbnailGenerating) {
       alert("Please wait while your video is uploading");
       return;
@@ -291,7 +288,6 @@ const InputField = (props) => {
       localStorage.setItem("pinPosition", 0);
       setPinPosition(0);
     }
-   },1000)
   };
   const handleDrop = (event) => {
     event.preventDefault();

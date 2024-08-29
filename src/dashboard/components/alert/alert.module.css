@@ -9,8 +9,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(5px);
+    /* backdrop-filter: blur(5px); */
     font-family: "Figtree", sans-serif;
+    transition: backdrop-filter 0.2s linear;
 
 }
 .container{
@@ -24,6 +25,7 @@ padding: 10px 0px;
 display: flex;
 flex-direction: column;
 justify-content: space-between;
+transition: opacity 0.3s linear;
 
 }
 .header{
@@ -58,6 +60,7 @@ padding:0px 10px 10px 10px
     border: none;
     letter-spacing: 0.5px;
     min-width: 4rem;
+    font-size: 14px;
 }
 .primaryBtn{
      background-color: rgba(77,103,235,1);
@@ -66,4 +69,5 @@ padding:0px 10px 10px 10px
 }
 .secondaryBtn{
     color: rgba(77,103,235,1);
+    background-color: rgb(245, 245, 245 , 1);
 }

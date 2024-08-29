@@ -135,7 +135,14 @@ function calculateTotalVideoLength(videos) {
   }, 0);
 }
 
-export const handleUpload = async (setIsSuccessAlertVisible,setIsAlertVisible, setAlertText, title, setLoading, navigate) => {
+export const handleUpload = async (
+  setIsSuccessAlertVisible,
+  setIsAlertVisible,
+  setAlertText,
+  title,
+  setLoading,
+  navigate
+) => {
   const videos = JSON.parse(localStorage.getItem("thumbnails"));
 
   let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
@@ -144,8 +151,8 @@ export const handleUpload = async (setIsSuccessAlertVisible,setIsAlertVisible, s
 
   let mainID = JSON.parse(localStorage.getItem("mainId"));
   if (mainID) {
-    setAlertText("File has already been uploaded")
-    setIsAlertVisible(true)
+    setAlertText("File has already been uploaded");
+    setIsAlertVisible(true);
     return;
   }
   let vidData = JSON.parse(localStorage.getItem("vidData"));
@@ -163,10 +170,10 @@ export const handleUpload = async (setIsSuccessAlertVisible,setIsAlertVisible, s
     // Update localStorage with the modified vidData
     localStorage.setItem("vidData", JSON.stringify(vidData));
   }
-  if(!title){
-    setAlertText("Please enter a title")
-    setIsAlertVisible(true)
-    return
+  if (!title) {
+    setAlertText("Please enter a title");
+    setIsAlertVisible(true);
+    return;
   }
 
   console.log(title);
@@ -194,25 +201,29 @@ export const handleUpload = async (setIsSuccessAlertVisible,setIsAlertVisible, s
     localStorage.setItem("mainId", response.data.videoData.video_id);
     localStorage.setItem("adminId", response.data.videoData.createdBy);
     setLoading(false);
-    setAlertText("File uploaded successfully")
-    setIsSuccessAlertVisible(true)
+    setAlertText("File uploaded successfully");
+    setIsSuccessAlertVisible(true);
     // navigate(`/edit/${response.data.videoData.video_id}`)
-  
   } catch (error) {
     console.error("Error uploading data:", error);
-    setAlertText("Unable to save campaign. Please try again.")
-    setIsAlertVisible(true)
+    setAlertText("Unable to save campaign. Please try again.");
+    setIsAlertVisible(true);
     setLoading(false);
   }
 };
-export const handleUpdate = async (setLoading) => {
+export const handleUpdate = async (
+  setIsSuccessAlertVisible,
+  setIsAlertVisible,
+  setAlertText,
+  title,
+  setLoading,
+  navigate
+) => {
   const videos = JSON.parse(localStorage.getItem("thumbnails"));
-
+  console.log("title", title)
   let videoSrcArray = JSON.parse(localStorage.getItem("videoSrcArray"));
   const totalLengthInSeconds = calculateTotalVideoLength(videos);
-
   let token = localStorage.getItem("accessToken");
-
   let editId = localStorage.getItem("editId");
   let vidData = JSON.parse(localStorage.getItem("vidData"));
 
@@ -220,7 +231,6 @@ export const handleUpdate = async (setLoading) => {
   const originalObject = { ...selectedVideo };
   const updatedQuestions = updateSubVideo(originalObject.questions, vidData);
   const updatedObject = { ...originalObject, questions: updatedQuestions };
-  console.log("Updated Object", updatedObject);
   const index = vidData.findIndex((item) => item.id === updatedObject.id);
 
   if (index !== -1) {
@@ -229,19 +239,13 @@ export const handleUpdate = async (setLoading) => {
     // Update localStorage with the modified vidData
     localStorage.setItem("vidData", JSON.stringify(vidData));
   }
-  
-  const title = localStorage.getItem("fileName");
-  console.log(title);
   let object = {
-    // video_id: editId,
-    videoLength:totalLengthInSeconds,
+    videoLength: totalLengthInSeconds,
     title: title,
     videoSelectedFile: updatedObject,
     videoFileUrl: videoSrcArray ? videoSrcArray : [],
     videoData: vidData,
   };
-  console.log(object);
-  console.log("Access token", token);
   setLoading(true);
   const apiUrl = `https://videosurvey.xircular.io/api/v1/video/updateVideo/${editId}`;
   try {
@@ -252,9 +256,9 @@ export const handleUpdate = async (setLoading) => {
       },
     });
     console.log("Upload successful:", response.data);
-    // localStorage.setItem("mainId", response.data.videoData.video_id);
     setLoading(false);
-    alert("File uploaded successfully");
+    setAlertText("File uploaded successfully");
+    setIsSuccessAlertVisible(true);
   } catch (error) {
     console.error("Error uploading data:", error);
     setLoading(false);
@@ -456,13 +460,13 @@ export const copyToClipboard = (url, id, onClose) => {
     .then(() => {
       // Optionally provide feedback to the user
       alert("Campaign URL copied to clipboard!");
-      onClose()
+      onClose();
     })
     .catch((err) => {
       console.error("Failed to copy: ", err);
     });
 };
-export const handleWhatsAppClick = (shareUrl,id) => {
+export const handleWhatsAppClick = (shareUrl, id) => {
   const token = localStorage.getItem("accessToken");
   fetch(`https://videosurvey.xircular.io/api/v1/video/update/shared/${id}`, {
     method: "PUT",
@@ -475,7 +479,7 @@ export const handleWhatsAppClick = (shareUrl,id) => {
     .then((res) => res.json())
     .then((data) => console.log(data))
     .catch((error) => console.log(error));
-   
+
   const encodedMessage = encodeURIComponent(`Check out this link: ${shareUrl}`);
   const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
   window.open(whatsappUrl, "_blank");
@@ -484,7 +488,7 @@ export const handleWhatsAppClick = (shareUrl,id) => {
 export function getLatestSubscriptionIndex(data) {
   const subscriptions = data[0].subscriptions;
   let latestIndex = 0;
-  let latestDate = new Date(subscriptions[0].endDate);
+  let latestDate = new Date(subscriptions[0]?.endDate);
 
   subscriptions.forEach((subscription, index) => {
     const endDate = new Date(subscription.endDate);
@@ -500,14 +504,18 @@ export function getLatestSubscriptionIndex(data) {
 export function getLimitPercentage(allPlans, plans, videoLength) {
   // const allPlans = JSON.parse(localStorage.getItem("plans"))
 
- const currentDate = new Date()
-    const subPlans = allPlans.filter(plan => new Date(plan.endDate) > currentDate);
+  const currentDate = new Date();
+  const subPlans = allPlans.filter(
+    (plan) => new Date(plan.endDate) > currentDate
+  );
   let responseLimit = 0;
   //subcription API
   let usedResponses = 0;
 
-  for(let i= 0;i<subPlans.length;i++){
-    responseLimit+= Math.ceil(subPlans[i].features.totalResponse/ (videoLength / 60));
+  for (let i = 0; i < subPlans.length; i++) {
+    responseLimit += Math.ceil(
+      subPlans[i].features.totalResponse / (videoLength / 60)
+    );
   }
   //maxLimit = 5 videoLength = 2
   for (let i = 0; i < plans.length; i++) {
@@ -532,3 +540,32 @@ export const clearLocalStorage = () => {
     localStorage.setItem("adminDetails", adminDetails);
   }
 };
+
+
+
+export const confirmDelete = (setIsDeleting, videoResult, setVideoResult, onClose, id)=>{
+  let token = localStorage.getItem("accessToken")
+  setIsDeleting(true);
+  axios
+    .delete(
+      `https://videosurvey.xircular.io/api/v1/video/deleteVideo/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    .then((response) => {
+      console.log("Delete request successful");
+      console.log(response.data);
+      let newArray = videoResult.filter((ele) => ele.video_id !== id);
+      setVideoResult(newArray);
+      setIsDeleting(false);
+      onClose();
+    })
+    .catch((error) => {
+      console.log(error);
+      setIsDeleting(false);
+      onClose();
+    });
+}

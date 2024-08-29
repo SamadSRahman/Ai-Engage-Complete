@@ -1,0 +1,5 @@
+.CreateContainer{
+    background-color: rgb(245, 245, 245, 1);
+    min-height: 100vh;
+    /* style={{backgroundColor:'yellow', minHeight:'100vh'}} */
+}

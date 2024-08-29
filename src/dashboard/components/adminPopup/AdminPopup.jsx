@@ -1,38 +1,47 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./admin.popup.module.css";
-import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { isPopupVisibleAtom } from "../../Recoil/store";
 import CustomizationPopup from "../customizationPopup/CustomizationPopup";
 import axios from "axios";
 import { getLatestSubscriptionIndex } from "../../Utils/services";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminPopup() {
+  const navigate = useNavigate();
+  const containerRef = useRef();
   const [isPopupVisible, setIsPopupVisible] =
     useRecoilState(isPopupVisibleAtom);
   const handleLogout = () => {
     localStorage.clear("accessToken");
     setIsPopupVisible(false);
-    navigate("/SignIn")
+    navigate("/SignIn");
   };
-  const [isSettingSectionVisible, setIsSettingsSectionVisible] =
-    useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate = useNavigate();
-  // const adminDetails = JSON.parse(localStorage.getItem("adminDetails"));
   const [adminDetails, setAdminDetails] = useState(null);
-  const [passwordError, setPasswordError] = useState("");
   const [isCustomizationPopupVisible, setIsCustomizationPopupVisible] =
     useState(false);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setIsPopupVisible(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   function onClose() {
     setIsCustomizationPopupVisible(false);
   }
 
   useEffect(() => {
-    getSessionData()
+    getSessionData();
   }, []);
 
   const getSessionData = async () => {
@@ -55,9 +64,9 @@ export default function AdminPopup() {
       const adminObj = {
         email: response.data[0].email,
         phone: response.data[0].phone,
-        name:response.data[0].name,
+        name: response.data[0].name,
         isSubscribed: response.data[0].isSubscribed,
-        isTrialActive: response.data[0].isTrialActive,
+        isTrialActive: response.data[0].isTrialActive && response.data,
         endDate:
           response.data[0].subscriptions[latestSubscriptionIndex]?.endDate,
         startDate:
@@ -94,41 +103,8 @@ export default function AdminPopup() {
     }
   };
 
-  function handleChangePassword(event) {
-    let token = localStorage.getItem("accessToken");
-    event.preventDefault();
-    if (!validatePassword(password)) {
-      setPasswordError(
-        "Password must contain at least 8 characters, including one uppercase letter and one special character."
-      );
-      return;
-    }
-    if (currentPassword && confirmPassword && password) {
-      fetch("https://videosurvey.xircular.io/api/v1/users/password/update", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        method: "PUT",
-        body: JSON.stringify({
-          oldPassword: currentPassword,
-          password: password,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-        })
-        .catch((errors) => console.log(errors));
-    }
-  }
-  const validatePassword = (password) => {
-    const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
-    return regex.test(password);
-  };
-
   return (
-    <div>
+    <div ref={containerRef}>
       <div
         className={styles.popupWrapper}
         onClick={() => setIsPopupVisible(!isPopupVisible)}
@@ -152,49 +128,27 @@ export default function AdminPopup() {
             </div>
           </div>
           <div className={styles.divider}></div>
-       <div className={styles.planSection}>
-       <div className={styles.planTag}>
-       {adminDetails?.plan} plan
-          </div>
-          <span>
-          Currently your are running on {adminDetails?.plan} plan <br /> Click here to <u onClick={()=>window.location.href="https://aiengage.xircular.io"}>Upgrade</u>
-          </span>
-       </div>
-
-
-
-
-          {/* <span className={styles.detailsHeader}>
-            <strong>Email:</strong> <span>{adminDetails?.email}</span>
-          </span>
-          <span className={styles.detailsHeader}>
-            <strong>Phone:</strong> <span>{adminDetails?.phone}</span>
-          </span>
-          <span className={styles.detailsHeader}>
-            <strong>Plan:</strong> <span>{adminDetails?.plan}</span>
-          </span>
-          {adminDetails?.isSubscribed || adminDetails?.isTrialActive ? (
-            <div className={styles.dateContainer}>
-              <span className={styles.detailsHeader}>
-                <strong>Start Date:</strong>{" "}
-                <span>{adminDetails?.startDate}</span>
-              </span>
-              <span className={styles.detailsHeader}>
-                <strong>End Date:</strong> <span>{adminDetails?.endDate}</span>
-              </span>
+          <div className={styles.planSection}>
+            <div className={styles.planTag}>
+              {adminDetails?.plan}{" "}
+              {adminDetails?.plan.includes("trail" ? "" : "plan")}
             </div>
-          ) : (
-            <span>You currently don't have any active plans</span>
-          )} */}
+            <span>
+              Currently your are running on {adminDetails?.plan}{" "}
+              {adminDetails?.plan.includes("trail" ? "" : "plan")} <br /> Click
+              here to{" "}
+              <u
+                onClick={() =>{
+                  navigate("/plans")
+                  setIsPopupVisible(false)
+                }
+                }
+              >
+                Upgrade
+              </u>
+            </span>
+          </div>
           <div className={styles.btnDiv}>
-            {/* <button
-              onClick={() =>
-                setIsSettingsSectionVisible(!isSettingSectionVisible)
-              }
-              className={styles.settingsBtn}
-            >
-              Change Password
-            </button> */}
             <button
               className={styles.customizeBtn}
               onClick={() => {
@@ -213,42 +167,6 @@ export default function AdminPopup() {
               Logout
             </button>
           </div>
-          {isSettingSectionVisible && (
-            <div className={styles.settingsSection}>
-              <form onSubmit={handleChangePassword}>
-                <label>Current password</label>
-                <input
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  type="password"
-                  name=""
-                  id=""
-                />
-                <label>New password</label>
-
-                <input
-                  value={password}
-                  type="password"
-                  name=""
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <label>Confirm password</label>
-
-                <input
-                  value={confirmPassword}
-                  type="password"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  name=""
-                  id=""
-                />
-                {passwordError && (
-                  <p className={styles.error}>{passwordError}</p>
-                )}
-
-                <button>Save</button>
-              </form>
-            </div>
-          )}
         </div>
       )}
       {isCustomizationPopupVisible && <CustomizationPopup onClose={onClose} />}

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { uid } from "uid";
 import axios from "axios";
 import { BuilderComponent, builder, useIsPreviewing } from "@builder.io/react";
@@ -7,6 +7,7 @@ import VideoJsEdit from "./VideojsEdit";
 import InputFieldWithChildrenEdit from "./InputFieldEdit";
 import VideoTimelineEdit from "./videoTimelineEdit";
 import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
+import isEqual from 'lodash/isEqual';
 import {
   videoFilesAtom,
   videoSrcAtom,
@@ -25,6 +26,8 @@ import {
   vidAtom,
   videoSrcArrayAtom,
   videoFilesArrayAtom,
+  isSaveBtnVisibleForEditAtom,
+  reloadCounterForEditAtom,
 } from "../Recoil/store";
 import {
   addQuestion,
@@ -37,10 +40,14 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import TimelineSection from "../components/timelineSection/TimelineSection";
 import Navbar from "../components/navbar/Navbar";
+import SkeletonPage from "../components/skeletons/SkeletonPage";
+
 
 builder.init("403c31c8b557419fb4ad25e34c2b4df5");
 
-export default function EditCampaign() {
+export default function Builder() {
+  const videoDataForEdit = useRef();
+  const titleRefForEdit = useRef();
   const [isUploading, setIsUploading] = useState(false);
   const [fileName, setFileName] = useRecoilState(fileNameAtom);
   const isEditorVisible = useRecoilValue(isEditorVisibleAtom);
@@ -49,34 +56,40 @@ export default function EditCampaign() {
   const [isViewMessagePopupVisible, setIsViewMessagePopupVisible] =
     useRecoilState(isViewMessagePopupVisibleAtom);
   const setVideoSrc = useSetRecoilState(videoSrcAtom);
-  const setVideoArray = useSetRecoilState(videoFilesArrayAtom);
+  const [videoArray, setVideoArray] = useRecoilState(videoFilesArrayAtom);
   const isEditPopup = useRecoilValue(isEditPopupAtom);
   const [playerVideoSrc, setPlayerVideoSrc] = useState("");
   const [markedPositions, setMarkedPositions] =
     useRecoilState(markedPositionAtom);
-    const [questionPopupVisible,setQuestionPopupVisible] = useRecoilState(questionPopupVisibleAtom);
-    const isPreviewingInBuilder = useIsPreviewing();
+  const [questionPopupVisible, setQuestionPopupVisible] = useRecoilState(
+    questionPopupVisibleAtom
+  );
+  const isPreviewingInBuilder = useIsPreviewing();
   const [notFound, setNotFound] = useState(false);
   const [content, setContent] = useState(null);
   const videoSrc = useRecoilValue(videoSrcAtom);
   const setVideoData = useSetRecoilState(videoDataAtom);
-  const setVid = useSetRecoilState(vidAtom);
+  const [vid, setVid] = useRecoilState(vidAtom);
   const video = useRecoilValue(videoAtom);
   const currentTime = useRecoilValue(currentTimeAtom);
-  const videoFiles = useRecoilValue(videoFilesAtom);
+  const [videoFiles, setVideoFiles] = useRecoilState(videoFilesAtom);
   const questions = [];
   const questionIndex = useRecoilValue(questionIndexAtom);
-  const setVideoFiles = useSetRecoilState(videoFilesAtom)
+  const [isSaveBtnVisibleForEdit, setIsSaveBtnVisibleForEdit] = useRecoilState(
+    isSaveBtnVisibleForEditAtom
+  );
+  const reloadCounterForEdit = useRecoilValue(reloadCounterForEditAtom);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { id } = useParams();
   useEffect(() => {
-    //fetching data for questions
-    let token = localStorage.getItem("accessToken")
-    fetch(`https://videosurvey.xircular.io/api/v1/video/getVideoById/${id}`,{
-      headers:{
-        Authorization: `Bearer ${token}`
-      }
+    setLoading(true);
+    let token = localStorage.getItem("accessToken");
+    fetch(`https://videosurvey.xircular.io/api/v1/video/getVideoById/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (!response.ok) {
@@ -85,57 +98,73 @@ export default function EditCampaign() {
         return response.json();
       })
       .then((data) => {
-        console.log(data.data);
-        console.log("videoData", data.data.videoData);
-
-        let dataFromApi = (data.data.videoSelectedFile);
+        let dataFromApi = data.data.videoSelectedFile;
         setSelectedVideo(dataFromApi);
-        console.log("Edit check: selectedVideo updated according to API Response", dataFromApi)
-        localStorage.setItem("selectedVideo", JSON.stringify({...dataFromApi}));
-        let names = data.data.videoData.map((ele)=>ele.name)
-       names.unshift("Select a video")
-       console.log("names", names)
-
-        localStorage.setItem("videoArray", JSON.stringify(names))
-        setVideoArray(names)
-        console.log("videoArray updated")
+        console.log(
+          "Edit check: selectedVideo updated according to API Response",
+          dataFromApi
+        );
+        localStorage.setItem(
+          "selectedVideo",
+          JSON.stringify({ ...dataFromApi })
+        );
+        let names = data.data.videoData.map((ele) => ele.name);
+        names.unshift("Select a video");
+        localStorage.setItem("videoArray", JSON.stringify(names));
+        if(names.length>0){
+         setTimeout(()=> setVideoArray(names), 2000)
+          console.log("Value of videoArray updated", names)
+        }
         localStorage.setItem("editId", data.data.video_id);
-        localStorage.setItem("fileName", data.data.title);
-        let newVideoFiles = [...data.data.videoFileUrl]
-
-        localStorage.setItem("videoFiles", JSON.stringify(newVideoFiles))
-        setVideoFiles(newVideoFiles)
+        titleRefForEdit.current = data.data.title;
+        setFileName(data.data.title);
+        let newVideoFiles = [...data.data.videoFileUrl];
+        localStorage.setItem("videoFiles", JSON.stringify(newVideoFiles));
+        setVideoFiles(newVideoFiles);
         localStorage.setItem(
           "videoSrcArray",
           JSON.stringify(data.data.videoFileUrl)
         );
-        setFileName(data.data.title);
         setVideoSrc(dataFromApi.videoSrc);
         setVid([...data.data.videoData]);
-        localStorage.setItem("vidData", JSON.stringify(data.data.videoData))
-        console.log(dataFromApi);
+        videoDataForEdit.current = [...data.data.videoData];
+        localStorage.setItem("vidData", JSON.stringify(data.data.videoData));
+        setLoading(false)
       })
       .catch((error) => {
+        setLoading(false);
         console.error("There was a problem fetching the data:", error);
       });
-  }, []);
+  }, [reloadCounterForEdit]);
 
-  useEffect(()=>{
-    const vidData = JSON.parse(localStorage.getItem("vidData"))
-      console.log("line 1211")
- setTimeout(()=>{
-  const videoArray = JSON.parse(localStorage.getItem("videoArray"))
 
-  if(videoArray?.length<1){
-    const names = vidData.map((ele)=>ele.name)
-    names.unshift("Select a video")
-    console.log("line 126",names)
-    localStorage.setItem("videoArray", JSON.stringify(names))
-    console.log("videoArray updated")
 
-  }
- }, 1000)
-  },[isEditorVisible])
+  useEffect(() => {
+    console.log("Save btn", videoDataForEdit.current, vid, fileName, titleRefForEdit.current);
+    
+    if (
+      !isEqual(videoDataForEdit.current, vid) || // Deep comparison
+      titleRefForEdit.current !== fileName // Simple string comparison
+    ) {
+      setIsSaveBtnVisibleForEdit(true);
+    } else {
+      setIsSaveBtnVisibleForEdit(false);
+    }
+  }, [vid, fileName]);
+
+  useEffect(() => {
+    const vidData = JSON.parse(localStorage.getItem("vidData"));
+    setTimeout(() => {
+      const videoArray = JSON.parse(localStorage.getItem("videoArray"));
+      if (videoArray?.length < 1) {
+        const names = vidData.map((ele) => ele.name);
+        names.unshift("Select a video");
+        console.log("line 126", names);
+        localStorage.setItem("videoArray", JSON.stringify(names));
+        console.log("videoArray updated");
+      }
+    }, 1000);
+  }, [isEditorVisible]);
 
   useEffect(() => {
     let accessToken = localStorage.getItem("accessToken");
@@ -143,7 +172,7 @@ export default function EditCampaign() {
       navigate("/");
     }
   }, []);
-  useEffect(()=>console.log("line 124",isEditorVisible),[isEditorVisible])
+
   const addQuestions = (question) => {
     addQuestion(question);
     let selectedVideo = localStorage.getItem("selectedVideo");
@@ -170,6 +199,7 @@ export default function EditCampaign() {
     }, 500);
   };
   useEffect(() => {
+    document.title = "Edit campaign";
     async function fetchContent() {
       const content = await builder
         .get("page", {
@@ -178,9 +208,6 @@ export default function EditCampaign() {
         .promise();
       setContent(content);
       setNotFound(!content);
-      if (content?.data.title) {
-        document.title = "Edit campaign";
-      }
     }
     fetchContent();
   }, []);
@@ -188,67 +215,17 @@ export default function EditCampaign() {
   if (notFound && !isPreviewingInBuilder) {
     return <div>404</div>;
   }
-
-  const onClose = ()=>{
-    setQuestionPopupVisible(false)
-  }
-
-  // localStorage.setItem("fileName", JSON.stringify("Untitled"));
-  const handleUpdate = async () => {
-    let videoSrcArray = JSON.parse(localStorage.getItem("videoSrcArray"));
-
-    let token = localStorage.getItem("accessToken");
-
-    let editId = localStorage.getItem("editId");
-    let vidData = JSON.parse(localStorage.getItem("vidData"));
-
-    let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
-    const originalObject = { ...selectedVideo };
-    const updatedQuestions = updateSubVideo(originalObject.questions, vidData);
-    const updatedObject = { ...originalObject, questions: updatedQuestions };
-    console.log("Updated Object", updatedObject);
-    const index = vidData.findIndex((item) => item.id === updatedObject.id);
-
-    if (index !== -1) {
-      vidData[index] = updatedObject;
-      console.log(vidData[index]);
-      localStorage.setItem("vidData", JSON.stringify(vidData));
-    }
-    const selectedVideoJSON = JSON.stringify(updatedObject);
-    //parse removed from title due to errors while saving edit
-    const title = (localStorage.getItem("fileName"))
-    console.log(title);
-    let object = {
-      title: title,
-      videoSelectedFile: selectedVideoJSON,
-      videoFileUrl: videoSrcArray ? videoSrcArray : [],
-      videoData: vidData,
-    };
-    console.log(object);
-    console.log("Access token", token);
-    const apiUrl = `https://videosurvey.xircular.io/api/v1/video/updateVideo/${editId}`;
-    try {
-      setIsUploading(true);
-      const response = await axios.put(apiUrl, object, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("Upload successful:", response.data);
-      setIsUploading(false);
-      alert("File uploaded successfully");
-    } catch (error) {
-      setIsUploading(false);
-      console.error("Error uploading data:", error);
-    }
-  };
+if(loading){
+  return <SkeletonPage />;
+}
   return (
-    <>
+    <div className="CreateContainer">
+    <Navbar isEditPage={true} isrightsidemenu={true}/>
       <BuilderComponent
         model="page"
         content={content}
         data={{
+
           isUploading: isUploading,
           selectedVideo: { ...selectedVideo },
           selectedQuestion: selectedQuestion,
@@ -300,10 +277,10 @@ export default function EditCampaign() {
           handleDeleteQuestion: (mainArray, mainArrayItem) =>
             handleDeleteQuestion(mainArray, mainArrayItem),
           getVidData: (data) => getVidData(data),
-          onClose:()=>onClose(),
+          // onClose:()=>onClose(),
         }}
       />
          {!isEditorVisible &&    <TimelineSection/>}
-    </>
+    </div>
   );
 }

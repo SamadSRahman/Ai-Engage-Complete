@@ -291,15 +291,15 @@ useEffect(()=>{
           display: thumbnails.length > 0 ? "none" : "flex",
         }}
       >
-         {thumbnails.length < 1 && (
-          <div className="placeholderImg" style={{height:"18.6rem"}}>
+         {/* {thumbnails.length < 1 && (
+          <div className="placeholderImg">
           
           <img src={backup} alt="" />
           <span className="dropAreaHeader">Upload File</span>
           <span className="dropAreaText">Click to drop, or
 drag & drop your file</span>
           </div>
-        )}
+        )} */}
         <input
           type="file"
           accept="video/*"

@@ -12,6 +12,7 @@ import {
   selectedVideoAtom,
   isEditPopupAtom,
   currentIndexAtom,
+  vidAtom,
 } from "../Recoil/store";
 import polygon from "../images/Polygon.png";
 import message from "../images/newMessageIcon.png";
@@ -33,6 +34,9 @@ const VideoTimelineEdit = (props) => {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
   const token = localStorage.getItem("accessToken");
+  const setVid = useSetRecoilState(vidAtom)
+  const [pinLeft, setPinLeft] = useState("0")
+
 
   const handleDelete = (id) => {
     const newSelectedVideo = { ...selectedVideo };
@@ -48,6 +52,7 @@ const VideoTimelineEdit = (props) => {
     const index = vidData.findIndex((ele) => ele.id === newSelectedVideo.id);
     vidData[index] = newSelectedVideo;
     localStorage.setItem("vidData", JSON.stringify(vidData));
+    setVid(vidData)
     setShowPopup(false);
   };
 
@@ -117,7 +122,10 @@ const VideoTimelineEdit = (props) => {
       </div>
     );
   }
-  let pinLeft = pinPosition ? `${(pinPosition / timelineLength) * 99}%` : "0";
+  // let pinLeft = pinPosition ? `${(pinPosition / timelineLength) * 99}%` : "0";
+  useEffect(()=>{
+    setPinLeft(pinPosition ? `${(pinPosition / timelineLength) * 99}%` : "0%");
+  },[pinPosition])
   const [thumbnailsGenerated, setThumbnailsGenerated] = useState(false);
 
   const generateThumbnails = (src) => {
@@ -330,9 +338,8 @@ const VideoTimelineEdit = (props) => {
             alt=""
             style={{
               marginTop: "30px",
-              marginRight: "35px",
+              marginRight: "62px",
               height: "30px",
-
               cursor: "pointer",
             }}
             onClick={() => {
@@ -385,32 +392,36 @@ const VideoTimelineEdit = (props) => {
             {timelineBars}
           </div>
           {timelineLength > 0 && (
-            <div
-              id="pin"
-              draggable
-              onDragStart={handleDragStart}
-              style={{
-                width: "0.0001px",
-                height: "165px",
-                position: "absolute",
-                top: "-5px",
-                left: `calc(${pinLeft} - 0.05px)`,
-                cursor: "grab",
-                border: "1px dashed #4D67EB",
-                transition: "left 1s ease",
-              }}
-            >
-              <img
-                src={polygon}
-                alt=""
-                style={{
-                  width: "20px",
-                  position: "relative",
-                  left: "-10.1px",
-                  bottom: "6px",
-                }}
-              />
-            </div>
+                  <div
+                  id="pin"
+                  draggable
+                  onDragStart={handleDragStart}
+                  style={{
+                    width: "20px", // Make the div narrow to represent the border line
+                    height: "165px", // Height of the line extending downward
+                    position: "absolute",
+                    top: "-5px", // Adjust to position correctly
+                    left: `calc(${pinLeft} - 0.05px)`, // Center the line under the triangle
+                    cursor: "grab",
+                    borderLeft: "1.5px dashed #4D67EB", // Dashed border line
+                    transition: "left 0.3s linear",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <img
+                    src={polygon} // Inverted triangle image
+                    alt=""
+                    style={{
+                      display: 'block',
+                      width: "20px",
+                      position:'relative',
+                      left:'-10.2px',
+                      marginBottom: '-2px', // Ensure the triangle and line are connected
+                    }}
+                  />
+                </div>
           )}
           <div
             className="thumbnailContainer"

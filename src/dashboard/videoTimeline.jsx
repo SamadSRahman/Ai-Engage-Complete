@@ -208,7 +208,6 @@ const VideoTimeline = (props) => {
   
       const generateThumbnail = (nextTime) => {
         if (nextTime >= video.duration) {
-          console.log("Video thumbnails", videoThumbnails)
           setIsThumbanilGenerating(false)
           const newArray = JSON.parse(localStorage.getItem("vidData"));
           let newObj = { ...newArray[currentIndex] };
@@ -325,7 +324,7 @@ const VideoTimeline = (props) => {
             alt=""
             style={{
               marginTop: "30px",
-              marginRight: "35px",
+              marginRight: "62px",
               height: "30px",
 
               cursor: "pointer",
@@ -396,32 +395,37 @@ const VideoTimeline = (props) => {
             {timelineBars}
           </div>
           {timelineLength > 0 && (
-            <div
-              id="pin"
-              draggable
-              onDragStart={handleDragStart}
-              style={{
-                width: "0.0001px",
-                height: "165px",
-                position: "absolute",
-                top: "-5px",
-                left: `calc(${pinLeft} - 0.05px)`,
-                cursor: "grab",
-                border: "1px dashed #4D67EB",
-                transition: "left 0.3s linear",
-              }}
-            >
-              <img
-                src={polygon}
-                alt=""
-                style={{
-                  width: "20px",
-                  position: "relative",
-                  left: "-10.1px",
-                  bottom: "6px",
-                }}
-              />
-            </div>
+           <div
+           id="pin"
+           draggable
+           onDragStart={handleDragStart}
+           style={{
+             width: "20px", // Make the div narrow to represent the border line
+             height: "165px", // Height of the line extending downward
+             position: "absolute",
+             top: "-5px", // Adjust to position correctly
+             left: `calc(${pinLeft} - 0.05px)`, // Center the line under the triangle
+             cursor: "grab",
+             borderLeft: "1.5px dashed #4D67EB", // Dashed border line
+             transition: "left 0.3s linear",
+             display: 'flex',
+             flexDirection: 'column',
+             alignItems: 'center',
+           }}
+         >
+           <img
+             src={polygon} // Inverted triangle image
+             alt=""
+             style={{
+               display: 'block',
+               width: "20px",
+               position:'relative',
+               left:'-10.2px',
+               marginBottom: '-2px', // Ensure the triangle and line are connected
+             }}
+           />
+         </div>
+         
           )}
           <div
             className="thumbnailContainer"

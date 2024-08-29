@@ -3,8 +3,8 @@ import styles from "./AddQuestionPopup.module.css";
 import message from "../../images/messageBlack.png";
 import close from "../../images/close_small.png";
 import add from "../../images/addEnabled.png";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { selectedVideoAtom, videoDurationAtom } from "../../Recoil/store";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { selectedVideoAtom, vidAtom, videoDurationAtom } from "../../Recoil/store";
 import { uid } from "uid";
 import Alert from "../alert/Alert";
 export default function AddQuestionPopup({ onClose }) {
@@ -22,21 +22,23 @@ export default function AddQuestionPopup({ onClose }) {
   };
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
   const videoArray = JSON.parse(localStorage.getItem("videoArray"));
-  const [position, setPosition] = useState({ x: 390, y: 50 });
+  // const [position, setPosition] = useState({ x: 390, y: 50 });
   const [isDragging, setIsDragging] = useState(false);
   const [questionObject, setQuestionObject] = useState(obj);
   const [alertText, setAlertText] = useState("")
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  // const [offset, setOffset] = useState({ x: 0, y: 0 });
   const videoDuration = useRecoilValue(videoDurationAtom);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false)
+  const setVid = useSetRecoilState(vidAtom)
 
-  useEffect(()=>{console.log("Line 33", isSuccessAlertVisible);
-  },[isSuccessAlertVisible])
   let pinPosition = localStorage.getItem("pinPosition");
   if (pinPosition) {
     pinPosition = JSON.parse(pinPosition);
   }
+
+  useEffect(()=>{setIsVisible(true)},[])
 
   const [time, setTime] = useState(pinPosition);
   function addQuestion() {
@@ -90,6 +92,12 @@ export default function AddQuestionPopup({ onClose }) {
     console.log("hi")
     setIsSuccessAlertVisible(true)
     localStorage.setItem("selectedVideo", JSON.stringify({ ...newObj }));
+    let vidData = JSON.parse(localStorage.getItem("vidData"))||[];
+    const currentIndex = vidData.findIndex((ele)=>ele.id===newObj.id)
+    vidData[currentIndex] = newObj;
+    console.log(vidData)
+    setVid(vidData);
+    localStorage.setItem("vidData",JSON.stringify(vidData))
     let newQuesObj = {
       id: uid(),
       question: "",
@@ -154,22 +162,22 @@ export default function AddQuestionPopup({ onClose }) {
     obj[type] = e.target.value;
     setQuestionObject({ ...obj });
   }
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    });
-  };
+  // const handleMouseDown = (e) => {
+  //   setIsDragging(true);
+  //   setOffset({
+  //     x: e.clientX - position.x,
+  //     y: e.clientY - position.y,
+  //   });
+  // };
 
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      setPosition({
-        x: e.clientX - offset.x,
-        y: e.clientY - offset.y,
-      });
-    }
-  };
+  // const handleMouseMove = (e) => {
+  //   if (isDragging) {
+  //     setPosition({
+  //       x: e.clientX - offset.x,
+  //       y: e.clientY - offset.y,
+  //     });
+  //   }
+  // };
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -200,9 +208,7 @@ export default function AddQuestionPopup({ onClose }) {
       )}
       <div
         className={styles.container}
-        style={{ top: position.y, left: position.x }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
+        style={{opacity:`${isVisible?"1":"0"}`}}
         onMouseUp={handleMouseUp}
       >
         <div className={styles.header}>
@@ -214,7 +220,7 @@ export default function AddQuestionPopup({ onClose }) {
           <img
             className={styles.closeIcon}
             src={close}
-            onClick={() => onClose()}
+            onClick={onClose}
             alt=""
           />
         </div>

@@ -107,9 +107,6 @@ const VideoJs = (props) => {
     setIsPlaying(false);
   }, [selectedVideo, videoSrc]);
 
-  useEffect(()=>{console.log("VideoSrc changed", videoSrc);
-  },[videoSrc])
-
   useEffect(() => {
     if (videoRef.current) {
       videoPlayer = videoRef.current;

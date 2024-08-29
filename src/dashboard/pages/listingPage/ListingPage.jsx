@@ -22,6 +22,7 @@ import "intro.js/introjs.css";
 import { clearStorage } from "../../Utils/services";
 import Spinner from "../../components/spinner/Spinner";
 import Pagination from "../../components/pagination/Pagination";
+import ListingPageSkeleton from "../../components/skeletons/LisitngPageSkeleton";
 
 export default function ListingPage() {
   const setVid = useSetRecoilState(vidAtom);
@@ -112,27 +113,26 @@ export default function ListingPage() {
       console.log(error.response);
       if (error.response.status === 401) {
         alert("Session expired. Please log in again");
-        localStorage.removeItem("accessToken")
-        navigate("/SignIn")
+        window.location.href = "https://aiengage.xircular.io/logoutRequest";
       }
       setLoading(false);
       throw error;
     }
   }
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const accessToken =
-  //     params.get("accessToken") || localStorage.getItem("accessToken");
-  //   const sessionId =
-  //     params.get("sessionId") || localStorage.getItem("sessionId");
-  //   if (!accessToken) {
-  //     window.location.href = "https://aiengage.xircular.io/";
-  //   } else {
-  //     localStorage.setItem("accessToken", accessToken);
-  //     localStorage.setItem("sessionId", sessionId);
-  //     getData(accessToken);
-  //   }
-  // }, [currentPage]);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const accessToken =
+      params.get("accessToken") || localStorage.getItem("accessToken");
+    const sessionId =
+      params.get("sessionId") || localStorage.getItem("sessionId");
+    if (!accessToken) {
+      window.location.href = "https://aiengage.xircular.io/";
+    } else {
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("sessionId", sessionId);
+      getData(accessToken);
+    }
+  }, [currentPage]);
 
   const navigate = useNavigate();
 
@@ -178,8 +178,8 @@ export default function ListingPage() {
   }
 
   return (
-    <div className={styles.ListingPageWrapper}>
-      <div className="mainContainer">
+    <div>
+      <div className={styles.mainContainer}>
         <div id="navbarWrapper">
           <Navbar showrightmenu={"false"} />
         </div>
@@ -229,47 +229,37 @@ export default function ListingPage() {
           </div>
         </nav>
 
-        {loading ? (
-          <div
-            className={styles.placeholderWrapper}
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            {" "}
-            <div style={{ margin: "auto" }}>
-              <Spinner size={"large"} />
+        <div
+          id="test1"
+          onClick={handlePopupClose}
+          className={styles.placeholderWrapper}
+        >
+          {!vidoes.length > 0 && !loading ? (
+            <div className={styles.emptyPage}>
+              <img src={webcam} alt="" />
+              <span className={styles.placeholderHeader}>
+                No campaigns created yet
+              </span>
+              <span
+                onClick={handleCreateNew}
+                className={styles.placeholderText}
+              >
+                Click here to start
+              </span>
             </div>
-          </div>
-        ) : (
-          <div
-            id="test1"
-            onClick={handlePopupClose}
-            className={styles.placeholderWrapper}
-          >
-            {!vidoes.length > 0 ? (
-              <div className={styles.emptyPage}>
-                <img src={webcam} alt="" />
-                <span className={styles.placeholderHeader}>
-                  No campaigns created yet
-                </span>
-                <span
-                  onClick={handleCreateNew}
-                  className={styles.placeholderText}
-                >
-                  Click here to start
-                </span>
-              </div>
-            ) : (
-              <div className="listedVideoWrapper">
-                <ListedVideos
-                  videos={vidoes}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  totalPages={totalPages}
-                />
-              </div>
-            )}
-          </div>
-        )}
+          ) : (
+            <div className="listedVideoWrapper">
+              <ListedVideos
+                isLoading={loading}
+                videos={vidoes}
+                setVideos = {setVideo}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalPages={totalPages}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

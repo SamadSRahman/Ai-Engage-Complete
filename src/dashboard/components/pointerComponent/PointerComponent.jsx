@@ -16,7 +16,7 @@ export default function PointerComponent() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedId, setSelectedId] = useState("");
   useEffect(() => {
-    console.log(selectedVideo);
+    console.log("selectedVideo from PointerComponent", selectedVideo);
     setQuestions(selectedVideo?.questions);
   }, [selectedVideo]);
 

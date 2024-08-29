@@ -33,7 +33,7 @@ justify-content: right;
 /* border: 1px solid green; */
 width: 50%;
 gap: 10px;
-padding-right: 6px;
+/* padding-right: 6px; */
 
 }
 .editableSpanContainer{
@@ -44,7 +44,7 @@ padding-right: 6px;
     box-sizing: border-box;
     border: 0.6px solid rgba(0, 0, 0, 0.24);
     background: #FAFAFA;
-    border-radius: 0.5rem ;
+    border-radius: 0.5rem;
     min-width: 30%;
     width: fit-content;
     max-width: 60%;
@@ -108,8 +108,8 @@ align-items: center;
 padding: 10px;
 gap: 2px;
 cursor: pointer;
-
-
+transition: width 0.3s linear, padding 0.3s linear;
+overflow: hidden;
 }
 .shareBtnContainer img{
     width:14px;
@@ -140,5 +140,7 @@ cursor: pointer;
     outline: none;
     background-color: transparent;
     font-size: 14px;
-    
+}
+.adminWrapper{
+    margin-right: 6px;
 }

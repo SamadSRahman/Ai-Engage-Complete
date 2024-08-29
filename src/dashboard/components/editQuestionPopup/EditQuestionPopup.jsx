@@ -3,19 +3,49 @@ import styles from "../addQuestionPopup/AddQuestionPopup.module.css";
 import message from "../../images/messageBlack.png";
 import close from "../../images/close_small.png";
 import add from "../../images/addEnabled.png";
-import { useRecoilState } from "recoil";
-import { selectedVideoAtom } from "../../Recoil/store";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  selectedVideoAtom,
+  vidAtom,
+  videoDurationAtom,
+} from "../../Recoil/store";
 import { uid } from "uid";
+import Alert from "../alert/Alert";
 export default function EditQuestionPopup({ question, onClose }) {
   const [proxyQuestion, setProxyQuestion] = useState({ ...question });
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
   const videoArray = JSON.parse(localStorage.getItem("videoArray"));
-  const [position, setPosition] = useState({ x: 380, y: -350 });
+  const [position, setPosition] = useState({ x: "28%", y: "10%" });
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const setVid = useSetRecoilState(vidAtom);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
+  const videoDuration = useRecoilValue(videoDurationAtom);
+  const [alertText, setAlertText] = useState("");
 
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const remainingSeconds = seconds % 3600;
+    const minutes = Math.floor(remainingSeconds / 60);
+    const remainingMinutes = remainingSeconds % 60;
 
-  console.log("line 18 ", question)
+    const pad = (num) => (num < 10 ? `0${num}` : num); // Add leading zero if needed
+
+    if (hours > 0) {
+      return `${pad(hours)}:${pad(minutes)}:${pad(remainingMinutes)}`;
+    } else {
+      return `${pad(minutes)}:${pad(remainingMinutes)}`;
+    }
+  };
+
+  let pinPosition = localStorage.getItem("pinPosition");
+  if (pinPosition) {
+    pinPosition = JSON.parse(pinPosition);
+  }
+  const [time, setTime] = useState(pinPosition);
+
+  console.log("line 18 ", question);
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setOffset({
@@ -39,6 +69,12 @@ export default function EditQuestionPopup({ question, onClose }) {
   function handleQuestionEdit(e, field) {
     let newObject = { ...proxyQuestion };
     newObject[field] = e.target.value;
+    setProxyQuestion(newObject);
+  }
+  function handleTimeChange(e) {
+    let newObject = { ...proxyQuestion };
+    newObject.time = e.target.value;
+    newObject.formattedTime = formatTime(e.target.value);
     setProxyQuestion(newObject);
   }
   function handleAnswerEdit(e, id) {
@@ -74,6 +110,31 @@ export default function EditQuestionPopup({ question, onClose }) {
     console.log(newObject);
   }
   function handleSave() {
+    if (proxyQuestion.time > videoDuration) {
+      setIsAlertVisible(true);
+      setAlertText(
+        "Pointer time cannot be more than video length, please enter a time within the video time frame"
+      );
+      return;
+    }
+    if (!proxyQuestion.question) {
+      setIsAlertVisible(true);
+      setAlertText("Please enter a question");
+      return;
+    }
+    if (proxyQuestion.answers.length < 1) {
+      setIsAlertVisible(true);
+      setAlertText("Please add atleast one option");
+      return;
+    }
+    for (let i = 0; i < proxyQuestion.answers.length; i++) {
+      if (!proxyQuestion.answers[i].answer) {
+        setIsAlertVisible(true);
+        setAlertText("Option cannot be empty");
+        return;
+      }
+    }
+
     const newObj = { ...selectedVideo };
     let newArray = [...newObj.questions];
     let index = newArray.findIndex((ques) => ques.id === question.id);
@@ -81,7 +142,13 @@ export default function EditQuestionPopup({ question, onClose }) {
     newObj.questions = newArray;
     setSelectedVideo(newObj);
     localStorage.setItem("selectedVideo", JSON.stringify(newObj));
-    onClose();
+    const vidData = JSON.parse(localStorage.getItem("vidData"));
+    const selectedIndex = vidData.findIndex((ele) => ele.id === newObj.id);
+    vidData[selectedIndex] = newObj;
+    localStorage.setItem("vidData", JSON.stringify(vidData));
+    setVid(vidData);
+    setIsSuccessAlertVisible(true);
+    // onClose();
   }
 
   function deleteAnswer(id) {
@@ -92,6 +159,25 @@ export default function EditQuestionPopup({ question, onClose }) {
   }
 
   return (
+    <div className={styles.wrapper}>
+      {isAlertVisible && (
+        <Alert
+          text={alertText}
+          title={"Alert"}
+          primaryBtnText={"Okay"}
+          onSuccess={() => setIsAlertVisible(false)}
+          onClose={() => setIsAlertVisible(false)}
+        />
+      )}
+      {isSuccessAlertVisible && (
+        <Alert
+          text={"Pointer added successfully"}
+          title={"Alert"}
+          primaryBtnText={"Okay"}
+          onSuccess={onClose}
+          onClose={onClose}
+        />
+      )}
       <div
         className={styles.container}
         style={{ top: position.y, left: position.x }}
@@ -99,9 +185,7 @@ export default function EditQuestionPopup({ question, onClose }) {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
       >
-        <div className={styles.header}
-
-        >
+        <div className={styles.header}>
           <div className={styles.leftSide}>
             <img src={message} alt="" />
             <span>Edit message/question</span>
@@ -116,6 +200,14 @@ export default function EditQuestionPopup({ question, onClose }) {
         </div>
 
         <div className={styles.body}>
+          <div className={styles.timeSection}>
+            <span>Time Frame: </span>
+            <input
+              type="number"
+              value={proxyQuestion.time}
+              onChange={handleTimeChange}
+            />
+          </div>
           <div className={styles.questionSection}>
             <span>Write your question below </span>
             <input
@@ -146,7 +238,7 @@ export default function EditQuestionPopup({ question, onClose }) {
             <div className={styles.skipSection}>
               <span>Skip option visible</span>
               <select
-              value={proxyQuestion.skip}
+                value={proxyQuestion.skip}
                 onChange={(e) => handleQuestionEdit(e, "skip")}
                 name=""
                 id=""
@@ -166,7 +258,7 @@ export default function EditQuestionPopup({ question, onClose }) {
                         type="text"
                         placeholder="Click here to write"
                         value={proxyQuestion.answers[ind].answer}
-                        onChange={(e)=>handleAnswerEdit(e,ans.id)}
+                        onChange={(e) => handleAnswerEdit(e, ans.id)}
                       />
                       <img
                         src={close}
@@ -182,7 +274,7 @@ export default function EditQuestionPopup({ question, onClose }) {
                       placeholder="select video"
                       name=""
                       id=""
-                      value={ans.subVideoIndex+1}
+                      value={ans.subVideoIndex + 1}
                     >
                       {videoArray?.map((video, index) => (
                         <option value={index}>{video}</option>
@@ -208,5 +300,6 @@ export default function EditQuestionPopup({ question, onClose }) {
           </div>
         </div>
       </div>
+    </div>
   );
 }

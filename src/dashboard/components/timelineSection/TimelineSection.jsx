@@ -37,7 +37,6 @@ export default function TimelineSection() {
       alert("Please wait while your video is uploading");
       return;
     }
-
     if (selectedVideo?.videoSrc) {
       setIsAddQuestionVisible(true);
       setIsPlaying(!isPlaying);
@@ -45,7 +44,7 @@ export default function TimelineSection() {
       setIsAddQuestionVisible(false);
     }
   }
-  function handlePointerClick() {
+  function handlePointerClick() { 
     if (selectedVideo?.questions?.length > 0) {
       setIsEditorVisible(true);
     } else {

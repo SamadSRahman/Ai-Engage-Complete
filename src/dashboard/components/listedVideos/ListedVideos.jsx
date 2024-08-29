@@ -1,20 +1,33 @@
 import React, { useEffect, useState } from "react";
 import styles from "./listedVideos.module.css";
-import { calculateDaysPassed, getLimitPercentage } from "../../Utils/services";
+import { calculateDaysPassed, confirmDelete, getLimitPercentage } from "../../Utils/services";
 import menuIcon from "../../images/more_vert.png";
 import placeholder from "../../images/videoPlaceholder.png";
 import EditandDeletePopup from "../edit&DeletePopup/Edit&DeletePopup";
 import axios from "axios";
 import Pagination from "../pagination/Pagination";
+import ListingPageSkeleton from "../skeletons/LisitngPageSkeleton";
+import Spinner from "../spinner/Spinner";
+import Alert from "../alert/Alert";
 
-export default function ListedVideos({ videos,totalPages, currentPage, setCurrentPage }) {
+export default function ListedVideos({
+  videos,
+  totalPages,
+  currentPage,
+  setCurrentPage,
+  isLoading,
+  setVideos
+}) {
   const [sharedVideos, setSharedVideos] = useState(videos.slice(0, 5));
   const [isAllVideoPopupVisible, setIsAllVideoPopupVisible] = useState(false);
   const [selectedId, setSelectedId] = useState("");
   const [showallvideo, setShowAllVideo] = useState(true);
   const [showsharedfile, setShowSharedfile] = useState(false);
-  const [allPlans, setAllPlans] = useState([])
-
+  const [allPlans, setAllPlans] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertText, setAlertText] = useState("");
+  const [onSuccess, setOnSuccess] = useState(null);
 
   const getSessionData = async () => {
     const params = new URLSearchParams(window.location.search);
@@ -29,21 +42,19 @@ export default function ListedVideos({ videos,totalPages, currentPage, setCurren
           },
         }
       );
-      setAllPlans(response.data[0].subscriptions)
+      setAllPlans(response.data[0].subscriptions);
       // localStorage.setItem("plans",JSON.stringify(response.data[0].subscriptions))
     } catch (error) {
       console.log(error);
     }
   };
 
-
   useEffect(() => {
     const sharedVid = videos.filter((ele) => ele.isShared === true);
     setSharedVideos(sharedVid);
     console.log(videos);
-    getSessionData()
+    getSessionData();
   }, [videos]);
-
 
   const handleAllVideosMenuClick = (id) => {
     setSelectedId(id);
@@ -76,6 +87,16 @@ export default function ListedVideos({ videos,totalPages, currentPage, setCurren
 
   return (
     <div className={styles.container}>
+      {isAlertVisible && (
+        <Alert
+          text={alertText}
+          onClose={() => setIsAlertVisible(false)}
+          onSuccess={()=>confirmDelete(setIsDeleting, videos, setVideos, ()=>setIsAllVideoPopupVisible(false), selectedId)}
+          primaryBtnText={"Yes"}
+          secondaryBtnText={"Cancel"}
+          title={"Confirm Delete"}
+        />
+      )}
       <div className="tabbtnpanel">
         <button
           id={styles.allvideosbtn}
@@ -84,7 +105,7 @@ export default function ListedVideos({ videos,totalPages, currentPage, setCurren
             borderBottom: showallvideo ? "2px solid blue" : "",
             color: showallvideo ? "#4D67EB" : "#1C1B1F",
             fontWeight: showallvideo ? 700 : 400,
-            borderRadius:'0px'
+            borderRadius: "0px",
           }}
         >
           {" "}
@@ -97,145 +118,152 @@ export default function ListedVideos({ videos,totalPages, currentPage, setCurren
             borderBottom: showsharedfile ? "2px solid blue" : "",
             color: showsharedfile ? "#4D67EB" : "#1C1B1F",
             fontWeight: showsharedfile ? 700 : 400,
-             borderRadius:'0px'
+            borderRadius: "0px",
           }}
         >
           {" "}
           Shared Campaigns{" "}
         </button>
       </div>
-
-      {showallvideo && (
-        <div className={styles.allVideosSection}>
-          <div className={styles.allVideos}>
-            
-            {videos.map((video) => (
-              <div
-                key={video.id}
-                onMouseLeave={onAllVideoClose}
-                className={styles.videoWrapper}
-              >
-                <div className={styles.recentVideo}>
-                  <img
-                    // style={{border:"1px solid red", boxShadow:'2px 2px 10px red'}}
-                    className={styles.videoThumbnail}
-                    src={
-                      video?.videoSelectedFile?.thumbnail
-                        ? video.videoSelectedFile.thumbnail.url
-                        : placeholder
-                    }
-                    alt=""
-                  />
-
-                  <div className={styles.titleBar}>
-                    <span id={styles.firsttext}>
-                      {video.title}
-                    </span>
-                    <span id={styles.secondtext}>
-                      {" "}
-                      Saved {calculateDaysPassed(video.updatedAt)}
-                    </span>
-                  </div>
-                </div>
-                <span className={styles.timeStamp}>
-                  {handleFormatTime(video.videoLength)}
-                </span>
-                <div className={styles.limitIndicatorWrapper}>
-                  {video?.plans[0]?.plans
-                    ? (() => {
-                     const combinedUsedPercentage= getLimitPercentage(allPlans,video?.plans[0].plans, video.videoLength)
-                        if (combinedUsedPercentage >= 90) {
-                          return (
-                            <span className={styles.limitIndicator}>
-                              {/* {`${(combinedUsedPercentage * 100).toFixed(
-                                2
-                              )}% of response limit reached`} */}
-                              {combinedUsedPercentage}% of response limit reached
-                            </span>
-                          );
-                        }
-                        return null;
-                      })()
-                    : ""}
-                </div>
-                <div
-                  className={styles.menuIcon}
-                  onClick={() => handleAllVideosMenuClick(video.video_id)}
-                >
-                  <img src={menuIcon} alt="Menu" />
-                </div>
-                {isAllVideoPopupVisible && selectedId === video.video_id && (
-                  <EditandDeletePopup
-                    onClose={onAllVideoClose}
-                    video={video}
-                    id={video.video_id}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {showsharedfile && (
-        <div>
-          <div className={styles.allVideosSection}>
-            <div className={styles.allVideos}>
-              {sharedVideos.map((video) => (
-                <div
-                  key={video.id}
-                  onMouseLeave={onAllVideoClose}
-                  className={styles.videoWrapper}
-                >
-                  <div className={styles.recentVideo}>
-                    <img
-                      className={styles.videoThumbnail}
-                      src={
-                        video?.videoSelectedFile?.thumbnail
-                          ? video.videoSelectedFile.thumbnail.url
-                          : "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
-                      }
-                      alt=""
-                    />
-
-                    <div className={styles.titleBar}>
-                      <span id={styles.firsttext}>
-                        {video.title.substring(0, 60)}...
-                      </span>
-                      <span id={styles.secondtext}>
-                        {" "}
-                        Shared {calculateDaysPassed(video.updatedAt)}
-                      </span>
-                    </div>
-                  </div>
-                  <span className={styles.timeStamp}>
-                    {handleFormatTime(video.videoLength)}
-                  </span>
-
+      {isLoading ? (
+        <ListingPageSkeleton />
+      ) : (
+        <>
+          {showallvideo && (
+            <div className={styles.allVideosSection}>
+              <div className={styles.allVideos}>
+                {videos.map((video) => (
                   <div
-                    className={styles.menuIcon}
-                    onClick={() => handleAllVideosMenuClick(video.video_id)}
+                    key={video.id}
+                    onMouseLeave={onAllVideoClose}
+                    className={styles.videoWrapper}
                   >
-                    <img src={menuIcon} alt="Menu" />
+                    {isDeleting && selectedId === video.video_id && (
+                      <div className={styles.deleteSpinnerWrapper}>
+                        <Spinner size={"medium"} />
+                      </div>
+                    )}
+                    <div className={styles.recentVideo}>
+                      <img
+                        className={styles.videoThumbnail}
+                        src={
+                          video?.videoSelectedFile?.thumbnail
+                            ? video.videoSelectedFile.thumbnail.url
+                            : placeholder
+                        }
+                        alt=""
+                      />
+                      <div className={styles.titleBar}>
+                        <span id={styles.firsttext}>{video.title}</span>
+                        <span id={styles.secondtext}>
+                          Saved {calculateDaysPassed(video.updatedAt)}
+                        </span>
+                      </div>
+                    </div>
+                    <span className={styles.timeStamp}>
+                      {handleFormatTime(video.videoLength)}
+                    </span>
+                    <div className={styles.limitIndicatorWrapper}>
+                      {video?.plans[0]?.plans &&
+                        (() => {
+                          const combinedUsedPercentage = getLimitPercentage(
+                            allPlans,
+                            video?.plans[0].plans,
+                            video.videoLength
+                          );
+                          if (combinedUsedPercentage >= 90) {
+                            return (
+                              <span className={styles.limitIndicator}>
+                                {combinedUsedPercentage}% of response limit
+                                reached
+                              </span>
+                            );
+                          }
+                          return null;
+                        })()}
+                    </div>
+                    <div
+                      className={styles.menuIcon}
+                      onClick={() => handleAllVideosMenuClick(video.video_id)}
+                    >
+                      <img src={menuIcon} alt="Menu" />
+                    </div>
+                    {isAllVideoPopupVisible &&
+                      selectedId === video.video_id && (
+                        <EditandDeletePopup
+                          setIsDeleting={setIsDeleting}
+                          onClose={onAllVideoClose}
+                          video={video}
+                          id={video.video_id}
+                          setAlertText={setAlertText}
+                          setIsAlertVisible={setIsAlertVisible}
+                          setOnSuccess={setOnSuccess}
+                        />
+                      )}
                   </div>
-                  {isAllVideoPopupVisible && selectedId === video.video_id && (
-                    <EditandDeletePopup
-                      onClose={onAllVideoClose}
-                      video={video}
-                      id={video.video_id}
-                    />
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>{" "}
-        </div>
+          )}
+
+          {showsharedfile && (
+            <div className={styles.allVideosSection}>
+              <div className={styles.allVideos}>
+                {sharedVideos.map((video) => (
+                  <div
+                    key={video.id}
+                    onMouseLeave={onAllVideoClose}
+                    className={styles.videoWrapper}
+                  >
+                    <div className={styles.recentVideo}>
+                      <img
+                        className={styles.videoThumbnail}
+                        src={
+                          video?.videoSelectedFile?.thumbnail
+                            ? video.videoSelectedFile.thumbnail.url
+                            : placeholder
+                        }
+                        alt=""
+                      />
+                      <div className={styles.titleBar}>
+                        <span id={styles.firsttext}>{video.title}</span>
+                        <span id={styles.secondtext}>
+                          Shared {calculateDaysPassed(video.updatedAt)}
+                        </span>
+                      </div>
+                    </div>
+                    <span className={styles.timeStamp}>
+                      {handleFormatTime(video.videoLength)}
+                    </span>
+                    <div
+                      className={styles.menuIcon}
+                      onClick={() => handleAllVideosMenuClick(video.video_id)}
+                    >
+                      <img src={menuIcon} alt="Menu" />
+                    </div>
+                    {isAllVideoPopupVisible &&
+                      selectedId === video.video_id && (
+                        <EditandDeletePopup
+                          onClose={onAllVideoClose}
+                          video={video}
+                          id={video.video_id}
+                        />
+                      )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
-         {totalPages>1 && (<Pagination
-               currentPage={currentPage}
-               setCurrentPage={setCurrentPage}
-               totalPages={totalPages}
-               />)}
+
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+        />
+      )}
     </div>
   );
 }
