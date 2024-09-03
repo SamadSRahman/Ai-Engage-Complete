@@ -22,52 +22,54 @@ import "../inputField.css";
 import backup from "../images/backup.svg";
 import backupWhite from "../images/backup_white.svg";
 
-
 const InputFieldEdit = (props) => {
-  const setCurrentIndex = useSetRecoilState(currentIndexAtom)
+  const setCurrentIndex = useSetRecoilState(currentIndexAtom);
   const inputRef = useRef(null);
-let token = localStorage.getItem("accessToken")
+  let token = localStorage.getItem("accessToken");
   const [loading, setLoading] = useState(false);
   const [isVideoUploaded, setIsVideoUploaded] = useState(true);
   const [videoFiles, setVideoFiles] = useRecoilState(videoFilesAtom);
   const setVideoSrc = useSetRecoilState(videoSrcAtom);
-  const videoData = useRecoilValue(videoDataAtom)
-  const videoArray = useRecoilValue(videoFilesArrayAtom)
+  const videoData = useRecoilValue(videoDataAtom);
+  const videoArray = useRecoilValue(videoFilesArrayAtom);
   const [thumbnails, setThumbnails] = useState([]);
   const [video, setVideo] = useRecoilState(videoAtom);
   const [uploadPercentage, setUploadPercentage] = useState(null);
   const [vid, setVid] = useRecoilState(vidAtom);
   const setPinPosition = useSetRecoilState(pinPositionAtom);
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
- 
+  const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false);
 
-useEffect(()=>{
-  console.log("videoData changed",vid , thumbnails)
-  let thumbs = vid?.map((ele)=>{
-    return ele.thumbnail
-  })
-  console.log("line 50", thumbs);
+  useEffect(() => {
+    console.log("videoData changed", vid, thumbnails);
+    let thumbs = vid?.map((ele) => {
+      return ele.thumbnail;
+    });
+    console.log("line 50", thumbs);
 
-  if (thumbs !== undefined && thumbs.every(thumb => thumb !== undefined && typeof(thumb)==='object')) {
-    setThumbnails(thumbs);
-  } else {
-    console.log("Some elements in thumbs are undefined or thumbs itself is undefined");
-  }  
-},[vid])
-
+    if (
+      thumbs !== undefined &&
+      thumbs.every((thumb) => thumb !== undefined && typeof thumb === "object")
+    ) {
+      setThumbnails(thumbs);
+    } else {
+      console.log(
+        "Some elements in thumbs are undefined or thumbs itself is undefined"
+      );
+    }
+  }, [vid]);
 
   useEffect(() => {
     console.log(thumbnails);
     localStorage.setItem("thumbnails", JSON.stringify(thumbnails));
   }, [thumbnails]);
 
-
   const generateThumbnail = (videoFile, timeInSeconds) => {
-    console.log("Edit check: generateTbumbnail triggered in InputField")
+    console.log("Edit check: generateTbumbnail triggered in InputField");
     setLoading(true);
     const video = document.createElement("video");
     video.preload = "metadata";
-  
+
     const reader = new FileReader();
     reader.onload = function (e) {
       video.src = e.target.result;
@@ -79,7 +81,7 @@ useEffect(()=>{
           canvas.height = 320;
           const ctx = canvas.getContext("2d");
           ctx.drawImage(video, 0, 0, 480, 320);
-  
+
           canvas.toBlob((thumbnailBlob) => {
             let videoDuration = video.duration;
             const minutes = Math.floor(videoDuration / 60);
@@ -88,7 +90,7 @@ useEffect(()=>{
               seconds < 10 ? "0" : ""
             }${seconds}`;
             setLoading(false);
-            storeThumbnail(thumbnailBlob, timestamp)
+            storeThumbnail(thumbnailBlob, timestamp);
           }, "image/jpeg");
         });
       });
@@ -96,31 +98,33 @@ useEffect(()=>{
     reader.readAsDataURL(videoFile);
   };
 
-  const  storeThumbnail = async (thumbnailBlob, timestamp) => {
+  const storeThumbnail = async (thumbnailBlob, timestamp) => {
     const formData = new FormData();
-    formData.append('thumbnail', thumbnailBlob, 'thumbnail.jpg'); // Assuming the blob is an image
-  
-  
-    try{
-      const response = await axios.post("https://videosurvey.xircular.io/api/v1/video/upload/thumbnail", formData, {
-        headers:{
-          "Content-Type":'multipart/form-data',
-           Authorization: `Bearer ${token}` 
+    formData.append("thumbnail", thumbnailBlob, "thumbnail.jpg"); // Assuming the blob is an image
+
+    try {
+      const response = await axios.post(
+        "https://videosurvey.xircular.io/api/v1/video/upload/thumbnail",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      })
-      console.log("line 116",response.data)
+      );
+      console.log("line 116", response.data);
       setThumbnails((prevThumbnails) => [
-                ...prevThumbnails,
-                { url:`https://videosurvey.xircular.io/thumbnails/${response.data.thumbnailUrl}` , timestamp },
-              ]);
-  
+        ...prevThumbnails,
+        {
+          url: `https://videosurvey.xircular.io/thumbnails/${response.data.thumbnailUrl}`,
+          timestamp,
+        },
+      ]);
+    } catch (error) {
+      console.log(error);
     }
-    catch(error){
-      console.log(error)
-      
-    }
-  
-    };
+  };
 
   useEffect(() => {
     localStorage.setItem("vidData", JSON.stringify(vid));
@@ -144,34 +148,32 @@ useEffect(()=>{
     }
   }, [props.isEditorVisible]);
   const onFileChange = (event) => {
-
     const id = uid();
     const file = event.target.files[0];
     const currentVideo = event.target.files[0];
-    console.log("Video name", currentVideo.name)
+    console.log("Video name", currentVideo.name);
     setVideo(video);
     let videoArray = JSON.parse(localStorage.getItem("videoArray")) || [];
     if (videoArray.length < 1) videoArray.push("Select a Video");
     videoArray = [...videoArray, event.target.files[0].name];
-    console.log(videoArray)
+    console.log(videoArray);
     localStorage.setItem("videoArray", JSON.stringify(videoArray));
     const files = event.target.files;
     handleSingleUpload(file, id);
     handleFileChange(files, setVideoFiles, generateThumbnail, videoFiles);
   };
   const handleSingleUpload = async (file, id) => {
-    console.log("access token", token)
+    console.log("access token", token);
     setIsVideoUploaded(false);
     const formData = new FormData();
     formData.append("video", file);
-    
-    
+
     const apiUrl = "https://videosurvey.xircular.io/api/v1/video/upload/media";
     try {
       const response = await axios.post(apiUrl, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          "Authorization":`Bearer ${token}` 
+          Authorization: `Bearer ${token}`,
         },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(
@@ -191,48 +193,57 @@ useEffect(()=>{
       let videoFiles = JSON.parse(localStorage.getItem("videoFiles"));
 
       setTimeout(() => {
-        handleThumbnailClick(videoFiles.length-1  );
+        handleThumbnailClick(videoFiles.length - 1);
       }, 1000);
       localStorage.setItem("vidData", JSON.stringify([...vid, newObject]));
       console.log("vidData updated", vid);
       setIsVideoUploaded(true);
-      setSelectedVideo(newObject)
-      console.log("Edit check: selectedVideo updated at handleSingleUpload", newObject)
+      setSelectedVideo(newObject);
+      console.log(
+        "Edit check: selectedVideo updated at handleSingleUpload",
+        newObject
+      );
       localStorage.setItem("selectedVideo", JSON.stringify({ ...newObject }));
-
-      
     } catch (error) {
       console.error("Error uploading data:", error);
-      if(error.response.status===401){
-        alert("Session expired. Please login again")
-        window.location.href = "https://aiengage-samadsrahmans-projects.vercel.app/logoutRequest"
+      if (error.response.status === 401) {
+        alert("Session expired. Please login again");
+        window.location.href =
+          "https://aiengage-samadsrahmans-projects.vercel.app/logoutRequest";
       }
     }
   };
   useEffect(() => {
     localStorage.setItem("videoFiles", JSON.stringify(videoFiles));
   }, [videoFiles]);
+  useEffect(() => {
+    if (thumbnailClickTriggered) {
+      setTimeout(() => setThumbnailClickTriggered(false), 1000);
+    }
+  }, [thumbnailClickTriggered]);
 
   const handleThumbnailClick = (index) => {
-    console.log("handleClick index",index)
-    setCurrentIndex(index)
+    if (thumbnailClickTriggered) {
+      return;
+    }
+    setThumbnailClickTriggered(true)
+    setCurrentIndex(index);
     let vidArray = JSON.parse(localStorage.getItem("vidData"));
     const videoFiles = JSON.parse(localStorage.getItem("videoFiles"));
     let thumbnails = JSON.parse(localStorage.getItem("thumbnails"));
-    console.log("line 50 from HTC",thumbnails)
-    console.log("videoFiles from ife", videoFiles)
-    console.log("line 228", videoFiles[index])
+    console.log("line 50 from HTC", thumbnails);
+    console.log("videoFiles from ife", videoFiles);
+    console.log("line 228", videoFiles[index]);
     setVideoSrc(videoFiles[index]);
     setVid(vidArray);
     if (vidArray[index]) {
       let obj = { ...vidArray[index] };
       obj.thumbnail = thumbnails[index];
-      if(obj.questions===undefined)
-      obj.questions = []
+      if (obj.questions === undefined) obj.questions = [];
       console.log(obj);
       setSelectedVideo(obj);
       localStorage.setItem("selectedVideo", JSON.stringify(obj));
-      console.log("video source",videoFiles[index]);
+      console.log("video source", videoFiles[index]);
       setVideoSrc(videoFiles[index]);
       localStorage.setItem("questionsArray", JSON.stringify([]));
       localStorage.setItem("pinPosition", 0);
@@ -261,8 +272,8 @@ useEffect(()=>{
     let videoArray = JSON.parse(localStorage.getItem("videoArray")) || [];
     videoArray.splice(index + 1, 1);
     localStorage.setItem("videoArray", JSON.stringify(videoArray));
-    setSelectedVideo(null)
-    localStorage.setItem("selectedVideo", null)
+    setSelectedVideo(null);
+    localStorage.setItem("selectedVideo", null);
   };
   return (
     <div
@@ -278,7 +289,7 @@ useEffect(()=>{
           display: thumbnails.length > 0 ? "none" : "flex",
         }}
       >
-         {/* {thumbnails.length < 1 && (
+        {/* {thumbnails.length < 1 && (
           <div className="placeholderImg">
           
           <img src={backup} alt="" />
@@ -310,16 +321,19 @@ drag & drop your file</span>
         </div> */}
       </div>
       <div className="thumbnails">
-      {thumbnails.map((thumbnail, index) => (
+        {thumbnails.map((thumbnail, index) => (
           <div className="thumbnailImgWrapper" key={index}>
             <img
-                style={
-                  uploadPercentage < 100 &&
-                  index === thumbnails.length - 1 &&
-                  videoFiles.length !== thumbnails.length
-                    ? { filter: `brightness(${uploadPercentage}%)` }
-                    : JSON.parse(localStorage.getItem("vidData"))[index]?.id===selectedVideo.id?{border:"3px solid #4D67EB"}:{}
-                }
+              style={
+                uploadPercentage < 100 &&
+                index === thumbnails.length - 1 &&
+                videoFiles.length !== thumbnails.length
+                  ? { filter: `brightness(${uploadPercentage}%)` }
+                  : JSON.parse(localStorage.getItem("vidData"))[index]?.id ===
+                    selectedVideo.id
+                  ? { border: "3px solid #4D67EB" }
+                  : {}
+              }
               src={thumbnail.url}
               alt={`Thumbnail ${index + 1}`}
               onClick={() =>
@@ -353,7 +367,7 @@ drag & drop your file</span>
             >
               &#10006;
             </span>
-            <span className="name">{videoArray[index+1]}</span>
+            <span className="name">{videoArray[index + 1]}</span>
           </div>
         ))}
         {loading && (

@@ -47,6 +47,7 @@ const InputField = (props) => {
   const [alertText, setAlertText] = useState("");
   const [selectedThumbnail, setSelectedThumbnail] = useState(null);
 const [selectedIndex, setSelectedIndex] = useState(null);
+const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
 
   let thumbnailsFromApi = [];
   let token = localStorage.getItem("accessToken");
@@ -281,6 +282,13 @@ const [selectedIndex, setSelectedIndex] = useState(null);
   useEffect(() => {
     localStorage.setItem("videoFiles", JSON.stringify(videoFiles));
   }, [videoFiles]);
+  useEffect(() => {
+    if (thumbnailClickTriggered) {
+      setTimeout(() => setThumbnailClickTriggered(false), 1000);
+    }
+  }, [thumbnailClickTriggered]);
+
+  
 
   const handleThumbnailClick = useCallback(
     (index) => {
@@ -288,6 +296,10 @@ const [selectedIndex, setSelectedIndex] = useState(null);
         alert("Please wait while your video is uploading");
         return;
       }
+      if (thumbnailClickTriggered) {
+        return;
+      }
+      setThumbnailClickTriggered(true)
       let thumbnails = JSON.parse(localStorage.getItem("thumbnails"));
       let videoFiles = JSON.parse(localStorage.getItem("videoFiles"));
       let videoArray = JSON.parse(localStorage.getItem("videoArray")) || [];

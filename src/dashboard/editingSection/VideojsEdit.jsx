@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import "video.js/dist/video-js.css";
 import "../style.css";
 import { Builder } from "@builder.io/react";
@@ -47,7 +47,6 @@ const VideoJsEdit = (props) => {
   const [multilple, setMultiple] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const setPinPosition = useSetRecoilState(pinPositionAtom);
-
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
   const [currentTime, setCurrentTime] = useState(0);
   const [videoDuration, setVideoDuration] = useRecoilState(videoDurationAtom);
@@ -81,21 +80,7 @@ const VideoJsEdit = (props) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (videoRef.current) {
-  //     console.log(selectedVideo);
-  //     const videoPlayer = videoRef.current;
-  //     setVideoRef(videoPlayer);
-  //     videoPlayer.load();
-  //     videoPlayer.addEventListener("loadedmetadata", () => {
-  //       setVideoDuration(videoPlayer.duration);
-  //     });
-  //     videoPlayer.addEventListener("timeupdate", () => {
-  //       setCurrentTime(videoPlayer.currentTime);
-  //     });
-  //   }
-  //   setIsPlaying(false);
-  // }, [selectedVideo, videoSrc]);
+
   useEffect(() => {
     if (videoRef.current) {
       const videoPlayer = videoRef.current;
@@ -305,7 +290,7 @@ const VideoJsEdit = (props) => {
     removeExistingCues();
     setDisplayedQuestions([]);
   }, [selectedVideo, questions]);
-  const handlePlay = () => {
+  const handlePlay = useCallback(() => {
     if (videoRef.current) {
       if (videoRef.current.paused) {
         videoRef.current.play();
@@ -316,7 +301,7 @@ const VideoJsEdit = (props) => {
       }
     }
     setQuestions(selectedVideo.questions);
-  };
+  }, [selectedVideo, videoRef]);
   const handleAnswerSelection = (answer) => {
     let newSelectedAnswer = [...selectedAnswer];
     if (multilple === "false") {
@@ -350,13 +335,8 @@ const VideoJsEdit = (props) => {
     <div className="videoContainer">
       <div
         style={{ width: props.width ? props.width : "95%",}}
-        className="videoPlayer"
-        // {...props.attributes}
-        // className={`my-class ${props.attributes.className}`}
-        
-      >
+        className="videoPlayer">
         <div className="videoWrapper"
-        
         style={isDisplay ? {} : { display: "none" }}>
           {selectedVideo?.videoSrc ? (
             <div data-vjs-player >
@@ -467,7 +447,6 @@ const VideoJsEdit = (props) => {
             <p className="time">
               {formatTime(currentTime)} / {formatTime(videoDuration)}
             </p>
-            {/* <p className="time" style={{paddingLeft:'2px'}} >  </p> */}
           </div>{" "}
           <div className="controlBar">
             <img
