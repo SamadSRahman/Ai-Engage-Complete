@@ -164,7 +164,6 @@ const SignUp = () => {
         alert("Please verify your email to continue");
         verifyEmail();
         setIsVerifyEmailVisible(true);
-        // navigate("/SignIn");
       })
       .catch((err) => {
         console.log("errors", err);
@@ -228,7 +227,11 @@ const SignUp = () => {
     <div className="signInContainer">
       {error && <div className="snackbar-error">{error}</div>}
       {isVerifyEmailVisible && (
-        <VerifyEmail onClose={() => setIsVerifyEmailVisible(false)} />
+        <VerifyEmail onClose={() => setIsVerifyEmailVisible(false)} 
+        name={name}
+        phone={phone}
+        password={pass}
+        />
       )}
       <div className="leftSection">
         <img className="logoIcon" src={logo} alt="" />
@@ -253,7 +256,7 @@ const SignUp = () => {
       <div className="rightSection">
         <div className="loginBox">
           <img className="loginBoxLogo" src={logo} alt="" />
-          <div className="heading">
+          <div className="headingLogin">
             <label className="welcomeText">Hi, Welcome</label>
             <img src={wave} alt="" />
           </div>

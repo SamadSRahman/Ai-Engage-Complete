@@ -9,8 +9,7 @@ import {
   copyToClipboard,
   handleUpdate,
   handleUpload,
-  handleWhatsAppClick,
-} from "../../Utils/services";
+  handleWhatsAppClick,} from "../../Utils/services";
 import AdminPopup from "../adminPopup/AdminPopup";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../spinner/Spinner";

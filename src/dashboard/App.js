@@ -28,18 +28,15 @@ import {
   videoListAtom,
 } from "./Recoil/store";
 import {
-  addQuestion,
   getSelectedQuestion,
-  editQuestions,
   handleDeleteQuestion,
   clearStorage,
 } from "./Utils/services";
 import TimelineSection from "./components/timelineSection/TimelineSection";
 import Alert from "./components/alert/Alert";
 import { useNavigate } from "react-router-dom";
-import useNavigationWarning from "./hooks/useNavigationWarning";
 import SkeletonPage from "./components/skeletons/SkeletonPage";
-import './App.css'
+import "./App.css";
 
 builder.init("403c31c8b557419fb4ad25e34c2b4df5");
 
@@ -50,12 +47,14 @@ export default function App() {
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
   const [isViewMessagePopupVisible, setIsViewMessagePopupVisible] =
     useRecoilState(isViewMessagePopupVisibleAtom);
-const [isUploading, setIsUploading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false);
   const isEditPopup = useRecoilValue(isEditPopupAtom);
   const [playerVideoSrc, setPlayerVideoSrc] = useState("");
   const [markedPositions, setMarkedPositions] =
     useRecoilState(markedPositionAtom);
-  const [questionPopupVisible,setQuestionPopupVisible] = useRecoilState(questionPopupVisibleAtom);
+  const [questionPopupVisible, setQuestionPopupVisible] = useRecoilState(
+    questionPopupVisibleAtom
+  );
   const isPreviewingInBuilder = useIsPreviewing();
   const [notFound, setNotFound] = useState(false);
   const [content, setContent] = useState(null);
@@ -63,97 +62,41 @@ const [isUploading, setIsUploading] = useState(false)
   const video = useRecoilValue(videoAtom);
   const currentTime = useRecoilValue(currentTimeAtom);
   const videoFiles = useRecoilValue(videoFilesAtom);
-  const [isAlertVisible, setIsAlertVisible] = useState(false)
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
   const questions = [];
-  const videoList = useRecoilValue(videoListAtom)
+  const videoList = useRecoilValue(videoListAtom);
   const questionIndex = useRecoilValue(questionIndexAtom);
-  const navigate = useNavigate()
-  const {confirmNavigation} = useNavigationWarning()
-  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event) => {
-  //     const vidData = JSON.parse(localStorage.getItem("videoArray")) || [];
-  //     if (vidData.length > 0) {
-  //       event.preventDefault();
-  //       event.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
-  //     }
-  //   };
-  
-  //   const handlePopState = (event) => {
-  //     const vidData = JSON.parse(localStorage.getItem("videoArray")) || [];
-  
-  //     if (vidData.length > 0) {
-  //       const confirmNavigation = window.confirm('You have unsaved changes. Are you sure you want to leave?');
-        
-  //       if (confirmNavigation) {
-  //         clearLocalStorage();
-  //         // Allow the navigation to proceed
-  //         navigate(-1)
-  //         return;
-  //       } else {
-  //         // If the user clicks "Cancel", prevent navigation
-  //         event.preventDefault();
-  //         window.history.pushState(null, '', window.location.pathname);
-  //       }
-  //     }
-  //   };
-  
-  //   const clearLocalStorage = () => {
-  //     const accessToken = localStorage.getItem("accessToken");
-  //     const adminDetails = localStorage.getItem("adminDetails");
-  
-  //     localStorage.clear();
-  //     console.log("Clear event triggered");
-  
-  //     if (accessToken !== null) {
-  //       localStorage.setItem("accessToken", accessToken);
-  //     }
-  //     if (adminDetails !== null) {
-  //       localStorage.setItem("adminDetails", adminDetails);
-  //     }
-  //   };
-  
-  //   // Push a state when the component mounts
-  //   window.history.pushState(null, '', window.location.pathname);
-  
-  //   // Add event listeners
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-  //   window.addEventListener("popstate", handlePopState);
-  
-  //   return () => {
-  //     // Remove event listeners
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //     window.removeEventListener("popstate", handlePopState);
-  //   };
-  // }, []);
+  useEffect(() => {
+    const thumbnails = JSON.parse(localStorage.getItem("thumbnails"));
+    console.log();
+    const unloadCallback = (event) => {
+      if (thumbnails.length > 0) {
+        console.log("Reload condition triggered", thumbnails);
+        event.preventDefault();
+        event.returnValue = "";
+        return "";
+      }
+    };
+    window.addEventListener("beforeunload", unloadCallback);
+    clearLocalStorage();
+    return () => window.removeEventListener("beforeunload", unloadCallback);
+  }, []);
 
-  useEffect(()=>{
-    document.title="Create new campaign"
-    let accessToken = localStorage.getItem("accessToken")
-    setFileName("")
-    if(!accessToken){
-     navigate("/")
+  const clearLocalStorage = () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const adminDetails = localStorage.getItem("adminDetails");
+
+    localStorage.clear();
+    console.log("Clear event triggered");
+
+    if (accessToken !== null) {
+      localStorage.setItem("accessToken", accessToken);
     }
-  },[])
-
-  const addQuestions = (question) => {
-    addQuestion(question);
-    let selectedVideo = localStorage.getItem("selectedVideo");
-    if (selectedVideo !== undefined) selectedVideo = JSON.parse(selectedVideo);
-    setSelectedVideo(selectedVideo);
-  };
-  const editQuestion = (questionObject, selectedId) => {
-    editQuestions(questionObject, selectedId);
-    let selectedVideo = localStorage.getItem("selectedVideo");
-    if (selectedVideo !== undefined) selectedVideo = JSON.parse(selectedVideo);
-    setSelectedVideo(selectedVideo);
-  };
-  const markPosition = (markedPositions) => {
-    let pinPosition = localStorage.getItem("pinPosition");
-    if (pinPosition !== undefined) pinPosition = JSON.parse(pinPosition);
-    if (pinPosition !== null) {
-      setMarkedPositions([...markedPositions, pinPosition]);
+    if (adminDetails !== null) {
+      localStorage.setItem("adminDetails", adminDetails);
     }
   };
   const getVidData = (data) => {
@@ -165,50 +108,55 @@ const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     async function fetchContent() {
-      setIsLoading(true)
+      setIsLoading(true);
       const content = await builder
         .get("page", {
           url: "/editor",
         })
         .promise();
-       
       setContent(content);
       setNotFound(!content);
-      setIsLoading(false)
-      if (content?.data.title) {
-        // document.title = content.data.title;
-      }
+      setIsLoading(false);
     }
     fetchContent();
+    document.title = "Create new campaign";
+    let accessToken = localStorage.getItem("accessToken");
+    setFileName("");
+    if (!accessToken) {
+      navigate("/");
+    }
   }, []);
 
   if (notFound && !isPreviewingInBuilder) {
     return <div>404</div>;
   }
-  if(isLoading){
+  if (isLoading) {
     return <SkeletonPage />;
   }
-
-const onClose = ()=>{
-  setQuestionPopupVisible(false)
-}
   return (
     <div className="CreateContainer">
-  {isAlertVisible &&   <Alert
-    text={"You have unsaved data, are you sure you want to leave this page?"}
-    primaryBtnText={"Yes"}
-    title={"Alert"}
-    secondaryBtnText={"No"}
-    onClose={()=>setIsAlertVisible(false)}
-    onSuccess={()=>{clearStorage(); setIsAlertVisible(false)}}
-    />}
-    <Navbar isrightsidemenu={true}/>
+      {isAlertVisible && (
+        <Alert
+          text={
+            "You have unsaved data, are you sure you want to leave this page?"
+          }
+          primaryBtnText={"Yes"}
+          title={"Alert"}
+          secondaryBtnText={"No"}
+          onClose={() => setIsAlertVisible(false)}
+          onSuccess={() => {
+            clearStorage();
+            setIsAlertVisible(false);
+          }}
+        />
+      )}
+      <Navbar isrightsidemenu={true} />
       <BuilderComponent
         model="page"
         content={content}
         data={{
-          videoList:[...videoList],
-          isUploading:isUploading,
+          videoList: [...videoList],
+          isUploading: isUploading,
           selectedVideo: { ...selectedVideo },
           selectedQuestion: selectedQuestion,
           isEditPopup: isEditPopup,
@@ -245,22 +193,13 @@ const onClose = ()=>{
             let id = uid();
             return id;
           },
-          addQuestion: (question) => {
-            addQuestions(question);
-          },
-          onClose:()=>onClose(),
-          markPosition: (markedPositions) => {
-            markPosition(markedPositions);
-          },
           getSelectedQuestion: () => getSelectedQuestion(),
-          editQuestions: (questionsObject, selectedId) =>
-            editQuestion(questionsObject, selectedId),
           handleDeleteQuestion: (mainArray, mainArrayItem) =>
             handleDeleteQuestion(mainArray, mainArrayItem),
           getVidData: (data) => getVidData(data),
         }}
       />
-   {!isEditorVisible &&    <TimelineSection/>}
+      {!isEditorVisible && <TimelineSection />}
     </div>
   );
 }

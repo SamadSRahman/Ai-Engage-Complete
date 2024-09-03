@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import "./videoTimeline.css";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
@@ -30,9 +30,9 @@ const VideoTimeline = (props) => {
   const videoSrc = useRecoilValue(videoSrcAtom);
   const [currentTime, setCurrentTime] = useRecoilState(currentTimeAtom);
   const videoDuration = useRecoilValue(videoDurationAtom);
-  const [isDeleteAlertVisible,setIsDeleteAlertVisible] = useState(false)
-  const [isSuccessAlertVisible,setIsSuccessAlertVisible] = useState(false)
-  const [id, setId] = useState("")
+  const [isDeleteAlertVisible, setIsDeleteAlertVisible] = useState(false);
+  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
+  const [id, setId] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   let timelineLength = videoDuration;
   const [pinPosition, setPinPosition] = useRecoilState(pinPositionAtom);
@@ -40,16 +40,16 @@ const VideoTimeline = (props) => {
   const [videoThumbnails, setVideoThumbnails] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
-  const [pinLeft, setPinLeft] = useState("0")
-  const setIsThumbanilGenerating = useSetRecoilState(isThumbnailGeneratingAtom)
-  const setVid = useSetRecoilState(vidAtom)
+  const [pinLeft, setPinLeft] = useState("0");
+  const setIsThumbanilGenerating = useSetRecoilState(isThumbnailGeneratingAtom);
+  const setVid = useSetRecoilState(vidAtom);
 
   useEffect(() => {
     let newSelectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
     setSelectedVideo(newSelectedVideo);
   }, [props.isEditorVisible]);
 
-  const handleDelete = () => {  
+  const handleDelete = () => {
     const newSelectedVideo = { ...selectedVideo };
     const newArray = newSelectedVideo.questions.filter((ele) => ele.id !== id);
     newSelectedVideo.questions = newArray;
@@ -59,12 +59,11 @@ const VideoTimeline = (props) => {
     const index = vidData.findIndex((ele) => ele.id === newSelectedVideo.id);
     vidData[index] = newSelectedVideo;
     localStorage.setItem("vidData", JSON.stringify(vidData));
-    setVid(vidData)
+    setVid(vidData);
     setShowPopup(false);
-    setIsSuccessAlertVisible(true)
-    setIsDeleteAlertVisible(false)
+    setIsSuccessAlertVisible(true);
+    setIsDeleteAlertVisible(false);
   };
-
 
   useEffect(() => {
     timelineLength = videoDuration;
@@ -116,7 +115,7 @@ const VideoTimeline = (props) => {
       backgroundColor: i === 0 || isSecondInterval ? "black" : "darkgrey",
       marginRight: "15.5px", // Adjust margin between bars
       position: "relative",
-      minWidth:"1px"
+      minWidth: "1px",
     };
     timelineBars.push(
       <div key={i} style={barStyle}>
@@ -126,24 +125,24 @@ const VideoTimeline = (props) => {
       </div>
     );
   }
-  useEffect(()=>{
+  useEffect(() => {
     setPinLeft(pinPosition ? `${(pinPosition / timelineLength) * 99}%` : "0%");
-  },[pinPosition])
+  }, [pinPosition]);
   const [thumbnailsGenerated, setThumbnailsGenerated] = useState(false);
 
   const generateThumbnails = (src) => {
     if (!src || thumbnailsGenerated) return;
-    setIsThumbanilGenerating(true)
+    setIsThumbanilGenerating(true);
     const video = document.createElement("video");
     video.src = src;
     video.preload = "metadata"; // Load metadata to get video dimensions
-  
+
     // Set to keep track of timestamps for which thumbnails have been generated
     const generatedTimes = new Set();
-  
+
     video.addEventListener("loadedmetadata", () => {
       let currentTime = 0;
-  
+
       const thumbnailGeneration = (currentTimeForThumbnail) => {
         if (generatedTimes.has(currentTimeForThumbnail)) {
           console.log(
@@ -152,24 +151,24 @@ const VideoTimeline = (props) => {
           generateThumbnail(currentTimeForThumbnail + 7);
           return;
         }
-  
+
         const canvas = document.createElement("canvas");
         canvas.width = 200;
         canvas.height = 120;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(video, 0, 0, 200, 120);
-  
+
         canvas.toBlob(async (thumbnailBlob) => {
           // Mark this time as processed immediately to avoid duplicate generation
           generatedTimes.add(currentTimeForThumbnail);
           await storeThumbnail(thumbnailBlob, currentTimeForThumbnail);
         }, "image/jpeg");
       };
-  
+
       const storeThumbnail = async (thumbnailBlob, currentTimeForThumbnail) => {
         const formData = new FormData();
         formData.append("thumbnail", thumbnailBlob, "thumbnail.jpg");
-  
+
         try {
           const response = await axios.post(
             "https://videosurvey.xircular.io/api/v1/video/upload/thumbnail",
@@ -181,7 +180,7 @@ const VideoTimeline = (props) => {
               },
             }
           );
-  
+
           setVideoThumbnails((prevThumbnails) => {
             const newThumbnails = [
               ...prevThumbnails,
@@ -190,25 +189,25 @@ const VideoTimeline = (props) => {
                 url: `https://videosurvey.xircular.io/thumbnails/${response.data.thumbnailUrl}`,
               },
             ];
-  
+
             // Remove duplicates based on time
             const uniqueThumbnails = newThumbnails.filter(
               (value, index, self) =>
                 index === self.findIndex((t) => t.time === value.time)
             );
-  
+
             return uniqueThumbnails;
           });
-  
+
           generateThumbnail(currentTimeForThumbnail + 7);
         } catch (error) {
           console.log(error);
         }
       };
-  
+
       const generateThumbnail = (nextTime) => {
         if (nextTime >= video.duration) {
-          setIsThumbanilGenerating(false)
+          setIsThumbanilGenerating(false);
           const newArray = JSON.parse(localStorage.getItem("vidData"));
           let newObj = { ...newArray[currentIndex] };
           newObj.thumbnails = videoThumbnails;
@@ -220,7 +219,7 @@ const VideoTimeline = (props) => {
           video.removeEventListener("seeked", thumbnailGeneration);
           return;
         }
-  
+
         video.currentTime = nextTime;
         video.addEventListener(
           "seeked",
@@ -232,19 +231,18 @@ const VideoTimeline = (props) => {
           { once: true }
         );
       };
-  
+
       setVideoThumbnails([]);
       generateThumbnail(currentTime);
     });
   };
-  
 
   useEffect(() => {
-    if(videoThumbnails.length>0){
+    if (videoThumbnails.length > 0) {
       let newObj = JSON.parse(localStorage.getItem("selectedVideo"));
-    newObj.thumbnails = videoThumbnails;
-    setSelectedVideo(newObj);
-    localStorage.setItem("selectedVideo", JSON.stringify(newObj));
+      newObj.thumbnails = videoThumbnails;
+      setSelectedVideo(newObj);
+      localStorage.setItem("selectedVideo", JSON.stringify(newObj));
     }
   }, [videoThumbnails]);
   useEffect(() => {
@@ -253,24 +251,28 @@ const VideoTimeline = (props) => {
     setPinPosition(0.0);
   }, [videoSrc]);
   useEffect(() => {
-    let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"))
+    let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
     if (selectedVideo?.thumbnails?.length > 0) {
-      setVideoThumbnails(selectedVideo.thumbnails);
+     setTimeout(()=> setVideoThumbnails(selectedVideo.thumbnails), 400)
     } else generateThumbnails(videoSrc, timelineLength);
   }, [videoSrc, timelineLength, thumbnailsGenerated]);
   // Generate the thumbnail elements for the secondary timeline
-  const thumbnailElements = videoThumbnails.map((thumbnail, index) => (
-    <img
-      key={index}
-      src={thumbnail.url}
-      alt={`Thumbnail at ${thumbnail.time}s`}
-      style={{
-        minWidth: "118px", // Set the width based on the timeline length
-        height: "3.2rem", // Define the height of the thumbnail timeline
-        objectFit: "cover", // Ensure the thumbnail fits within its container
-      }}
-    />
-  ));
+  const thumbnailElements = useMemo(
+    () =>
+      videoThumbnails.map((thumbnail, index) => (
+        <img
+          key={index}
+          src={thumbnail.url}
+          alt={`Thumbnail at ${thumbnail.time}s`}
+          style={{
+            minWidth: "118px", // Set the width based on the timeline length
+            height: "3.2rem", // Define the height of the thumbnail timeline
+            objectFit: "cover", // Ensure the thumbnail fits within its container
+          }}
+        />
+      )),
+    [videoThumbnails]
+  );
   const handleDragOver = (event) => {
     event.preventDefault();
     const timelineElement = timelineRef.current;
@@ -294,15 +296,17 @@ const VideoTimeline = (props) => {
     const positionX = event.clientX - timelineRect.left;
 
     if (positionX >= 0 && positionX <= timelineRect.width) {
-        const preciseTime = (positionX / timelineRect.width) * timelineLength;
-        const roundedTime = Math.round(preciseTime * 10) / 10; // Round to one decimal place
+      const preciseTime = (positionX / timelineRect.width) * timelineLength;
+      const roundedTime = Math.round(preciseTime * 10) / 10; // Round to one decimal place
 
-        setPinPosition(roundedTime);
-        setCurrentTime(roundedTime);
-        localStorage.setItem("pinPosition", roundedTime);
+      setPinPosition(roundedTime);
+      setCurrentTime(roundedTime);
+      localStorage.setItem("pinPosition", roundedTime);
     }
-};
-  const markedPositionElements = selectedVideo?.questions?.map(
+  };
+  const markedPositionElements = 
+  useMemo(()=>
+  selectedVideo?.questions?.map(
     (position, index) => (
       <div
         key={index}
@@ -339,8 +343,9 @@ const VideoTimeline = (props) => {
             <Popup
               id={position.id}
               onDelete={() => {
-                setIsDeleteAlertVisible(true)
-                setId(position.id)}}
+                setIsDeleteAlertVisible(true);
+                setId(position.id);
+              }}
               onClose={() => setShowPopup(false)}
               index={index}
             />
@@ -348,26 +353,32 @@ const VideoTimeline = (props) => {
         </div>
       </div>
     )
-  );
+  ),[selectedVideo])
   // causing error of maximum depth
   // useEffect(() => {
   //   setIsEditPopupVisible(props.isEditPopup);
   // }, [props.isEditPopup]);
   return (
     <>
-   {isDeleteAlertVisible && (<Alert text={"Are you sure you want to delete this pointer?"}
-    title={"Alert"}
-    primaryBtnText={"Yes"}
-    secondaryBtnText={"Cancel"}
-    onClose={()=>setIsDeleteAlertVisible(false)}
-    onSuccess={handleDelete}
-    />)}
-   {isSuccessAlertVisible && (<Alert text={"Pointer deleted successfully"}
-    title={"Alert"}
-    primaryBtnText={"Okay"}
-    onClose={()=>setIsSuccessAlertVisible(false)}
-    onSuccess={()=>setIsSuccessAlertVisible(false)}
-    />)}
+      {isDeleteAlertVisible && (
+        <Alert
+          text={"Are you sure you want to delete this pointer?"}
+          title={"Alert"}
+          primaryBtnText={"Yes"}
+          secondaryBtnText={"Cancel"}
+          onClose={() => setIsDeleteAlertVisible(false)}
+          onSuccess={handleDelete}
+        />
+      )}
+      {isSuccessAlertVisible && (
+        <Alert
+          text={"Pointer deleted successfully"}
+          title={"Alert"}
+          primaryBtnText={"Okay"}
+          onClose={() => setIsSuccessAlertVisible(false)}
+          onSuccess={() => setIsSuccessAlertVisible(false)}
+        />
+      )}
       <div className="timelineContainer">
         <div
           onDrop={handleDrop}
@@ -379,6 +390,7 @@ const VideoTimeline = (props) => {
             width: `${timelineLength * (barWidth + 4)}px `,
             margin: "5px",
             padding: "0px",
+          
           }}
         >
           <div
@@ -395,42 +407,42 @@ const VideoTimeline = (props) => {
             {timelineBars}
           </div>
           {timelineLength > 0 && (
-           <div
-           id="pin"
-           draggable
-           onDragStart={handleDragStart}
-           style={{
-             width: "20px", // Make the div narrow to represent the border line
-             height: "165px", // Height of the line extending downward
-             position: "absolute",
-             top: "-5px", // Adjust to position correctly
-             left: `calc(${pinLeft} - 0.05px)`, // Center the line under the triangle
-             cursor: "grab",
-             borderLeft: "1.5px dashed #4D67EB", // Dashed border line
-             transition: "left 0.3s linear",
-             display: 'flex',
-             flexDirection: 'column',
-             alignItems: 'center',
-           }}
-         >
-           <img
-             src={polygon} // Inverted triangle image
-             alt=""
-             style={{
-               display: 'block',
-               width: "20px",
-               position:'relative',
-               left:'-10.2px',
-               marginBottom: '-2px', // Ensure the triangle and line are connected
-             }}
-           />
-         </div>
-         
+            <div
+              id="pin"
+              draggable
+              onDragStart={handleDragStart}
+              style={{
+                width: "20px", // Make the div narrow to represent the border line
+                height: "165px", // Height of the line extending downward
+                position: "absolute",
+                top: "-5px", // Adjust to position correctly
+                left: `calc(${pinLeft} - 0.05px)`, // Center the line under the triangle
+                cursor: "grab",
+                borderLeft: "1.5px dashed #4D67EB", // Dashed border line
+                transition: "left 0.3s linear",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <img
+                src={polygon} // Inverted triangle image
+                alt=""
+                style={{
+                  display: "block",
+                  width: "20px",
+                  position: "relative",
+                  left: "-10.2px",
+                  marginBottom: "-2px", // Ensure the triangle and line are connected
+                }}
+              />
+            </div>
           )}
           <div
             className="thumbnailContainer"
             style={{
               width: `${timelineLength * (barWidth + 3.8)}px `,
+           
             }}
           >
             {thumbnailElements}

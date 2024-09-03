@@ -43,7 +43,7 @@ export default function Pricing() {
         const response = await axios.get(requesturl);
 
         console.log("All Subscriptiondata Response", response.data);
-        setSubscriptiondata(response.data);
+        setSubscriptiondata(response.data.subscriptionPlans);
         setLoading(false);
       } catch (error) {
         setLoading(false);

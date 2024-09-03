@@ -21,7 +21,7 @@ import VerifyEmail from "../dailogs/VerifyEmail";
 
 const SignIn = ({ setIsAuthenticated }) => {
   
-  axios.defaults.withCredentials = true;
+  // axios.defaults.withCredentials = true;
   const { popup } = useParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -88,7 +88,7 @@ const SignIn = ({ setIsAuthenticated }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials:true
+        
         }
       );
   
@@ -137,24 +137,7 @@ const SignIn = ({ setIsAuthenticated }) => {
         console.log("Error message", err.message);
       }
     }
-  }
-  //   try {
-  //     const response = await fetch("https://stream.xircular.io/api/v1/customer/signin", {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(details),
-  //       credentials: 'include'
-  //     });
-  //     const data = await response.json();
-  //     console.log("Response data:", data);
-  //     // ... handle the response
-  //   } catch (error) {
-  //     console.error("Fetch error:", error);
-  //   }
-  // }
-  
+  }  
   function verifyEmail() {
     localStorage.setItem("email", email);
     const headerObject = {
@@ -169,6 +152,7 @@ const SignIn = ({ setIsAuthenticated }) => {
       )
       .then((response) => {
         console.log(response.data);
+        setError("")
         navigate("verifyEmail");
       })
       .catch((error) => {
@@ -181,9 +165,6 @@ const SignIn = ({ setIsAuthenticated }) => {
     navigate("/SignUp");
   };
 
-  // const handlePassword = () =>{
-  //   navigate('/forgotpassword')
-  // }
   function onPopupClose() {
     navigate("/SignIn");
     setIsResetPasswordVisible(false);
@@ -240,7 +221,7 @@ const SignIn = ({ setIsAuthenticated }) => {
       <div className="rightSection">
         <div className="loginBox">
           <img className="loginBoxLogo" src={logo} alt="" />
-          <div className="heading">
+          <div className="headingLogin">
             <label className="welcomeText">Hi, Welcome</label>
             <img src={wave} alt="" />
           </div>

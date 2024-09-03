@@ -110,7 +110,6 @@ const VideoJs = (props) => {
   useEffect(() => {
     if (videoRef.current) {
       videoPlayer = videoRef.current;
-      // videoPlayer.src = selectedVideo.videoSrc
       let tracks = videoPlayer.textTracks;
       let questionTrack;
 
@@ -333,7 +332,6 @@ const VideoJs = (props) => {
                 id="my-video"
                 ref={videoRef}
                 className="video-js vjs-big-play-centered"
-                // controls
                 muted={isMuted}
                 style={{
                   borderRadius: "8px",
@@ -445,7 +443,7 @@ const VideoJs = (props) => {
               width={28}
               height={28}
               onClick={() => handleTimeUpdate("rewind")}
-              style={videoSrc ? currentTimeRecoil-5<0? {opacity:"0.5"} : {} : { opacity: "0.5" }}
+              style={videoSrc ? currentTime-5<0? {opacity:"0.5"} : {} : { opacity: "0.5" }}
             />
             <img
               src={isPlaying ? pause : play}
@@ -461,7 +459,7 @@ const VideoJs = (props) => {
               onClick={() => handleTimeUpdate("skip")}
               width={28}
               height={28}
-              style={videoSrc ? currentTimeRecoil+5>videoDuration? {opacity:"0.5"} : {} : { opacity: "0.5" }}
+              style={videoSrc ? currentTime+5>videoDuration? {opacity:"0.5"} : {} : { opacity: "0.5" }}
             />
           </div>
           <div className="imgDiv">

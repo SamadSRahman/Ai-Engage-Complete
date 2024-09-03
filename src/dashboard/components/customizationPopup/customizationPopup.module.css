@@ -3,7 +3,7 @@
     min-height: 95vh;
     max-height: fit-content;
     background-color: white;
-    z-index: 11;
+    /* z-index: 11; */
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.308);
     border-radius: 7px;
     position: relative;
@@ -60,6 +60,7 @@
     outline: none;
     font-family: "Figtree", sans-serif;
     background: #F5F5F5;
+    font-size: 14px;
 }
 .imgSection{
     /* border: 1px solid; */
@@ -161,4 +162,6 @@
     justify-content:center;
     padding: 10px 15px;
     gap:5px;
+    font-size: small;
+    font-weight: 600;
 }

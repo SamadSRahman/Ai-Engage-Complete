@@ -18,7 +18,7 @@
   cursor: pointer;
   width: 115px;
   height: 73px;
-  border: 1px solid;
+  border: 1px solid rgb(0, 0,0,0.3);
 }
 .loader-container {
   display: flex;
@@ -84,11 +84,13 @@
 }
 .uploadPercentage{
   position: relative;
-    left: 7px;
-    bottom: 54px;
-    font-family: "Figtree", sans-serif;
-    text-shadow: 1px 1px 5px black;
-    color: white;
+  width: 100%;
+  display: block;
+  bottom: 48px;
+  font-family: "Figtree", sans-serif;
+  text-shadow: 1px 1px 5px black;
+  color: white;
+  text-align: center;
 }
 .timestamp{
   font-family: "Figtree", sans-serif;
@@ -99,7 +101,7 @@
   color: white;
   font-size: small;
   position: relative;
-  bottom: 1.9rem;
+  bottom: 1.6rem;
   left: 6px;
 }
 .inputPlaceholder{
@@ -176,8 +178,9 @@
 .name{
   display: block;
   font-family: "Figtree", sans-serif;
-  width: 98%;
-  margin-top: -18px;
+  width: 90%;
+  margin-top: -15px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0px 4px;

@@ -6,6 +6,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import axios from "axios";
 import Spinner from "../spinner/Spinner";
 import backup from '../../images/backup.svg'
+import Alert from "../alert/Alert";
 
 export default function CustomizationPopup({ onClose }) {
   const logoRef = useRef(null);
@@ -20,6 +21,8 @@ export default function CustomizationPopup({ onClose }) {
   let accessToken = localStorage.getItem("accessToken");
   const [dataReceivedFromAPI, setDataReceivedFromAPI] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAlertVisible, setIsAlertVisible] = useState(false)
+  const [alertText, setAlertText] = useState("")
 
   useEffect(() => {
     fetchData();
@@ -70,9 +73,11 @@ export default function CustomizationPopup({ onClose }) {
 
   async function handleUpdate() {
     if (!brandName) {
-      alert("Please enter a valid name for your brand");
+      setAlertText("Please enter a valid name for your brand");
+      setIsAlertVisible(true)
     } else if (!brandDes) {
-      alert("Please enter a valid description for your brand");
+      setAlertText("Please enter a valid description for your brand");
+      setIsAlertVisible(true)
     } else {
       try {
         setIsLoading(true);
@@ -90,7 +95,8 @@ export default function CustomizationPopup({ onClose }) {
         const response = await axios.put(apiUrl, body, { headers });
         console.log(response.data);
         if (response.data.message === "Data Updated Successfully") {
-          alert(response.data.message);
+          setAlertText(response.data.message);
+          setIsAlertVisible(true)
           setIsLoading(false);
         }
       } catch (error) {
@@ -106,8 +112,7 @@ export default function CustomizationPopup({ onClose }) {
           formData.append("logo", logoFile);
           const headers = {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${accessToken}`, // If you need authorization headers
-            // Add any other headers here
+            Authorization: `Bearer ${accessToken}`,
           };
           const response = await axios.patch(url, formData, { headers });
           console.log(response.data);
@@ -127,8 +132,7 @@ export default function CustomizationPopup({ onClose }) {
           formData.append("coverImage", bgFile);
           const headers = {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${accessToken}`, // If you need authorization headers
-            // Add any other headers here
+            Authorization: `Bearer ${accessToken}`,
           };
           const response = await axios.patch(url, formData, { headers });
           console.log(response.data);
@@ -143,9 +147,11 @@ export default function CustomizationPopup({ onClose }) {
   }
   async function handleSave() {
     if (!brandName) {
-      alert("Please enter a valid name for your brand");
+      setAlertText("Please enter a valid name for your brand");
+      setIsAlertVisible(true)
     } else if (!brandDes) {
-      alert("Please enter a valid description for your brand");
+      setAlertText("Please enter a valid description for your brand");
+      setIsAlertVisible(true)
     } else {
       try {
         setIsLoading(true);
@@ -158,22 +164,25 @@ export default function CustomizationPopup({ onClose }) {
         if (url) {
           isValidURL(url);
           formData.append("url", url);
-        } else alert("Please enter a valid URL");
+        } else{ setAlertText("Please enter a valid URL");
+          setIsAlertVisible(true)
+        }
         const headers = {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${accessToken}`, // If you need authorization headers
-          // Add any other headers here
+          Authorization: `Bearer ${accessToken}`, 
         };
         const response = await axios.post(url, formData, { headers });
         console.log(response.data);
         if (response.data.message === "AppBranding Created Successully") {
           setIsLoading(false);
-          alert("Changes Saved");
+          setAlertText("Changes Saved");
+          setIsAlertVisible(true)
         }
       } catch (error) {
         console.log(error);
         if (error.response.data.message) {
-          alert(error.response.data.message);
+          setAlertText(error.response.data.message);
+          setIsAlertVisible(true)
         }
         setIsLoading(false);
       }
@@ -186,6 +195,13 @@ export default function CustomizationPopup({ onClose }) {
   }
   return (
     <div className={styles.wrapper}>
+    {isAlertVisible && (<Alert
+    title={"Alert"}
+    text={alertText}
+    primaryBtnText={"Okay"}
+    onSuccess={()=>setIsAlertVisible(false)}
+    onClose={()=>setIsAlertVisible(false)}
+    />)}
       <div className={styles.container}>
         <div className={styles.header}>
           <span>Customize your Response Platform</span>
