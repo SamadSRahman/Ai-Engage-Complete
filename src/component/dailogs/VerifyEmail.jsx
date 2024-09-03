@@ -119,7 +119,7 @@ export default function VerifyEmail({ onClose, name, phone, password, }) {
         <label className={styles.primaryText}>Verify your email</label>
         <label className={styles.secondaryText}>
           {" "}
-          We’ve sent an OTP to your email
+          We’ve sent an OTP to {email}
         </label>
         <form onSubmit={handleVerifyCode}>
           {/* <div id={styles.inputWrapper} className="inputWrapper">
@@ -150,6 +150,12 @@ export default function VerifyEmail({ onClose, name, phone, password, }) {
               </span>
             </div>
           )}
+          <div className="signUpSection">
+          <span>Incorrect email?</span>
+              <span onClick={onClose} className="linkSpan">
+                Edit 
+              </span>
+            </div>
           <button
             disabled={otp ? false : true}
             className={styles.sendBtn}

@@ -197,8 +197,10 @@ const [selectedIndex, setSelectedIndex] = useState(null);
         setVid([...vidData, newObject]);
         let newArray = [...videoSrcArray];
         // let mp4URL = response.data.videoUrl.replace("/playlist.m3u8", "");
+        console.log(newArray)
         newArray.push(response.data.videoUrl.replace("/playlist.m3u8", ""));
         setVideoSrcArray([...newArray]);
+        console.log(newArray)
         setTimeout(() => {
           handleThumbnailClick(vidData.length );
           console.log("handleThumbnail triggered",newArray, vid, vidData.length);
@@ -221,7 +223,7 @@ const [selectedIndex, setSelectedIndex] = useState(null);
         }
       }
     },
-    [token, setVideoLoading, setVid, setVideoSrcArray, setSelectedVideo]
+    [token, setVideoLoading, setVid, setVideoSrcArray, setSelectedVideo, selectedVideo]
   );
 
   const onFileChange = useCallback((event) => {

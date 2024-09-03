@@ -52,20 +52,7 @@ useEffect(()=>{
     setThumbnails(thumbs);
   } else {
     console.log("Some elements in thumbs are undefined or thumbs itself is undefined");
-  }
-
-
- 
-  // let names = vid?.map((ele)=>{
-  //   if(ele.name!==null){
-  //     return ele.name
-  //   }
-  // })
-  // names.unshift("Select a Video")
-  // localStorage.setItem("videoArray", JSON.stringify(names))
-  // console.log("videoArray updated")
- 
-  
+  }  
 },[vid])
 
 
