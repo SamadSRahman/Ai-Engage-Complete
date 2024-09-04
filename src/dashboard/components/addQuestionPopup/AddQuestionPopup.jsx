@@ -7,6 +7,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { selectedVideoAtom, vidAtom, videoDurationAtom } from "../../Recoil/store";
 import { uid } from "uid";
 import Alert from "../alert/Alert";
+
 export default function AddQuestionPopup({ onClose }) {
   const obj = {
     id: uid(),
@@ -26,7 +27,6 @@ export default function AddQuestionPopup({ onClose }) {
   const [isDragging, setIsDragging] = useState(false);
   const [questionObject, setQuestionObject] = useState(obj);
   const [alertText, setAlertText] = useState("")
-  // const [offset, setOffset] = useState({ x: 0, y: 0 });
   const videoDuration = useRecoilValue(videoDurationAtom);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
@@ -113,9 +113,7 @@ export default function AddQuestionPopup({ onClose }) {
     };
     setQuestionObject(newQuesObj);  
   }
-  useEffect(() => {
-    console.log(questionObject);
-  }, [questionObject]);
+
   function deleteAnswer(id) {
     let newObj = JSON.parse(JSON.stringify(questionObject));
     let newArray = newObj.answers.filter((ele) => ele.id != id);

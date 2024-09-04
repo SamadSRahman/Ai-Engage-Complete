@@ -230,7 +230,7 @@ const SignUp = () => {
         <VerifyEmail onClose={() => setIsVerifyEmailVisible(false)} 
         name={name}
         phone={phone}
-        password={pass}
+        password={password}
         />
       )}
       <div className="leftSection">

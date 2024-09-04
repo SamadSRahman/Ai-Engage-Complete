@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { uid } from "uid";
 
+//InputField
 export const handleFileChange = (files, setVideoFiles, generateThumbnail) => {
   if (files) {
     Array.from(files).forEach((file) => {
@@ -43,6 +42,7 @@ export const getDataFromStorage = (key) => {
   }
 };
 
+//VideoPlayer
 export const formatTime = (timeInSeconds) => {
   const hours = Math.floor(timeInSeconds / 3600);
   const minutes = Math.floor((timeInSeconds % 3600) / 60);
@@ -53,21 +53,7 @@ export const formatTime = (timeInSeconds) => {
   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 };
 
-export const addQuestion = (questionsObject) => {
-  let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
-  selectedVideo.questions = [...selectedVideo.questions, questionsObject];
-  localStorage.setItem("selectedVideo", JSON.stringify(selectedVideo));
-  let vidData = JSON.parse(localStorage.getItem("vidData"));
-  let targetIndex = vidData.findIndex((ele) => ele.id === selectedVideo.id);
-  if (targetIndex !== -1) {
-    vidData[targetIndex] = selectedVideo;
-  } else {
-    vidData.push(selectedVideo);
-  }
-  localStorage.setItem("vidData", JSON.stringify(vidData));
 
-  console.log(selectedVideo);
-};
 
 export const updateSubVideo = (questions, vidData) => {
   const MAX_RECURSION_DEPTH = 1000; // Maximum recursion depth threshold
@@ -122,7 +108,6 @@ export const updateSubVideo = (questions, vidData) => {
   return updateSubVideoRecursive(questions, vidData, 0);
 };
 
-// const videos = JSON.parse(localStorage.getItem("thumbnails"))
 
 function convertTimestampToSeconds(timestamp) {
   const [minutes, seconds] = timestamp.split(":").map(Number);
@@ -213,11 +198,9 @@ export const handleUpload = async (
 };
 export const handleUpdate = async (
   setIsSuccessAlertVisible,
-  setIsAlertVisible,
   setAlertText,
   title,
   setLoading,
-  navigate
 ) => {
   const videos = JSON.parse(localStorage.getItem("thumbnails"));
   console.log("title", title)
@@ -265,56 +248,19 @@ export const handleUpdate = async (
   }
 };
 
-export const getSelectedQuestion = () => {
-  const selectedQuestion =
-    JSON.parse(localStorage.getItem("selectedQuestion")) || {};
-  return selectedQuestion;
-};
+// export const getSelectedQuestion = () => {
+//   const selectedQuestion =
+//     JSON.parse(localStorage.getItem("selectedQuestion")) || {};
+//   return selectedQuestion;
+// };
 
-export const editQuestions = (questionsObject) => {
-  console.log("QO", questionsObject);
-  let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
-  const newSelectedVideo = {
-    ...selectedVideo,
-    questions: selectedVideo.questions.map((question) =>
-      question.id === questionsObject.id ? questionsObject : question
-    ),
-  };
-  console.log(newSelectedVideo);
-  localStorage.setItem("selectedVideo", JSON.stringify(newSelectedVideo));
-  let vidData = JSON.parse(localStorage.getItem("vidData"));
-  let newVidData = vidData.map((ele) => {
-    if (ele.id === newSelectedVideo.id) return { ...newSelectedVideo };
-    return ele;
-  });
-  localStorage.setItem("vidData", JSON.stringify(newVidData));
-  console.log("newVidData", newVidData);
-  console.log("newSelectedVideo", newSelectedVideo.questions);
-};
 
-export const handleDeleteQuestion = (mainArray, mainArrayItem) => {
-  let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
-  const newArray = selectedVideo.questions.filter(
-    (ele) => ele.id !== mainArrayItem.id
-  );
-  selectedVideo.questions = newArray;
-  console.log("New Array", newArray);
-  console.log("selectedVideo:", selectedVideo);
-  mainArray = newArray;
-  console.log("Main Array", mainArray);
-  localStorage.setItem("selectedVideo", JSON.stringify(selectedVideo));
 
-  return mainArray;
-};
 
 export function calculateDaysPassed(timestamp) {
-  // Convert timestamp to a Date object
   const startDate = new Date(timestamp);
-
-  // Get the current date and time
   const currentDate = new Date();
 
-  // Calculate the time difference in milliseconds
   const timeDifference = currentDate - startDate;
 
   // Convert milliseconds to days
@@ -357,45 +303,45 @@ export async function generateThumbnail(videoUrl) {
   });
 }
 
-export function getVideoList() {
-  console.log("getVideoList function triggered");
-  let videoArray = JSON.parse(localStorage.getItem("videoArray")) || [];
+// export function getVideoList() {
+//   console.log("getVideoList function triggered");
+//   let videoArray = JSON.parse(localStorage.getItem("videoArray")) || [];
 
-  videoArray = videoArray.map((ele, index) => ({
-    name: ele,
-    value: index,
-  }));
-  return videoArray;
-}
+//   videoArray = videoArray.map((ele, index) => ({
+//     name: ele,
+//     value: index,
+//   }));
+//   return videoArray;
+// }
 
-export const clearStorage = () => {
-  // Retrieve the accessToken from localStorage
-  const accessToken = localStorage.getItem("accessToken");
-  const adminDetails = localStorage.getItem("adminDetails");
-  const apiKey = localStorage.getItem("apiKey");
+// export const clearStorage = () => {
+//   // Retrieve the accessToken from localStorage
+//   const accessToken = localStorage.getItem("accessToken");
+//   const adminDetails = localStorage.getItem("adminDetails");
+//   const apiKey = localStorage.getItem("apiKey");
 
-  // Clear all data in localStorage
-  localStorage.clear();
+//   // Clear all data in localStorage
+//   localStorage.clear();
 
-  // If accessToken exists, set it back into localStorage
-  if (accessToken !== null) {
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("apiKey", apiKey);
-  }
-  if (adminDetails !== null) {
-    localStorage.setItem("adminDetails", adminDetails);
-    localStorage.setItem("videoFiles", JSON.stringify([]));
-    localStorage.setItem("vidData", JSON.stringify([]));
-  }
+//   // If accessToken exists, set it back into localStorage
+//   if (accessToken !== null) {
+//     localStorage.setItem("accessToken", accessToken);
+//     localStorage.setItem("apiKey", apiKey);
+//   }
+//   if (adminDetails !== null) {
+//     localStorage.setItem("adminDetails", adminDetails);
+//     localStorage.setItem("videoFiles", JSON.stringify([]));
+//     localStorage.setItem("vidData", JSON.stringify([]));
+//   }
 
-  // Add the event listener for beforeunload
-  window.addEventListener("beforeunload", clearStorage);
+//   // Add the event listener for beforeunload
+//   window.addEventListener("beforeunload", clearStorage);
 
-  return () => {
-    // Remove the event listener when the component unmounts
-    window.removeEventListener("beforeunload", clearStorage);
-  };
-};
+//   return () => {
+//     // Remove the event listener when the component unmounts
+//     window.removeEventListener("beforeunload", clearStorage);
+//   };
+// };
 export function convertTimestamp(timestampStr) {
   const [minutes, secondsWithMillis] = timestampStr.split(":");
   const [seconds, millis] = secondsWithMillis.split(".");

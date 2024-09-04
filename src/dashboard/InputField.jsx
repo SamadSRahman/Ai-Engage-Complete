@@ -22,9 +22,9 @@ import { uid } from "uid";
 import "./videojs.css";
 import "./inputField.css";
 import dropAreaPlaceholder from "./images/backup.svg";
-import backupWhite from "./images/backup_white.svg";
-import Spinner from "./components/spinner/Spinner";
-import Alert from "./components/alert/Alert";
+import ThumbnailList from "./components/inputFieldComponents/ThumbnailList";
+import InputHeader from "./components/inputFieldComponents/InputHeader";
+import { useNavigate } from "react-router-dom";
 
 const InputField = (props) => {
   const inputRef = useRef(null);
@@ -44,11 +44,8 @@ const InputField = (props) => {
   const [isVideoLoading, setVideoLoading] = useRecoilState(isVideoLoadingAtom);
   const isThumbnailGenerating = useRecoilValue(isThumbnailGeneratingAtom);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
-  const [alertText, setAlertText] = useState("");
-  const [selectedThumbnail, setSelectedThumbnail] = useState(null);
-const [selectedIndex, setSelectedIndex] = useState(null);
-const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
-
+  const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false);
+const navigate = useNavigate()
   let thumbnailsFromApi = [];
   let token = localStorage.getItem("accessToken");
 
@@ -114,7 +111,8 @@ const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
     reader.readAsDataURL(videoFile);
   }, []);
 
-  const storeThumbnail = useCallback(async (thumbnailBlob, timestamp) => {
+  const storeThumbnail = useCallback(
+    async (thumbnailBlob, timestamp) => {
       const formData = new FormData();
       formData.append("thumbnail", thumbnailBlob, "thumbnail.jpg");
 
@@ -164,7 +162,10 @@ const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
     }
   }, [props.isEditorVisible]);
 
-  const handleSingleUpload = useCallback(async (file, id) => {
+
+
+  const handleSingleUpload = useCallback(
+    async (file, id) => {
       setIsVideoUploaded(false);
       const formData = new FormData();
       formData.append("video", file);
@@ -182,7 +183,7 @@ const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
               (progressEvent.loaded * 100) / progressEvent.total
             );
             setUploadPercentage(percentCompleted);
-            if (percentCompleted === 100) {
+            if (percentCompleted===100) {
               setVideoLoading(true);
             }
           },
@@ -198,14 +199,18 @@ const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
         setVid([...vidData, newObject]);
         let newArray = [...videoSrcArray];
         // let mp4URL = response.data.videoUrl.replace("/playlist.m3u8", "");
-        console.log(newArray)
-        newArray.push(response.data.videoUrl.replace("/playlist.m3u8", ""));
+        console.log(newArray);
+        newArray.push(response.data.videoUrl.replace("/playlist.m3u8",""));
         setVideoSrcArray([...newArray]);
-        console.log(newArray)
+        console.log(newArray);
         setTimeout(() => {
-          handleThumbnailClick(vidData.length );
-          console.log("handleThumbnail triggered",newArray, vid, vidData.length);
-          
+          handleThumbnailClick(vidData.length);
+          console.log(
+            "handleThumbnail triggered",
+            newArray,
+            vid,
+            vidData.length
+          );
         }, 500);
         localStorage.setItem("videoSrcArray", JSON.stringify(newArray));
         localStorage.setItem(
@@ -219,22 +224,27 @@ const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
         console.error("Error uploading data:", error);
         if (error.response.status === 401) {
           alert("Session expired. Please login again");
-          window.location.href =
-            "https://aiengage-samadsrahmans-projects.vercel.app/logoutRequest";
+          navigate("/SignIn")
         }
       }
     },
-    [token, setVideoLoading, setVid, setVideoSrcArray, setSelectedVideo, selectedVideo]
+    [
+      token,
+      setVideoLoading,
+      setVid,
+      setVideoSrcArray,
+      setSelectedVideo,
+      selectedVideo,
+    ]
   );
 
-  const onFileChange = useCallback((event) => {
+  const onFileChange = useCallback(
+    (event) => {
       event.preventDefault();
       const MAX_SIZE_MB = 100;
       const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
-
       const id = uid();
       const files = event.target.files;
-
       if (files.length > 1) {
         alert("Please select only one file.");
         return;
@@ -288,48 +298,37 @@ const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
     }
   }, [thumbnailClickTriggered]);
 
-  
-
-  const handleThumbnailClick = useCallback(
-    (index) => {
-      if (isVideoLoading || isThumbnailGenerating) {
-        alert("Please wait while your video is uploading");
-        return;
-      }
-      if (thumbnailClickTriggered) {
-        return;
-      }
-      setThumbnailClickTriggered(true)
-      let thumbnails = JSON.parse(localStorage.getItem("thumbnails"));
-      let videoFiles = JSON.parse(localStorage.getItem("videoFiles"));
-      let videoArray = JSON.parse(localStorage.getItem("videoArray")) || [];
-      setCurrentIndex(index);
-      let vidArray = JSON.parse(localStorage.getItem("vidData"));
-      setVid(vidArray);
-      let newArray = [...vidArray];
-      if (vidArray[index] && videoFiles.length > 0) {
-        let obj = { ...vidArray[index] };
-        obj.thumbnail = { ...thumbnails[index] };
-        obj.name = videoArray[index + 1];
-        setSelectedVideo(obj);
-        newArray[index] = obj;
-        setVid(newArray);
-        localStorage.setItem("selectedVideo", JSON.stringify(obj));
-        setVideoSrc(videoFiles[index]);
-        localStorage.setItem("questionsArray", JSON.stringify([]));
-        localStorage.setItem("pinPosition", 0);
-        setPinPosition(0);
-      }
-    },
-    [
-      isVideoLoading,
-      isThumbnailGenerating,
-      setCurrentIndex,
-      setVid,
-      setSelectedVideo,
-      setVideoSrc,
-    ]
-  );
+  const handleThumbnailClick = (index) => {
+    console.log("HTC triggered");
+    if (isVideoLoading || isThumbnailGenerating) {
+      alert("Please wait while your video is uploading");
+      return;
+    }
+    if (thumbnailClickTriggered) {
+      return;
+    }
+    setThumbnailClickTriggered(true);
+    let thumbnails = JSON.parse(localStorage.getItem("thumbnails"));
+    let videoFiles = JSON.parse(localStorage.getItem("videoFiles"));
+    let videoArray = JSON.parse(localStorage.getItem("videoArray")) || [];
+    setCurrentIndex(index);
+    let vidArray = JSON.parse(localStorage.getItem("vidData"));
+    setVid(vidArray);
+    let newArray = [...vidArray];
+    if (vidArray[index] && videoFiles.length > 0) {
+      let obj = { ...vidArray[index] };
+      obj.thumbnail = { ...thumbnails[index] };
+      obj.name = videoArray[index + 1];
+      setSelectedVideo(obj);
+      newArray[index] = obj;
+      setVid(newArray);
+      localStorage.setItem("selectedVideo", JSON.stringify(obj));
+      setVideoSrc(videoFiles[index]);
+      localStorage.setItem("questionsArray", JSON.stringify([]));
+      localStorage.setItem("pinPosition", 0);
+      setPinPosition(0);
+    }
+  };
   const handleDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -371,29 +370,12 @@ const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
     event.preventDefault();
   };
 
-  const handleConfirmDelete = useCallback(
+  const handleThumbnailDelete = useCallback(
     (thumbnail, index) => {
-      const vidArray = JSON.parse(localStorage.getItem("videoArray"))
-      console.log("ConfirmDelete triggered");
-     console.log(thumbnail, "thumbnail from confirm delete", index, vidArray[index+1]);
-      setSelectedIndex(index)
-      setSelectedThumbnail(thumbnail)
-      setIsAlertVisible(true);  
-      setAlertText(
-        `This action will delete "${vidArray[index+1]}", are you sure you want to continue?`
-      );
-    },
-    [setIsAlertVisible, setAlertText]
-  );
-  const handleThumbnailDelete = useCallback( (thumbnail, index) => {
-    // let thumbnail = {...selectedThumbnail};
-    // let index = selectedIndex;
-    console.log(thumbnail, "handleDelete")
       const updatedThumbnails = thumbnails.filter((ele) => ele !== thumbnail);
-      console.log("handleDelete updatedThumbnails", updatedThumbnails)
       setThumbnails(updatedThumbnails);
       localStorage.setItem("thumbnails", JSON.stringify(updatedThumbnails));
-
+      
       // Update video list
       const updatedVid = [...vid];
       updatedVid.splice(index, 1);
@@ -435,59 +417,6 @@ const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
     }),
     [videoFiles]
   );
-  const uploadButtonStyles = useMemo(
-    () => ({
-      cursor:
-        isVideoLoading || isThumbnailGenerating ? "not-allowed" : "pointer",
-      backgroundColor: isVideoLoading || isThumbnailGenerating ? "grey" : "",
-    }),
-    [isVideoLoading, isThumbnailGenerating]
-  );
-
-  const thumbnailStyles = useMemo(
-    () => (index) => ({
-      filter: `brightness(${
-        uploadPercentage < 100 &&
-        index === thumbnails.length - 1 &&
-        videoFiles.length === thumbnails.length && !isVideoUploaded
-          ? uploadPercentage
-          : 100
-      }%)`,
-      border:
-        JSON.parse(localStorage.getItem("vidData"))[index]?.id ===
-        selectedVideo.id
-          ? "3px solid #4D67EB"
-          : "1px solid rgb(0,0,0,0.3)",
-    }),
-    [uploadPercentage, thumbnails.length, videoFiles.length, selectedVideo]
-  );
-
-  const timestampStyles = useMemo(
-    () => (index) => ({
-      display:
-        uploadPercentage < 100 &&
-        !isVideoUploaded &&
-        index === thumbnails.length - 1 &&
-        videoFiles.length === thumbnails.length
-          ? "none"
-          : "inline",
-    }),
-    [uploadPercentage, isVideoUploaded, thumbnails.length, videoFiles.length]
-  );
-
-  const uploadPercentageStyles = useMemo(
-    () => (index) => ({
-      display:
-        uploadPercentage < 100 &&
-        videoFiles.length === thumbnails.length &&
-        index === thumbnails.length - 1
-          ? !isVideoUploaded
-            ? "block"
-            : "none"
-          : "none",
-    }),
-    [uploadPercentage, videoFiles.length, thumbnails.length, isVideoUploaded]
-  );
 
   return (
     <>
@@ -523,79 +452,24 @@ const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false)
             ref={inputRef}
           />
         </div>
-        <div
-          className="inputHeader"
-          style={thumbnails.length > 0 ? {} : { display: "none" }}
-        >
-          <span className="inputHeading">
-            {thumbnails.length} {thumbnails.length === 1 ? "Video" : "Videos"}
-          </span>
-          <button
-            className="uploadBtnDiv"
-            onClick={() => inputRef.current.click()}
-            disabled={isVideoLoading || isThumbnailGenerating}
-            style={uploadButtonStyles}
-          >
-            <img src={backupWhite} alt="" />
-            <span>Upload file</span>
-          </button>
-        </div>
-        <div
-          className="thumbnails"
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          style={thumbnails.length > 0 ? {} : { display: "none" }}
-        >
-          {thumbnails.map((thumbnail, index) => (
-            <div className="thumbnailImgWrapper" key={index}>
-              <img
-                style={thumbnailStyles(index)}
-                src={thumbnail.url}
-                alt={`Thumbnail ${index + 1}`}
-                onClick={() =>
-                  uploadPercentage < 100 &&
-                  !isVideoUploaded &&
-                  videoFiles.length === thumbnails.length &&
-                  index === thumbnails.length - 1
-                    ? {}
-                    : handleThumbnailClick(index)
-                }
-                className="thumbnailImg"
-              />
-              <span style={timestampStyles(index)} className="timestamp">
-                {thumbnail.timestamp}
-              </span>
-              <span
-                className="uploadPercentage"
-                style={uploadPercentageStyles(index)}
-              >
-                {uploadPercentage}%
-              </span>
-           
-              <span className="crossIcon" onClick={() => handleConfirmDelete(thumbnail, index)}>
-                &#10006;
-              </span>
-              {isAlertVisible && (
-                <Alert
-                  title={"Alert"}
-                  text={alertText}
-                  primaryBtnText={"Yes"}
-                  secondaryBtnText={"No"}
-                  onClose={() => setIsAlertVisible(false)}
-                  onSuccess={() => handleThumbnailDelete(selectedThumbnail, selectedIndex)}
-                />
-              )}
-              <span className="name">
-                {JSON.parse(localStorage.getItem("videoArray"))[index + 1]}
-              </span>
-            </div>
-          ))}
-          {loading && (
-            <div className="spinnerWrapper">
-              <Spinner size="medium" />
-            </div>
-          )}
-        </div>
+        <InputHeader
+          inputRef={inputRef}
+          thumbnails={thumbnails}
+          isVideoLoading={isVideoLoading}
+          isUploadBtnVisible={true}
+        />
+        <ThumbnailList
+          thumbnails={thumbnails}
+          handleDragOver={handleDragOver}
+          handleDrop={handleDrop}
+          handleThumbnailClick={handleThumbnailClick}
+          handleThumbnailDelete={handleThumbnailDelete}
+          isVideoUploaded={isVideoUploaded}
+          loading={loading}
+          uploadPercentage={uploadPercentage}
+          isAlertVisible={isAlertVisible}
+          setIsAlertVisible={setIsAlertVisible}
+        />
       </div>
     </>
   );
@@ -607,12 +481,5 @@ Builder.registerComponent(InputFieldWithChildren, {
   name: "InputField",
   defaultChildren: [],
   noWrap: true,
-  inputs: [
-    { name: "content", type: "text" },
-    { name: "color", type: "color" },
-    { name: "fontSize", type: "text" },
-    { name: "backgroundColor", type: "color" },
-    { name: "height", type: "text" },
-    { name: "isEditorVisible", type: "boolean" },
-  ],
+  inputs: [{ name: "isEditorVisible", type: "boolean" }],
 });

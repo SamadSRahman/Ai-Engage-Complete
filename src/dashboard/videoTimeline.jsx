@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
-import { useState, useRef, useEffect, useMemo } from "react";
+// /* eslint-disable no-unused-vars */
+import { useState, useRef, useEffect } from "react";
 import "./videoTimeline.css";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
@@ -15,59 +15,31 @@ import {
   vidAtom,
 } from "./Recoil/store";
 import polygon from "./images/Polygon.png";
-
-import message from "./images/newMessageIcon.png";
 import { Builder } from "@builder.io/react";
-import { getDataFromStorage } from "./Utils/services";
-
-import Popup from "./components/messagePopup";
-import axios, { Axios } from "axios";
-import Alert from "./components/alert/Alert";
+import axios from "axios";
+import MarkedPositions from "./components/videoTimelineComponents/MarkedComponentsEdit";
+import ThumbnailTimeline from "./components/videoTimelineComponents/ThumbnailsTimeline";
+import TimelineBarMarkers from "./components/videoTimelineComponents/TimelineMarkers";
 
 const VideoTimeline = (props) => {
   let token = localStorage.getItem("accessToken");
   const currentIndex = useRecoilValue(currentIndexAtom);
   const videoSrc = useRecoilValue(videoSrcAtom);
-  const [currentTime, setCurrentTime] = useRecoilState(currentTimeAtom);
+  const setCurrentTime = useSetRecoilState(currentTimeAtom);
   const videoDuration = useRecoilValue(videoDurationAtom);
-  const [isDeleteAlertVisible, setIsDeleteAlertVisible] = useState(false);
-  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
-  const [id, setId] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  let timelineLength = videoDuration;
   const [pinPosition, setPinPosition] = useRecoilState(pinPositionAtom);
   const timelineRef = useRef(null);
   const [videoThumbnails, setVideoThumbnails] = useState([]);
-  const [selectedId, setSelectedId] = useState(null);
   const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
   const [pinLeft, setPinLeft] = useState("0");
-  const setIsThumbanilGenerating = useSetRecoilState(isThumbnailGeneratingAtom);
+  const [isThumbnailGenerating,setIsThumbanilGenerating] = useRecoilState(isThumbnailGeneratingAtom);
   const setVid = useSetRecoilState(vidAtom);
+  const [timelineClickTriggered, setTimelineClickTriggered] = useState(false);
 
   useEffect(() => {
     let newSelectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
     setSelectedVideo(newSelectedVideo);
   }, [props.isEditorVisible]);
-
-  const handleDelete = () => {
-    const newSelectedVideo = { ...selectedVideo };
-    const newArray = newSelectedVideo.questions.filter((ele) => ele.id !== id);
-    newSelectedVideo.questions = newArray;
-    setSelectedVideo(newSelectedVideo);
-    localStorage.setItem("selectedVideo", JSON.stringify(newSelectedVideo));
-    let vidData = JSON.parse(localStorage.getItem("vidData"));
-    const index = vidData.findIndex((ele) => ele.id === newSelectedVideo.id);
-    vidData[index] = newSelectedVideo;
-    localStorage.setItem("vidData", JSON.stringify(vidData));
-    setVid(vidData);
-    setShowPopup(false);
-    setIsSuccessAlertVisible(true);
-    setIsDeleteAlertVisible(false);
-  };
-
-  useEffect(() => {
-    timelineLength = videoDuration;
-  }, [videoDuration]);
 
   useEffect(() => {
     const handleDragOver = (event) => {
@@ -76,7 +48,7 @@ const VideoTimeline = (props) => {
       const timelineRect = timelineElement.getBoundingClientRect();
       const positionX = event.clientX - timelineRect.left;
       if (positionX >= 0 && positionX <= timelineRect.width) {
-        const time = (positionX / timelineRect.width) * timelineLength;
+        const time = (positionX / timelineRect.width) * videoDuration;
         setPinPosition(time.toFixed(1));
         localStorage.setItem("pinPosition", JSON.stringify(time.toFixed(1)));
       }
@@ -86,10 +58,10 @@ const VideoTimeline = (props) => {
     return () => {
       timelineElement.removeEventListener("dragover", handleDragOver);
     };
-  }, [timelineLength]);
+  }, [videoDuration]);
   const handleDragStart = (event) => {
     event.dataTransfer.effectAllowed = "move";
-    // Set a transparent image as drag data to prevent the default drag image
+
     const emptyImage = new Image();
     emptyImage.src =
       "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='0' height='0'%3E%3C/svg%3E";
@@ -104,32 +76,12 @@ const VideoTimeline = (props) => {
     setCurrentTime(time);
   };
   const barWidth = 13; // Set the width of the bars in pixels
-  const barHeight = 10; // Set the height of the bars in pixels
-  const timelineBars = [];
-  for (let i = 0; i <= timelineLength; i++) {
-    const isHalfSecondInterval = i % 5 === 0;
-    const isSecondInterval = i % 10 === 0;
-    const barStyle = {
-      width: isHalfSecondInterval ? `${barWidth}px` : `${barWidth}px`,
-      height: isHalfSecondInterval ? `${barHeight}px` : `${barHeight / 2}px`,
-      backgroundColor: i === 0 || isSecondInterval ? "black" : "darkgrey",
-      marginRight: "15.5px", // Adjust margin between bars
-      position: "relative",
-      minWidth: "1px",
-    };
-    timelineBars.push(
-      <div key={i} style={barStyle}>
-        {(isSecondInterval || i === 0) && (
-          <span className="timelineMarkers">{i}</span>
-        )}
-      </div>
-    );
-  }
   useEffect(() => {
-    setPinLeft(pinPosition ? `${(pinPosition / timelineLength) * 99}%` : "0%");
+    setPinLeft(pinPosition ? `${(pinPosition / videoDuration) * 99}%` : "0%");
   }, [pinPosition]);
   const [thumbnailsGenerated, setThumbnailsGenerated] = useState(false);
-
+useEffect(()=>{console.log("isThumbnailGenerating", isThumbnailGenerating);
+}, [isThumbnailGenerating])
   const generateThumbnails = (src) => {
     if (!src || thumbnailsGenerated) return;
     setIsThumbanilGenerating(true);
@@ -145,13 +97,10 @@ const VideoTimeline = (props) => {
 
       const thumbnailGeneration = (currentTimeForThumbnail) => {
         if (generatedTimes.has(currentTimeForThumbnail)) {
-          console.log(
-            `Thumbnail for time ${currentTimeForThumbnail} already generated.`
-          );
+    
           generateThumbnail(currentTimeForThumbnail + 7);
           return;
         }
-
         const canvas = document.createElement("canvas");
         canvas.width = 200;
         canvas.height = 120;
@@ -219,7 +168,6 @@ const VideoTimeline = (props) => {
           video.removeEventListener("seeked", thumbnailGeneration);
           return;
         }
-
         video.currentTime = nextTime;
         video.addEventListener(
           "seeked",
@@ -231,7 +179,6 @@ const VideoTimeline = (props) => {
           { once: true }
         );
       };
-
       setVideoThumbnails([]);
       generateThumbnail(currentTime);
     });
@@ -253,206 +200,95 @@ const VideoTimeline = (props) => {
   useEffect(() => {
     let selectedVideo = JSON.parse(localStorage.getItem("selectedVideo"));
     if (selectedVideo?.thumbnails?.length > 0) {
-     setTimeout(()=> setVideoThumbnails(selectedVideo.thumbnails), 400)
-    } else generateThumbnails(videoSrc, timelineLength);
-  }, [videoSrc, timelineLength, thumbnailsGenerated]);
-  // Generate the thumbnail elements for the secondary timeline
-  const thumbnailElements = useMemo(
-    () =>
-      videoThumbnails.map((thumbnail, index) => (
-        <img
-          key={index}
-          src={thumbnail.url}
-          alt={`Thumbnail at ${thumbnail.time}s`}
-          style={{
-            minWidth: "118px", // Set the width based on the timeline length
-            height: "3.2rem", // Define the height of the thumbnail timeline
-            objectFit: "cover", // Ensure the thumbnail fits within its container
-          }}
-        />
-      )),
-    [videoThumbnails]
-  );
+      setTimeout(() => setVideoThumbnails(selectedVideo.thumbnails), 400);
+    } else generateThumbnails(videoSrc, videoDuration);
+  }, [videoSrc, videoDuration, thumbnailsGenerated]);
+
   const handleDragOver = (event) => {
     event.preventDefault();
     const timelineElement = timelineRef.current;
     const timelineRect = timelineElement.getBoundingClientRect();
     const positionX = event.clientX - timelineRect.left;
     if (positionX >= 0 && positionX <= timelineRect.width) {
-      const time = (positionX / timelineRect.width) * timelineLength;
+      const time = (positionX / timelineRect.width) * videoDuration;
       setPinPosition(time.toFixed(1));
       localStorage.setItem("pinPosition", JSON.stringify(time.toFixed(1)));
     }
   };
   const calculateTime = () => {
     // Calculate the time based on the pin's position
-    const time = Math.round((pinPosition / timelineLength) * videoDuration);
+    const time = Math.round((pinPosition / videoDuration) * videoDuration);
     setCurrentTime(time);
     return time;
   };
+  useEffect(() => {
+    if (timelineClickTriggered) {
+      setTimeout(() => setTimelineClickTriggered(false), 500);
+    }
+  }, [timelineClickTriggered]);
   const handleTimelineClick = (event) => {
+    if (timelineClickTriggered) {
+      return;
+    }
+    setTimelineClickTriggered(true);
     const timelineElement = timelineRef.current;
     const timelineRect = timelineElement.getBoundingClientRect();
     const positionX = event.clientX - timelineRect.left;
-
     if (positionX >= 0 && positionX <= timelineRect.width) {
-      const preciseTime = (positionX / timelineRect.width) * timelineLength;
+      const preciseTime = (positionX / timelineRect.width) * videoDuration;
       const roundedTime = Math.round(preciseTime * 10) / 10; // Round to one decimal place
-
       setPinPosition(roundedTime);
       setCurrentTime(roundedTime);
       localStorage.setItem("pinPosition", roundedTime);
     }
   };
-  const markedPositionElements = 
-  useMemo(()=>
-  selectedVideo?.questions?.map(
-    (position, index) => (
-      <div
-        key={index}
-        style={{
-          position: "absolute",
-          left: `${(position.time / timelineLength) * 99}%`,
-          top: "5px",
-          height: "50%",
-          borderRadius: "8px",
-          width: "35px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ display: "flex" }}>
-          <img
-            src={message}
-            alt=""
-            style={{
-              marginTop: "30px",
-              marginRight: "62px",
-              height: "30px",
-
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              setSelectedId(position.id);
-              setShowPopup(true);
-              console.log(showPopup);
-            }}
-          />
-          {showPopup && selectedId === position.id && (
-            <Popup
-              id={position.id}
-              onDelete={() => {
-                setIsDeleteAlertVisible(true);
-                setId(position.id);
-              }}
-              onClose={() => setShowPopup(false)}
-              index={index}
-            />
-          )}
-        </div>
-      </div>
-    )
-  ),[selectedVideo])
-  // causing error of maximum depth
-  // useEffect(() => {
-  //   setIsEditPopupVisible(props.isEditPopup);
-  // }, [props.isEditPopup]);
   return (
     <>
-      {isDeleteAlertVisible && (
-        <Alert
-          text={"Are you sure you want to delete this pointer?"}
-          title={"Alert"}
-          primaryBtnText={"Yes"}
-          secondaryBtnText={"Cancel"}
-          onClose={() => setIsDeleteAlertVisible(false)}
-          onSuccess={handleDelete}
-        />
-      )}
-      {isSuccessAlertVisible && (
-        <Alert
-          text={"Pointer deleted successfully"}
-          title={"Alert"}
-          primaryBtnText={"Okay"}
-          onClose={() => setIsSuccessAlertVisible(false)}
-          onSuccess={() => setIsSuccessAlertVisible(false)}
-        />
-      )}
       <div className="timelineContainer">
         <div
+          className="timeline"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           ref={timelineRef}
           style={{
-            position: "relative",
-            height: "90%",
-            width: `${timelineLength * (barWidth + 4)}px `,
-            margin: "5px",
-            padding: "0px",
-          
+            width: `${videoDuration * (barWidth + 4)}px `,
           }}
         >
-          <div
-            onClick={handleTimelineClick}
-            style={{
-              display: "flex",
-              alignItems: "end",
-              height: "2.7rem",
-              boxSizing: "border-box",
-              paddingBottom: "7px",
-              cursor: "pointer",
-            }}
-          >
-            {timelineBars}
-          </div>
-          {timelineLength > 0 && (
+          <TimelineBarMarkers
+            videoDuration={videoDuration}
+            handleTimelineClick={handleTimelineClick}
+          />
+          {videoDuration > 0 && (
             <div
               id="pin"
               draggable
               onDragStart={handleDragStart}
               style={{
-                width: "20px", // Make the div narrow to represent the border line
-                height: "165px", // Height of the line extending downward
-                position: "absolute",
-                top: "-5px", // Adjust to position correctly
                 left: `calc(${pinLeft} - 0.05px)`, // Center the line under the triangle
-                cursor: "grab",
-                borderLeft: "1.5px dashed #4D67EB", // Dashed border line
-                transition: "left 0.3s linear",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
               }}
             >
-              <img
-                src={polygon} // Inverted triangle image
-                alt=""
-                style={{
-                  display: "block",
-                  width: "20px",
-                  position: "relative",
-                  left: "-10.2px",
-                  marginBottom: "-2px", // Ensure the triangle and line are connected
-                }}
-              />
+              <img src={polygon} alt="" />
             </div>
           )}
           <div
             className="thumbnailContainer"
             style={{
-              width: `${timelineLength * (barWidth + 3.8)}px `,
-           
+              width: `${videoDuration * (barWidth + 3.8)}px `,
             }}
           >
-            {thumbnailElements}
+            <ThumbnailTimeline videoThumbnails={videoThumbnails} />
           </div>
           <div>
             <div
               className="markedElements"
               style={{ position: "relative", height: "2.8rem" }}
             >
-              {markedPositionElements}
+              <MarkedPositions
+                selectedVideo={selectedVideo}
+                setSelectedVideo={setSelectedVideo}
+                timelineLength={videoDuration}
+                setVid={setVid}
+              />
             </div>
           </div>
         </div>

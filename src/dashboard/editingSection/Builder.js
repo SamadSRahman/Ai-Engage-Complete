@@ -1,81 +1,44 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from "react";
-import { uid } from "uid";
-import axios from "axios";
 import { BuilderComponent, builder, useIsPreviewing } from "@builder.io/react";
 import VideoJsEdit from "./VideojsEdit";
 import InputFieldWithChildrenEdit from "./InputFieldEdit";
 import VideoTimelineEdit from "./videoTimelineEdit";
 import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
-import isEqual from 'lodash/isEqual';
+import isEqual from "lodash/isEqual";
+import PointerComponent from "../components/pointerComponent/PointerComponent";
 import {
   videoFilesAtom,
   videoSrcAtom,
-  questionPopupVisibleAtom,
-  currentTimeAtom,
-  videoAtom,
-  markedPositionAtom,
-  isViewMessagePopupVisibleAtom,
-  isEditPopupAtom,
   selectedVideoAtom,
-  questionIndexAtom,
-  selectedQuestionAtom,
   isEditorVisibleAtom,
   fileNameAtom,
-  videoDataAtom,
   vidAtom,
-  videoSrcArrayAtom,
   videoFilesArrayAtom,
   isSaveBtnVisibleForEditAtom,
   reloadCounterForEditAtom,
 } from "../Recoil/store";
-import {
-  addQuestion,
-  getSelectedQuestion,
-  editQuestions,
-  handleDeleteQuestion,
-  handleUpdate,
-  updateSubVideo,
-} from "../Utils/services";
 import { useNavigate, useParams } from "react-router-dom";
 import TimelineSection from "../components/timelineSection/TimelineSection";
 import Navbar from "../components/navbar/Navbar";
 import SkeletonPage from "../components/skeletons/SkeletonPage";
-
 
 builder.init("403c31c8b557419fb4ad25e34c2b4df5");
 
 export default function Builder() {
   const videoDataForEdit = useRef();
   const titleRefForEdit = useRef();
-  const [isUploading, setIsUploading] = useState(false);
   const [fileName, setFileName] = useRecoilState(fileNameAtom);
   const isEditorVisible = useRecoilValue(isEditorVisibleAtom);
-  const selectedQuestion = useRecoilValue(selectedQuestionAtom);
-  const [selectedVideo, setSelectedVideo] = useRecoilState(selectedVideoAtom);
-  const [isViewMessagePopupVisible, setIsViewMessagePopupVisible] =
-    useRecoilState(isViewMessagePopupVisibleAtom);
+  const setSelectedVideo = useSetRecoilState(selectedVideoAtom);
   const setVideoSrc = useSetRecoilState(videoSrcAtom);
-  const [videoArray, setVideoArray] = useRecoilState(videoFilesArrayAtom);
-  const isEditPopup = useRecoilValue(isEditPopupAtom);
-  const [playerVideoSrc, setPlayerVideoSrc] = useState("");
-  const [markedPositions, setMarkedPositions] =
-    useRecoilState(markedPositionAtom);
-  const [questionPopupVisible, setQuestionPopupVisible] = useRecoilState(
-    questionPopupVisibleAtom
-  );
   const isPreviewingInBuilder = useIsPreviewing();
   const [notFound, setNotFound] = useState(false);
   const [content, setContent] = useState(null);
-  const videoSrc = useRecoilValue(videoSrcAtom);
-  const setVideoData = useSetRecoilState(videoDataAtom);
-  const [vid, setVid] = useRecoilState(vidAtom);
-  const video = useRecoilValue(videoAtom);
-  const currentTime = useRecoilValue(currentTimeAtom);
-  const [videoFiles, setVideoFiles] = useRecoilState(videoFilesAtom);
-  const questions = [];
-  const questionIndex = useRecoilValue(questionIndexAtom);
-  const [isSaveBtnVisibleForEdit, setIsSaveBtnVisibleForEdit] = useRecoilState(
+  const setVideoArray = useSetRecoilState(videoFilesArrayAtom);
+  const [vid, setVid] = useRecoilState(vidAtom);  
+  const setVideoFiles = useSetRecoilState(videoFilesAtom);
+  const setIsSaveBtnVisibleForEdit = useSetRecoilState(
     isSaveBtnVisibleForEditAtom
   );
   const reloadCounterForEdit = useRecoilValue(reloadCounterForEditAtom);
@@ -111,9 +74,9 @@ export default function Builder() {
         let names = data.data.videoData.map((ele) => ele.name);
         names.unshift("Select a video");
         localStorage.setItem("videoArray", JSON.stringify(names));
-        if(names.length>0){
-         setTimeout(()=> setVideoArray(names), 2000)
-          console.log("Value of videoArray updated", names)
+        if (names.length > 0) {
+          setTimeout(() => setVideoArray(names), 2000);
+          console.log("Value of videoArray updated", names);
         }
         localStorage.setItem("editId", data.data.video_id);
         titleRefForEdit.current = data.data.title;
@@ -129,7 +92,7 @@ export default function Builder() {
         setVid([...data.data.videoData]);
         videoDataForEdit.current = [...data.data.videoData];
         localStorage.setItem("vidData", JSON.stringify(data.data.videoData));
-        setLoading(false)
+        setLoading(false);
       })
       .catch((error) => {
         setLoading(false);
@@ -137,11 +100,15 @@ export default function Builder() {
       });
   }, [reloadCounterForEdit]);
 
-
-
   useEffect(() => {
-    console.log("Save btn", videoDataForEdit.current, vid, fileName, titleRefForEdit.current);
-    
+    console.log(
+      "Save btn",
+      videoDataForEdit.current,
+      vid,
+      fileName,
+      titleRefForEdit.current
+    );
+
     if (
       !isEqual(videoDataForEdit.current, vid) || // Deep comparison
       titleRefForEdit.current !== fileName // Simple string comparison
@@ -171,34 +138,6 @@ export default function Builder() {
     if (!accessToken) {
       navigate("/");
     }
-  }, []);
-
-  const addQuestions = (question) => {
-    addQuestion(question);
-    let selectedVideo = localStorage.getItem("selectedVideo");
-    if (selectedVideo !== undefined) selectedVideo = JSON.parse(selectedVideo);
-    setSelectedVideo(selectedVideo);
-  };
-  const editQuestion = (questionObject, selectedId) => {
-    editQuestions(questionObject, selectedId);
-    let selectedVideo = localStorage.getItem("selectedVideo");
-    if (selectedVideo !== undefined) selectedVideo = JSON.parse(selectedVideo);
-    setSelectedVideo(selectedVideo);
-  };
-  const markPosition = (markedPositions) => {
-    let pinPosition = localStorage.getItem("pinPosition");
-    if (pinPosition !== undefined) pinPosition = JSON.parse(pinPosition);
-    if (pinPosition !== null) {
-      setMarkedPositions([...markedPositions, pinPosition]);
-    }
-  };
-  const getVidData = (data) => {
-    console.log("data from builder", data);
-    setTimeout(() => {
-      localStorage.setItem("vidData", JSON.stringify(data));
-    }, 500);
-  };
-  useEffect(() => {
     document.title = "Edit campaign";
     async function fetchContent() {
       const content = await builder
@@ -215,72 +154,20 @@ export default function Builder() {
   if (notFound && !isPreviewingInBuilder) {
     return <div>404</div>;
   }
-if(loading){
-  return <SkeletonPage />;
-}
+  if (loading) {
+    return <SkeletonPage />;
+  }
   return (
     <div className="CreateContainer">
-    <Navbar isEditPage={true} isrightsidemenu={true}/>
+      {!isEditorVisible && <Navbar isEditPage={true} isrightsidemenu={true} />}
       <BuilderComponent
         model="page"
         content={content}
         data={{
-
-          isUploading: isUploading,
-          selectedVideo: { ...selectedVideo },
-          selectedQuestion: selectedQuestion,
-          isEditPopup: isEditPopup,
-          playerVideoSrc: playerVideoSrc,
-          markedPositions: markedPositions,
-          fileName: fileName,
-
-          video: video,
-          axios: axios,
-          questionPopupVisible: questionPopupVisible,
-          currentTime: currentTime,
-          videoScr: videoSrc,
-          videoFiles: videoFiles,
-          answersCount: [],
-          questionsArray: questions,
-          newQuestionArray: [],
           isEditorVisible: isEditorVisible,
-          questionIndex: questionIndex,
-          isViewMessagePopupVisible: isViewMessagePopupVisible,
-          questionsObject: {
-            time: "",
-            id: "",
-            question: "",
-            answers: [{}],
-            multiple: true,
-            skip: true,
-          },
-          answersObject: {
-            id: uid(),
-            answer: "",
-          },
-        }}
-        context={{
-          getId: () => {
-            let id = uid();
-            return id;
-          },
-          addQuestion: (question) => {
-            addQuestions(question);
-          },
-          markPosition: (markedPositions) => {
-            markPosition(markedPositions);
-          },
-          handleUpload: () => handleUpdate(),
-          getSelectedQuestion: () => getSelectedQuestion(),
-          editQuestions: (questionsObject, selectedId) =>
-            editQuestion(questionsObject, selectedId),
-          handleDeleteQuestion: (mainArray, mainArrayItem) =>
-            handleDeleteQuestion(mainArray, mainArrayItem),
-          getVidData: (data) => getVidData(data),
-          // onClose:()=>onClose(),
         }}
       />
-         {!isEditorVisible &&    <TimelineSection/>}
+      {!isEditorVisible && <TimelineSection />}
     </div>
   );
 }

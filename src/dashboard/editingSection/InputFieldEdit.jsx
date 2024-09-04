@@ -1,17 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
 import { Builder, withChildren } from "@builder.io/react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   currentIndexAtom,
   pinPositionAtom,
   selectedVideoAtom,
   vidAtom,
   videoAtom,
-  videoDataAtom,
-  videoFilesArrayAtom,
   videoFilesAtom,
-  videoSrcArrayAtom,
   videoSrcAtom,
 } from "../Recoil/store";
 import { handleFileChange } from "../Utils/services";
@@ -19,8 +16,8 @@ import axios from "axios";
 import { uid } from "uid";
 import "../videojs.css";
 import "../inputField.css";
-import backup from "../images/backup.svg";
-import backupWhite from "../images/backup_white.svg";
+import ThumbnailList from "../components/inputFieldComponents/ThumbnailList";
+import InputHeader from "../components/inputFieldComponents/InputHeader";
 
 const InputFieldEdit = (props) => {
   const setCurrentIndex = useSetRecoilState(currentIndexAtom);
@@ -30,8 +27,7 @@ const InputFieldEdit = (props) => {
   const [isVideoUploaded, setIsVideoUploaded] = useState(true);
   const [videoFiles, setVideoFiles] = useRecoilState(videoFilesAtom);
   const setVideoSrc = useSetRecoilState(videoSrcAtom);
-  const videoData = useRecoilValue(videoDataAtom);
-  const videoArray = useRecoilValue(videoFilesArrayAtom);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [thumbnails, setThumbnails] = useState([]);
   const [video, setVideo] = useRecoilState(videoAtom);
   const [uploadPercentage, setUploadPercentage] = useState(null);
@@ -135,12 +131,9 @@ const InputFieldEdit = (props) => {
     if (selectedVideoData) {
       let newVidData = JSON.parse(localStorage.getItem("vidData"));
       const newArray = newVidData.map((item) => {
-        // Replace the object with the specified ID
         if (item.id === selectedVideoData.id) {
-          // Replace this object with your new object
           return { ...selectedVideoData };
         }
-        // Keep other objects unchanged
         return item;
       });
       console.log("new vid data", newArray);
@@ -226,7 +219,7 @@ const InputFieldEdit = (props) => {
     if (thumbnailClickTriggered) {
       return;
     }
-    setThumbnailClickTriggered(true)
+    setThumbnailClickTriggered(true);
     setCurrentIndex(index);
     let vidArray = JSON.parse(localStorage.getItem("vidData"));
     const videoFiles = JSON.parse(localStorage.getItem("videoFiles"));
@@ -274,6 +267,7 @@ const InputFieldEdit = (props) => {
     localStorage.setItem("videoArray", JSON.stringify(videoArray));
     setSelectedVideo(null);
     localStorage.setItem("selectedVideo", null);
+    setIsAlertVisible(false)
   };
   return (
     <div
@@ -308,74 +302,23 @@ drag & drop your file</span>
           ref={inputRef}
         />
       </div>
-      <div
-        className="inputHeader"
-        style={thumbnails.length > 0 ? {} : { display: "none" }}
-      >
-        <span className="inputHeading">
-          {thumbnails.length} {thumbnails.length === 1 ? "Video" : "Videos"}
-        </span>
-        {/* <div className="uploadBtnDiv" onClick={() => inputRef.current.click()}>
-          <img src={backupWhite} alt="" />
-          <span>Upload file</span>
-        </div> */}
-      </div>
-      <div className="thumbnails">
-        {thumbnails.map((thumbnail, index) => (
-          <div className="thumbnailImgWrapper" key={index}>
-            <img
-              style={
-                uploadPercentage < 100 &&
-                index === thumbnails.length - 1 &&
-                videoFiles.length !== thumbnails.length
-                  ? { filter: `brightness(${uploadPercentage}%)` }
-                  : JSON.parse(localStorage.getItem("vidData"))[index]?.id ===
-                    selectedVideo.id
-                  ? { border: "3px solid #4D67EB" }
-                  : {}
-              }
-              src={thumbnail.url}
-              alt={`Thumbnail ${index + 1}`}
-              onClick={() =>
-                uploadPercentage < 100 &&
-                !isVideoUploaded &&
-                videoFiles.length === thumbnails.length &&
-                index === thumbnails.length - 1
-                  ? {}
-                  : handleThumbnailClick(index)
-              }
-              className="thumbnailImg"
-            ></img>
-            <span className="timestamp">{thumbnail.timestamp}</span>
-            <span
-              className="uploadPercentage"
-              style={
-                uploadPercentage < 100 &&
-                videoFiles.length === thumbnails.length &&
-                index === thumbnails.length - 1
-                  ? !isVideoUploaded
-                    ? {}
-                    : { display: "none" }
-                  : { display: "none" }
-              }
-            >
-              {uploadPercentage}%
-            </span>
-            <span
-              className="crossIcon"
-              onClick={() => handleThumbnailDelete(thumbnail, index)}
-            >
-              &#10006;
-            </span>
-            <span className="name">{videoArray[index + 1]}</span>
-          </div>
-        ))}
-        {loading && (
-          <div className="loader-container">
-            <div className="loader"></div>
-          </div>
-        )}
-      </div>
+      <InputHeader
+          inputRef={inputRef}
+          thumbnails={thumbnails}
+          isUploadBtnVisible={false}
+        />
+      <ThumbnailList
+        thumbnails={thumbnails}
+        handleDragOver={handleDragOver}
+        handleDrop={handleDrop}
+        handleThumbnailClick={handleThumbnailClick}
+        handleThumbnailDelete={handleThumbnailDelete}
+        isVideoUploaded={isVideoUploaded}
+        loading={loading}
+        uploadPercentage={uploadPercentage}
+        isAlertVisible={isAlertVisible}
+        setIsAlertVisible={setIsAlertVisible}
+      />
     </div>
   );
 };
@@ -387,11 +330,6 @@ Builder.registerComponent(InputFieldWithChildrenEdit, {
   defaultChildren: [],
   noWrap: true,
   inputs: [
-    { name: "content", type: "text" },
-    { name: "color", type: "color" },
-    { name: "fontSize", type: "text" },
-    { name: "backgroundColor", type: "color" },
-    { name: "height", type: "text" },
     { name: "isEditorVisible", type: "boolean" },
   ],
 });

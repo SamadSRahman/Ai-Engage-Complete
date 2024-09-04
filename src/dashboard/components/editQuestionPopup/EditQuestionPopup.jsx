@@ -171,7 +171,7 @@ export default function EditQuestionPopup({ question, onClose }) {
       )}
       {isSuccessAlertVisible && (
         <Alert
-          text={"Pointer added successfully"}
+          text={"Pointer updated successfully"}
           title={"Alert"}
           primaryBtnText={"Okay"}
           onSuccess={onClose}

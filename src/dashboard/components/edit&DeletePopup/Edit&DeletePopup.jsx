@@ -1,13 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./edit&DeletePopup.module.css";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import {
-  fileNameAtom,
-  selectedVideoAtom,
-  videoResultAtom,
-} from "../../Recoil/store";
+import { useSetRecoilState } from "recoil";
+import { fileNameAtom, selectedVideoAtom } from "../../Recoil/store";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import analyticsIcon from "../../images/equalizer.png";
 import shareIcon from "../../images/shareicon.png";
 import editIcon from "../../images/edit.png";
@@ -20,10 +15,8 @@ export default function EditandDeletePopup({
   video,
   id,
   style,
-  setIsDeleting,
   setAlertText,
   setIsAlertVisible,
-  setOnSuccess,
 }) {
   const token = localStorage.getItem("accessToken");
   const adminId = localStorage.getItem("adminId");
@@ -31,7 +24,6 @@ export default function EditandDeletePopup({
   console.log(style);
   const setSelectedVideo = useSetRecoilState(selectedVideoAtom);
   const setFileName = useSetRecoilState(fileNameAtom);
-  const [videoResult, setVideoResult] = useRecoilState(videoResultAtom);
   const apiKey = localStorage.getItem("apiKey");
   let shareUrl = `https://final-video-player.vercel.app/${adminId}/${id}/${apiKey}`;
 
@@ -52,37 +44,11 @@ export default function EditandDeletePopup({
     navigate(`/edit/${id}`);
   };
   const handleDelete = () => {
-
-        setAlertText("This action will delete the video survey and you won't be able to access it again")
-      setIsAlertVisible(true)
-      // setOnSuccess(confirmDelete)
+    setAlertText(
+      "This action will delete the video survey and you won't be able to access it again"
+    );
+    setIsAlertVisible(true);
   };
-
-  const confirmDelete = ()=>{
-    setIsDeleting(true);
-    axios
-      .delete(
-        `https://videosurvey.xircular.io/api/v1/video/deleteVideo/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log("Delete request successful");
-        console.log(response.data);
-        let newArray = videoResult.filter((ele) => ele.video_id !== id);
-        setVideoResult(newArray);
-        setIsDeleting(false);
-        onClose();
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsDeleting(false);
-        onClose();
-      });
-  }
 
   const handleShare = () => {
     copyToClipboard(shareUrl);
@@ -121,22 +87,14 @@ export default function EditandDeletePopup({
           className={styles.popupitem}
           onClick={() => handleWhatsAppClick(shareUrl, id)}
         >
-          {" "}
           <FaWhatsapp size={"1.8em"} />
-          {/* <img src={deleteIcon} alt="Delete icon" /> */}
-          <span className={styles.deleteSpan}>
-            WhatsApp Share{" "}
-            {/* {isDeleting && <div className={styles.deleteLoader}></div>} */}
-          </span>
+          <span className={styles.deleteSpan}>WhatsApp Share </span>
         </button>
 
         <button className={styles.popupitem} onClick={handleDelete}>
           {" "}
           <img src={deleteIcon} alt="Delete icon" />
-          <span className={styles.deleteSpan}>
-            Delete Campaign{" "}
-            {/* {isDeleting && <div className={styles.deleteLoader}></div>} */}
-          </span>
+          <span className={styles.deleteSpan}>Delete Campaign </span>
         </button>
       </div>
     </div>
