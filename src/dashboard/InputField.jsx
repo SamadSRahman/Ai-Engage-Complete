@@ -184,7 +184,7 @@ const navigate = useNavigate()
             );
             setUploadPercentage(percentCompleted);
             if (percentCompleted===100) {
-              setVideoLoading(true);
+           
             }
           },
         });
@@ -260,7 +260,7 @@ const navigate = useNavigate()
       }
 
       setVideo(file);
-
+      setVideoLoading(true);
       let videoArray = JSON.parse(localStorage.getItem("videoArray")) || [];
       if (videoArray.length < 1) videoArray.push("Select a Video");
       videoArray = [...videoArray, file.name];
@@ -425,7 +425,7 @@ const navigate = useNavigate()
         className={`my-class ${props.attributes.className}`}
       >
         <div>
-          {thumbnails.length < 1 && (
+          {thumbnails.length ===0 && (
             <div
               className="drop-area"
               onDrop={handleDrop}

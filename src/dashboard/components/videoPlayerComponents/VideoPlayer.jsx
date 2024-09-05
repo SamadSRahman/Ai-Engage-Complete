@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import VideoPlaceholder from "../../VideoPlaceholder";
 import Spinner from "../spinner/Spinner";
 
@@ -13,36 +13,60 @@ export default function VideoPlayer({
   isThumbnailsGenerating,
 }) {
 
-useEffect(()=>console.log("isVideoLoading",isVideoLoading),[isVideoLoading])
+  const renderVideoContent = () => {
+    if (!selectedVideo?.videoSrc && !isVideoLoading) {
+      return <VideoPlaceholder />;
+    }
+
+    if (isVideoLoading) {
+      return (
+        <div className="spinnerContainer">
+          <Spinner size="medium" />
+          <span>Loading your Video...</span>
+        </div>
+      );
+    }
+
+    if (isThumbnailsGenerating) {
+      return (
+        <div className="spinnerContainer">
+          <span>Generating Thumbnails...</span>
+        </div>
+      );
+    }
+
+  return (
+      <div data-vjs-player>
+        <video
+          id="my-video"
+          ref={videoRef}
+          className="video-js vjs-big-play-centered"
+          muted={isMuted}
+          style={{
+            borderRadius: "8px",
+            width: "auto",
+            maxHeight: "15.5rem",
+            maxWidth: "100%",
+            objectFit: "contain",
+          }}
+        >
+          <source src={videoSrc} type="video/mp4" />
+          <track
+            src={trackSrc}
+            label="questions"
+            kind="captions"
+            srcLang="en"
+            default={true}
+          />
+        </video>
+      </div>
+    );
+  };
 
   return (
     <div className="videoPlayer">
       <div className="videoWrapper" style={isDisplay ? {} : { display: "none" }}>
-      {selectedVideo?.videoSrc &&
-          !isThumbnailsGenerating &&
-          !isVideoLoading ? (
-            <div data-vjs-player>
-              <VideoPlayer
-                isMuted={isMuted}
-                trackSrc={trackSrc}
-                videoRef={videoRef}
-                videoSrc={videoSrc}
-                isDisplay={isDisplay}
-              />
-            </div>
-          ) : isVideoLoading || isThumbnailsGenerating ? (
-            <div className="spinnerContainer">
-              {" "}
-              {!isThumbnailsGenerating && <Spinner size={"medium"} />}
-              <span>
-                {isThumbnailsGenerating
-                  ? "Generating Thumbnails..."
-                  : "Loading your Video..."}
-              </span>
-            </div>
-          ) : (
-            <VideoPlaceholder />
-          )}
+        {renderVideoContent()}
       </div>
     </div>
   );
