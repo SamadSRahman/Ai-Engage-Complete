@@ -204,7 +204,7 @@ const navigate = useNavigate()
         setVideoSrcArray([...newArray]);
         console.log(newArray);
         setTimeout(() => {
-          handleThumbnailClick(vidData.length);
+          handleThumbnailClick(vidData.length, true);
           console.log(
             "handleThumbnail triggered",
             newArray,
@@ -298,13 +298,14 @@ const navigate = useNavigate()
     }
   }, [thumbnailClickTriggered]);
 
-  const handleThumbnailClick = (index) => {
-    console.log("HTC triggered");
-    if (isVideoLoading || isThumbnailGenerating) {
+  const handleThumbnailClick = (index, auto) => {
+    console.log("HTC triggered", index);
+    if ((isVideoLoading || isThumbnailGenerating) && !auto) {
       alert("Please wait while your video is uploading");
       return;
     }
-    if (thumbnailClickTriggered) {
+    if (thumbnailClickTriggered && !auto) {
+      console.log("HTC thumbnail triggered state is true");
       return;
     }
     setThumbnailClickTriggered(true);
