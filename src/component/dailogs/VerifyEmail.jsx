@@ -7,22 +7,28 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import OTPVerifier from "../otpVerifier/OTPVerifier";
 
-export default function VerifyEmail({ onClose, name, phone, password, tokenFromProps}) {
+export default function VerifyEmail({
+  onClose,
+  name,
+  phone,
+  password,
+  tokenFromProps,
+}) {
   const [otp, setOtp] = useState("");
-  const [token, setToken] = useState(tokenFromProps)
+  const [token, setToken] = useState(tokenFromProps);
   const containerRef = useRef(null);
   const email = localStorage.getItem("email");
   const [isResendVisible, setIsResendVisible] = useState(false);
   const [error, setError] = useState("");
   const [timer, setTimer] = useState(30);
   const navigate = useNavigate();
-  const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""])
+  const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
 
-  useEffect(()=>{
-    const string = otpValues.join("")
-   setError("")
-    setOtp(string)
-  },[otpValues])
+  useEffect(() => {
+    const string = otpValues.join("");
+    setError("");
+    setOtp(string);
+  }, [otpValues]);
   useEffect(() => {
     setTimeout(() => {
       if (timer > 0) {
@@ -66,7 +72,7 @@ export default function VerifyEmail({ onClose, name, phone, password, tokenFromP
       if (response.data.message) {
         alert(response.data.message);
         setTimer(30);
-        setToken(response.data.token)
+        setToken(response.data.token);
         setIsResendVisible(false);
       }
     } catch (error) {
@@ -89,7 +95,18 @@ export default function VerifyEmail({ onClose, name, phone, password, tokenFromP
     try {
       const response = await axios.post(
         "https://stream.xircular.io/api/v1/customer/emailVerification",
-        { email: email, Otp: otp, name:name, password:password, phone:phone, token:token }
+        {
+          email: email,
+          Otp: otp,
+          name: name,
+          password: password,
+          phone: phone,
+        },
+        {
+          headers: {
+            token: token,
+          },
+        }
       );
       console.log(response.data);
       if (response.data.success) {
@@ -133,8 +150,8 @@ export default function VerifyEmail({ onClose, name, phone, password, tokenFromP
             /> 
    
           </div> */}
-          <OTPVerifier otpValues={otpValues} setOtpValues={setOtpValues}/>
-      
+          <OTPVerifier otpValues={otpValues} setOtpValues={setOtpValues} />
+
           {error && <span className={styles.snackbarError}>{error}</span>}
           {!isResendVisible ? (
             <div className="signUpSection">
@@ -152,13 +169,13 @@ export default function VerifyEmail({ onClose, name, phone, password, tokenFromP
             </div>
           )}
           <div className="signUpSection">
-          <span>Incorrect email?</span>
-              <span onClick={onClose} className="linkSpan">
-                Edit 
-              </span>
-            </div>
+            <span>Incorrect email?</span>
+            <span onClick={onClose} className="linkSpan">
+              Edit
+            </span>
+          </div>
           <button
-            disabled={otp.length===6 ? false : true}
+            disabled={otp.length === 6 ? false : true}
             className={styles.sendBtn}
             onClick={handleVerifyCode}
           >
