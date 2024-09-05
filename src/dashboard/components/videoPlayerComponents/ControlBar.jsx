@@ -48,7 +48,7 @@ export default function ControlBar({
           height={28}
           onClick={() => handleTimeUpdate("rewind")}
           style={
-            videoSrc
+            videoDuration
               ? currentTime - 5 < 0
                 ? { opacity: "0.5" }
                 : {}
@@ -61,7 +61,7 @@ export default function ControlBar({
           width="30"
           height="30"
           alt="playIcon"
-          style={videoSrc ? {} : { opacity: "0.5" }}
+          style={videoDuration ? {} : { opacity: "0.5" }}
         />
         <img
           src={fastForward}
@@ -70,7 +70,7 @@ export default function ControlBar({
           height={28}
           onClick={() => handleTimeUpdate("skip")}
           style={
-            videoSrc
+            videoDuration
               ? currentTime + 5 > videoDuration
                 ? { opacity: "0.5" }
                 : {}
@@ -83,7 +83,7 @@ export default function ControlBar({
           className="muteIcon"
           src={!isMuted ? mute : volumeOff}
           onClick={() => setIsMuted(!isMuted)}
-          style={videoSrc ? {} : { opacity: "0.5" }}
+          style={videoDuration ? {} : { opacity: "0.5" }}
           alt=""
         />
       </div>

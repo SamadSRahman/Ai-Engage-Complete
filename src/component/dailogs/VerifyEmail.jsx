@@ -7,8 +7,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import OTPVerifier from "../otpVerifier/OTPVerifier";
 
-export default function VerifyEmail({ onClose, name, phone, password, }) {
+export default function VerifyEmail({ onClose, name, phone, password, tokenFromProps}) {
   const [otp, setOtp] = useState("");
+  const [token, setToken] = useState(tokenFromProps)
   const containerRef = useRef(null);
   const email = localStorage.getItem("email");
   const [isResendVisible, setIsResendVisible] = useState(false);
@@ -21,7 +22,6 @@ export default function VerifyEmail({ onClose, name, phone, password, }) {
     const string = otpValues.join("")
    setError("")
     setOtp(string)
-
   },[otpValues])
   useEffect(() => {
     setTimeout(() => {
@@ -66,6 +66,7 @@ export default function VerifyEmail({ onClose, name, phone, password, }) {
       if (response.data.message) {
         alert(response.data.message);
         setTimer(30);
+        setToken(response.data.token)
         setIsResendVisible(false);
       }
     } catch (error) {
@@ -88,7 +89,7 @@ export default function VerifyEmail({ onClose, name, phone, password, }) {
     try {
       const response = await axios.post(
         "https://stream.xircular.io/api/v1/customer/emailVerification",
-        { email: email, otp: otp, name:name, password:password, phone:phone }
+        { email: email, Otp: otp, name:name, password:password, phone:phone, token:token }
       );
       console.log(response.data);
       if (response.data.success) {
@@ -157,7 +158,7 @@ export default function VerifyEmail({ onClose, name, phone, password, }) {
               </span>
             </div>
           <button
-            disabled={otp ? false : true}
+            disabled={otp.length===6 ? false : true}
             className={styles.sendBtn}
             onClick={handleVerifyCode}
           >

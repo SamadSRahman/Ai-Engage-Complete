@@ -10,7 +10,6 @@ const Spinner = ({size, color}) => {
   const [border, setBorder] = useState('3px')
 
 useEffect(()=>{
-  console.log(size)
   if(size==='large'){
     setWidth("80px")
     setBorder('5px')
@@ -19,10 +18,8 @@ useEffect(()=>{
         setWidth("40px")
         setBorder('4px')
       }
-      // else
-      // setWidth("35px")
-    
-},[])
+
+},[size])
 
   // Define the animation keyframes
 const rotate = keyframes`

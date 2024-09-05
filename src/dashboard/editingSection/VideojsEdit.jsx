@@ -46,7 +46,7 @@ const VideoJsEdit = (props) => {
   const [questions, setQuestions] = useState(selectedVideo?.questions);
   let newQues = selectedVideo?.questions;
   const isThumbnailsGenerating = useRecoilValue(isThumbnailGeneratingAtom);
-  const isVideoLoading = useRecoilValue(isVideoLoadingAtom);
+  const [isVideoLoading, setIsVideoLoading] = useRecoilState(isVideoLoadingAtom);
 
 
   useEffect(() => {
@@ -77,10 +77,13 @@ const VideoJsEdit = (props) => {
   useEffect(() => {
     if (videoRef.current) {
       const videoPlayer = videoRef.current;
+      setVideoDuration(0)
+      setIsVideoLoading(true)
       setVideoRef(videoPlayer);
       videoPlayer.load();
       videoPlayer.addEventListener("loadedmetadata", () => {
         setVideoDuration(videoPlayer.duration);
+        setIsVideoLoading(false)
       });
       videoPlayer.addEventListener("timeupdate", () => {
         setCurrentTime(videoPlayer.currentTime);

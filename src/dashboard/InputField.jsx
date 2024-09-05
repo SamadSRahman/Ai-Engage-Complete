@@ -45,7 +45,7 @@ const InputField = (props) => {
   const isThumbnailGenerating = useRecoilValue(isThumbnailGeneratingAtom);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [thumbnailClickTriggered, setThumbnailClickTriggered] = useState(false);
-const navigate = useNavigate()
+  const navigate = useNavigate();
   let thumbnailsFromApi = [];
   let token = localStorage.getItem("accessToken");
 
@@ -162,8 +162,6 @@ const navigate = useNavigate()
     }
   }, [props.isEditorVisible]);
 
-
-
   const handleSingleUpload = useCallback(
     async (file, id) => {
       setIsVideoUploaded(false);
@@ -183,8 +181,7 @@ const navigate = useNavigate()
               (progressEvent.loaded * 100) / progressEvent.total
             );
             setUploadPercentage(percentCompleted);
-            if (percentCompleted===100) {
-           
+            if (percentCompleted === 100) {
             }
           },
         });
@@ -200,7 +197,7 @@ const navigate = useNavigate()
         let newArray = [...videoSrcArray];
         // let mp4URL = response.data.videoUrl.replace("/playlist.m3u8", "");
         console.log(newArray);
-        newArray.push(response.data.videoUrl.replace("/playlist.m3u8",""));
+        newArray.push(response.data.videoUrl.replace("/playlist.m3u8", ""));
         setVideoSrcArray([...newArray]);
         console.log(newArray);
         setTimeout(() => {
@@ -224,7 +221,7 @@ const navigate = useNavigate()
         console.error("Error uploading data:", error);
         if (error.response.status === 401) {
           alert("Session expired. Please login again");
-          navigate("/SignIn")
+          navigate("/SignIn");
         }
       }
     },
@@ -376,7 +373,7 @@ const navigate = useNavigate()
       const updatedThumbnails = thumbnails.filter((ele) => ele !== thumbnail);
       setThumbnails(updatedThumbnails);
       localStorage.setItem("thumbnails", JSON.stringify(updatedThumbnails));
-      
+
       // Update video list
       const updatedVid = [...vid];
       updatedVid.splice(index, 1);
@@ -389,9 +386,23 @@ const navigate = useNavigate()
       localStorage.setItem("videoFiles", JSON.stringify(updatedVideoFiles));
 
       // Reset selected video
-      const emptySelectedVideo = {};
-      setSelectedVideo(emptySelectedVideo);
-      localStorage.setItem("selectedVideo", JSON.stringify(emptySelectedVideo));
+      let newIndex = 0;
+      if (index - 1 >= 0) {
+        // if it's not the first video in the list
+        newIndex = index - 1;
+      } else if (updatedVid[index]) {
+        // if it's the first video in the list
+        newIndex = index;
+      } else {
+        // if its the last video
+        newIndex = null;
+      }
+      setSelectedVideo(newIndex !== null ? updatedVid[newIndex] : {});
+      setVideoSrc(newIndex !== null ? updatedVideoFiles[newIndex] : "");
+      localStorage.setItem(
+        "selectedVideo",
+        JSON.stringify(newIndex !== null ? updatedVid[newIndex] : {})
+      );
 
       // Update video array
       const videoArray = JSON.parse(localStorage.getItem("videoArray")) || [];
@@ -426,7 +437,7 @@ const navigate = useNavigate()
         className={`my-class ${props.attributes.className}`}
       >
         <div>
-          {thumbnails.length ===0 && (
+          {thumbnails.length === 0 && (
             <div
               className="drop-area"
               onDrop={handleDrop}

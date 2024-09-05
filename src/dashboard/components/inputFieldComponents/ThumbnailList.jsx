@@ -76,13 +76,6 @@ export default function ThumbnailList({
   const handleConfirmDelete = useCallback(
     (thumbnail, index) => {
       const vidArray = JSON.parse(localStorage.getItem("videoArray"));
-      console.log("ConfirmDelete triggered");
-      console.log(
-        thumbnail,
-        "thumbnail from confirm delete",
-        index,
-        vidArray[index + 1]
-      );
       setSelectedIndex(index);
       setSelectedThumbnail(thumbnail);
       setIsAlertVisible(true);
