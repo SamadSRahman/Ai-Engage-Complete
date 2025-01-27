@@ -15,7 +15,9 @@ const FreeTrialBanner = () => {
     // Fetch user subscription information only if accessToken is available
     if (accessToken) {
       axios.get('https://aiengage.xircular.io/api/v1/subscription/getCustomerSubscription', 
-       {withCredentials:true}
+       {headers:{
+        Authorization: `Bearer ${accessToken}`
+       }}
       )
       .then(response => {
         const user = response.data[0]; // Adjust based on the actual response structure

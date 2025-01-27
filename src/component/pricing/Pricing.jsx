@@ -69,6 +69,7 @@ export default function Pricing() {
           {
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
             },
             withCredentials: true, // Ensures cookies are sent
           }
