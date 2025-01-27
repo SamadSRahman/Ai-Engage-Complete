@@ -163,7 +163,7 @@ export default function ListedVideos({
                     <span className={styles.timeStamp}>
                       {handleFormatTime(video.videoLength)}
                     </span>
-                    <div className={styles.limitIndicatorWrapper}>
+                    {/* <div className={styles.limitIndicatorWrapper}>
                       {video?.plans[0]?.plans &&
                         (() => {
                           const combinedUsedPercentage = getLimitPercentage(
@@ -181,7 +181,7 @@ export default function ListedVideos({
                           }
                           return null;
                         })()}
-                    </div>
+                    </div> */}
                     <div
                       className={styles.menuIcon}
                       onClick={() => handleAllVideosMenuClick(video.video_id)}
