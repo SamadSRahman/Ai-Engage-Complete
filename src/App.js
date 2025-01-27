@@ -17,6 +17,7 @@ import Logout from "./component/Logout";
 import CreateCampaign from "./dashboard/App";
 import EditCampaign from "./dashboard/editingSection/Builder";
 import TermsAndConditions from "./component/termsAndCondition/TermsAndCondition";
+import PrivacyPolicy from "./component/PrivacyPolicy/PrivacyPolicy";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -45,6 +46,7 @@ function App() {
           element={<SignIn setIsAuthenticated={setIsAuthenticated} />}
         />
         <Route path="/termsAndConditions" element={<TermsAndConditions />} />
+        <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/checkoutSuccess" element={<CheckoutSuccess />} />
         <Route path="/checkoutFail" element={<CheckoutFail />} />
         <Route path="*" element={<NotFound />} />
