@@ -24,6 +24,7 @@ const Footer = () => {
           {/* <p className="footerlinks" onClick={()=>navigate("/contactUs")}> Contact Us </p> */}
           <p className="footerlinks" onClick={()=>navigate("/termsAndConditions")}> Terms & Conditions </p>
           <p className="footerlinks" onClick={()=>navigate("/privacyPolicy")}> Privacy Policy </p>
+          <p className="footerlinks" onClick={()=>navigate("/refundPolicy")}> Refund Policy </p>
         </div>
 
         <div className="footersocilamediawrapper">

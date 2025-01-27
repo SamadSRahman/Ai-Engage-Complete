@@ -18,6 +18,7 @@ import CreateCampaign from "./dashboard/App";
 import EditCampaign from "./dashboard/editingSection/Builder";
 import TermsAndConditions from "./component/termsAndCondition/TermsAndCondition";
 import PrivacyPolicy from "./component/PrivacyPolicy/PrivacyPolicy";
+import RefundPolicy from "./component/refundPolicy/RefundPolicy";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,6 +48,7 @@ function App() {
         />
         <Route path="/termsAndConditions" element={<TermsAndConditions />} />
         <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+        <Route path="/refundPolicy" element={<RefundPolicy />} />
         <Route path="/checkoutSuccess" element={<CheckoutSuccess />} />
         <Route path="/checkoutFail" element={<CheckoutFail />} />
         <Route path="*" element={<NotFound />} />
