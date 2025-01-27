@@ -94,7 +94,7 @@ export default function ListingPage() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://videosurvey.xircular.io/api/v1/video/getAllVideo?page=${currentPage}&limit=12}`,
+        `https://videosurvey.xircular.io/api/v1/video/getAllVideo?page=${currentPage}&limit=12`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
