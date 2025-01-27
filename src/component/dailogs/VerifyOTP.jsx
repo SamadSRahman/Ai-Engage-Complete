@@ -24,7 +24,7 @@ export default function VerifyOtp({onClose}) {
 
   async function handleSendCode() {
    try{
-    const response = await axios.post("https://stream.xircular.io/api/v1/customer/forgotpassword", {email:email})
+    const response = await axios.post("https://aiengage.xircular.io/api/v1/customer/forgotpassword", {email:email})
     console.log(response.data)
    }
    catch(error){
@@ -33,7 +33,7 @@ export default function VerifyOtp({onClose}) {
 }
   async function handleVerifyCode() {
    try{
-    const response = await axios.post("https://stream.xircular.io/api/v1/customer/forgotpassword", {email:email})
+    const response = await axios.post("https://aiengage.xircular.io/api/v1/customer/forgotpassword", {email:email})
     console.log(response.data)
    }
    catch(error){

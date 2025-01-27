@@ -50,7 +50,7 @@ export default function AdminPopup() {
       params.get("accessToken") || localStorage.getItem("accessToken");
     try {
       const response = await axios.get(
-        `https://stream.xircular.io/api/v1/subscription/getCustomerSubscription`,
+        `https://aiengage.xircular.io/api/v1/subscription/getCustomerSubscription`,
         {
           headers: {
             authorization: `Bearer ${accessToken}`,

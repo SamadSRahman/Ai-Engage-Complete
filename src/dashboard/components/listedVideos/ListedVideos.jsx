@@ -35,7 +35,7 @@ export default function ListedVideos({
       params.get("accessToken") || localStorage.getItem("accessToken");
     try {
       const response = await axios.get(
-        `https://stream.xircular.io/api/v1/subscription/getCustomerSubscription`,
+        `https://aiengage.xircular.io/api/v1/subscription/getCustomerSubscription`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

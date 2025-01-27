@@ -39,7 +39,7 @@ export default function Pricing() {
   useEffect(() => {
     const fetchsubscriptiondata = async () => {
       try {
-        const requesturl = `https://stream.xircular.io/api/v1/subscription_plan/getByFrequency?frequency=${selectedTab}`;
+        const requesturl = `https://aiengage.xircular.io/api/v1/subscription_plan/getByFrequency?frequency=${selectedTab}`;
         const response = await axios.get(requesturl);
 
         console.log("All Subscriptiondata Response", response.data);
@@ -65,7 +65,7 @@ export default function Pricing() {
 
       try {
         const response = await axios.get(
-          "https://stream.xircular.io/api/v1/subscription/getCustomerSubscription",
+          "https://aiengage.xircular.io/api/v1/subscription/getCustomerSubscription",
           {
             headers: {
               "Content-Type": "application/json",

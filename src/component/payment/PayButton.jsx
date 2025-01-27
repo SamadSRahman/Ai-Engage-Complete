@@ -39,7 +39,7 @@ const PayButton = ({
     }
     try {
       const response = await axios.get(
-        `https://stream.xircular.io/api/v1/customer/getUser/${userId}`,
+        `https://aiengage.xircular.io/api/v1/customer/getUser/${userId}`,
         {
           headers: {
             Cookie: "lng=en",
@@ -58,7 +58,7 @@ const PayButton = ({
   const createOrder = async () => {
     try {
       const response = await axios.post(
-        "https://stream.xircular.io/api/v1/order/createOrder",
+        "https://aiengage.xircular.io/api/v1/order/createOrder",
         {
           userId: localStorage.getItem("userId"),
           subscription: {
@@ -79,7 +79,7 @@ const PayButton = ({
   const cashfreeOrder = async (orderId, phone,name) => {
     try {
       const response = await axios.post(
-        "https://stream.xircular.io/api/v1/cashfree/create-checkout-session",
+        "https://aiengage.xircular.io/api/v1/cashfree/create-checkout-session",
         {
           orderId,
           userName: localStorage.getItem("userName"),
@@ -123,7 +123,7 @@ const PayButton = ({
       let checkoutOptions = {
         paymentSessionId: sessionId,
         returnUrl:
-          "https://stream.xircular.io/api/v1/cashfree/getStatus/{order_id}"
+          "https://aiengage.xircular.io/api/v1/cashfree/getStatus/{order_id}"
       };
       cashfree.checkout(checkoutOptions).then(function (result) {
         if (result.error) {

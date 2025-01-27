@@ -155,7 +155,7 @@ const SignUp = () => {
     const headerObject = {
       "Content-Type": "application/json",
     };
-    const SignUpApi = "https://stream.xircular.io/api/v1/customer/signup";
+    const SignUpApi = "https://aiengage.xircular.io/api/v1/customer/signup";
 
     axios
       .post(SignUpApi, item, { headers: headerObject })
@@ -207,7 +207,7 @@ const SignUp = () => {
     };
     axios
       .post(
-        "https://stream.xircular.io/api/v1/customer/sendOtp",
+        "https://aiengage.xircular.io/api/v1/customer/sendOtp",
         { email: email },
         { headers: headerObject }
       )

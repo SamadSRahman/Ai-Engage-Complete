@@ -72,7 +72,7 @@ if(pass&& confirmPass){
     }
 
     try {
-      const response = await axios.post(`https://stream.xircular.io/api/v1/customer/resetpassword/${token}`, { password: pass });
+      const response = await axios.post(`https://aiengage.xircular.io/api/v1/customer/resetpassword/${token}`, { password: pass });
       console.log(response.data);
       localStorage.setItem("password", pass);
       alert(response.data.message);

@@ -14,7 +14,7 @@ const FreeTrialBanner = () => {
   useEffect(() => {
     // Fetch user subscription information only if accessToken is available
     if (accessToken) {
-      axios.get('https://stream.xircular.io/api/v1/subscription/getCustomerSubscription', 
+      axios.get('https://aiengage.xircular.io/api/v1/subscription/getCustomerSubscription', 
        {withCredentials:true}
       )
       .then(response => {
@@ -33,7 +33,7 @@ const FreeTrialBanner = () => {
     // if (!accessToken) {
     //   try {
     //     const createfreetrailurl =
-    //       "https://stream.xircular.io/api/v1/customer/startTrial";
+    //       "https://aiengage.xircular.io/api/v1/customer/startTrial";
     //     const response = await axios.get(createfreetrailurl, {
     //    withCredentials:true
     //     });

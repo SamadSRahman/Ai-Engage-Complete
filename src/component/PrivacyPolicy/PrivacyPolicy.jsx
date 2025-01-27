@@ -127,7 +127,6 @@ const PrivacyPolicy = () => {
         <p>For questions or concerns about this Privacy Policy, please contact us:</p>
         <ul className="bulletList">
           <li>Email: <a href="mailto:info@xircular.io">info@xircular.io</a></li>
-          <li>Phone: +91 8951142369</li>
         </ul>
       </section>
     </div>

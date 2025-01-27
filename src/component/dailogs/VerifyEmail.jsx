@@ -65,7 +65,7 @@ export default function VerifyEmail({
   async function handleResendOTP() {
     try {
       const response = await axios.post(
-        "https://stream.xircular.io/api/v1/customer/sendOtp",
+        "https://aiengage.xircular.io/api/v1/customer/sendOtp",
         { email: email }
       );
       console.log(response.data);
@@ -82,7 +82,7 @@ export default function VerifyEmail({
   async function handleSendCode() {
     try {
       const response = await axios.post(
-        "https://stream.xircular.io/api/v1/customer/sendOtp",
+        "https://aiengage.xircular.io/api/v1/customer/sendOtp",
         { email: email, otp: otp }
       );
       console.log(response.data);
@@ -94,7 +94,7 @@ export default function VerifyEmail({
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://stream.xircular.io/api/v1/customer/emailVerification",
+        "https://aiengage.xircular.io/api/v1/customer/emailVerification",
         {
           email: email,
           Otp: otp,

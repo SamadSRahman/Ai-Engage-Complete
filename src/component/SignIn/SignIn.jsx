@@ -82,7 +82,7 @@ const SignIn = ({ setIsAuthenticated }) => {
     try {
       // Make the POST request
       const res = await axios.post(
-        "https://stream.xircular.io/api/v1/customer/signin",
+        "https://aiengage.xircular.io/api/v1/customer/signin",
         details,
         {
           headers: {
@@ -146,7 +146,7 @@ const SignIn = ({ setIsAuthenticated }) => {
     };
     axios
       .post(
-        "https://stream.xircular.io/api/v1/customer/sendOtp",
+        "https://aiengage.xircular.io/api/v1/customer/sendOtp",
         { email: email },
         { headers: headerObject }
       )

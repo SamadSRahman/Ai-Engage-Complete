@@ -18,7 +18,7 @@ const Navbar = () => {
     if (accessToken) {
       axios
         .get(
-          "https://stream.xircular.io/api/v1/subscription/getCustomerSubscription",
+          "https://aiengage.xircular.io/api/v1/subscription/getCustomerSubscription",
           {
             headers: {
               authorization: accessToken,

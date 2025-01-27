@@ -48,7 +48,7 @@ export default function ForgetPassword({ onClose, onSuccess }) {
     setIsLoading(true)
     try {
       const response = await axios.post(
-        "https://stream.xircular.io/api/v1/customer/forgotpassword",
+        "https://aiengage.xircular.io/api/v1/customer/forgotpassword",
         { email: email }
       );
       console.log(response.data);
